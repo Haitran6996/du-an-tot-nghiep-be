@@ -83,3 +83,32 @@ export const deleteOptions = async (req: Request, res: Response, next: NextFunct
     res.status(500).json({ message: 'Failed to remove option from product', error: error.message })
   }
 }
+export const getAllProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await databaseService.products.find({}).toArray()
+    res.status(200).json(products)
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to get products', error: error.message })
+  }
+}
+export const getProductById = async (req: Request, res: Response) => {
+  const { productId } = req.params
+  try {
+    const pipeline = [
+      { $match: { _id: new ObjectId(productId) } },
+      {
+        $lookup: {
+          from: 'options',
+          localField: 'options',
+          foreignField: '_id',
+          as: 'optionsDetails'
+        }
+      }
+    ]
+
+    const result = await databaseService.products.aggregate(pipeline).toArray()
+    res.status(200).json(result)
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to get products', error: error.message })
+  }
+}

@@ -6,6 +6,7 @@ interface IProduct extends Document {
   date: string
   description: string
   thumbnail: string
+  price: number
   options: IOptions['_id'][]
 }
 
@@ -14,6 +15,7 @@ const ProductSchema: Schema = new Schema({
   description: { type: String, required: true },
   date: { type: String, required: true },
   thumbnail: { type: String, required: true },
+  price: { type: Number, required: true },
   options: [{ type: Schema.Types.ObjectId, ref: 'options' }]
 })
 
