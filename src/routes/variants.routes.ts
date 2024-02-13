@@ -1,6 +1,6 @@
 // variantRouter.ts
 import express from 'express'
-import { createVariant, removeVariant, getAllVariant, updateVariant } from '~/controllers/variant,controller'
+import { createVariant, removeVariant, getAllVariant, updateVariant } from '../controllers/variant,controller'
 
 const variantRoutes = express.Router()
 

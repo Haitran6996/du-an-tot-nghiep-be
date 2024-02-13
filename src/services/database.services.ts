@@ -1,5 +1,4 @@
 import { MongoClient, Db, Collection } from 'mongodb'
-import { IVariant } from '~/models/Variant.models'
 
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 

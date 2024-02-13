@@ -2,8 +2,8 @@
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import mongoose from 'mongoose'
-import databaseService from '~/services/database.services'
-import { addVariantValue, removeVariantValue, getAllVariants } from '~/services/variant.services'
+import databaseService from '../services/database.services'
+import { addVariantValue, removeVariantValue, getAllVariants } from '../services/variant.services'
 
 export const createVariant = async (req: Request, res: Response) => {
   console.log(req.body)
