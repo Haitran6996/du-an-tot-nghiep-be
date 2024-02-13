@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, Router } from 'express'
 
 import { ObjectId } from 'mongodb'
-import databaseService from 'src/services/database.services'
+import databaseService from '../services/database.services'
 
 export const addProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
