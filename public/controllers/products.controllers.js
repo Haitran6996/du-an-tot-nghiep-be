@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = void 0;
-const database_services_1 = __importDefault(require("~/services/database.services"));
+const database_services_1 = __importDefault(require("../services/database.services"));
 const mongodb_1 = require("mongodb");
 const addProducts = async (req, res, next) => {
     try {

@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateVariant = exports.getAllVariant = exports.removeVariant = exports.createVariant = void 0;
 const mongodb_1 = require("mongodb");
 const mongoose_1 = __importDefault(require("mongoose"));
-const database_services_1 = __importDefault(require("~/services/database.services"));
-const variant_services_1 = require("~/services/variant.services");
+const database_services_1 = __importDefault(require("../services/database.services"));
+const variant_services_1 = require("../services/variant.services");
 const createVariant = async (req, res) => {
     console.log(req.body);
     try {

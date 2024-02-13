@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // variantRouter.ts
 const express_1 = __importDefault(require("express"));
-const variant_controller_1 = require("~/controllers/variant,controller");
+const variant_controller_1 = require("../controllers/variant,controller");
 const variantRoutes = express_1.default.Router();
 // Route để tạo biến thể mới
 variantRoutes.post('/', variant_controller_1.createVariant);
