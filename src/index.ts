@@ -5,6 +5,7 @@ import variantRoutes from './routes/variants.routes'
 import databaseService from './services/database.services'
 const port = 3001
 import cors, { CorsOptions } from 'cors'
+import cartRoutes from './routes/cart.routes'
 
 app.use(express.json())
 
@@ -20,6 +21,7 @@ app.get('/', (req: any, res: any) => {
 })
 
 app.use('/products', productsRoutes)
+app.use('/cart', cartRoutes)
 app.use('/variants', variantRoutes)
 
 app.listen(port, () => {

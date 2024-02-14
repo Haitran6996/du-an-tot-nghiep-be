@@ -38,7 +38,7 @@ export async function removeVariantValue(variantId: string, elementId: string) {
   }
 
   const result = await databaseService.variants.updateOne(filter, update)
-  if (result.modifiedCount === 0) {
+  if (!result) {
     throw new Error('No document found with the provided elementId or no update made.')
   }
 
@@ -48,7 +48,7 @@ export async function removeVariantValue(variantId: string, elementId: string) {
 export async function getAllVariants() {
   const result = await databaseService.variants.findOne({})
   console.log(result, 'resultresult')
-  if (result.modifiedCount === 0) {
+  if (!result) {
     throw new Error('No document found with the provided elementId or no update made.')
   }
   return result
