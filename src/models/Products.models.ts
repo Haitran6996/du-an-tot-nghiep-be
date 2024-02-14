@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import { IOptions } from './Options.model'
 
-interface IProduct extends Document {
+export interface IProduct extends Document {
   name: string
   date: string
   description: string

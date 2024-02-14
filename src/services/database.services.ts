@@ -1,37 +1,37 @@
-import { MongoClient, Db, Collection } from 'mongodb'
+import mongoose from 'mongoose'
+import VariantSchema, { IVariant } from 'src/models/Variant.models'
+import OptionsSchema, { IOptions } from 'src/models/Options.model'
+import ProductSchema, { IProduct } from 'src/models/Products.models'
 
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 
 class DatabaseService {
-  private client: MongoClient
-  private db: Db
   constructor() {
-    this.client = new MongoClient(uri)
-    this.db = this.client.db('datn')
+    this.connect()
   }
 
   async connect() {
     try {
-      // Send a ping to confirm a successful connection
-      await this.db.command({ ping: 1 })
-      console.log('Pinged your deployment. You successfully connected to MongoDB!')
+      await mongoose.connect(uri)
+      console.log('You successfully connected to MongoDB with Mongoose!')
     } catch (error) {
-      console.log('Error', error)
+      console.error('Error connecting to MongoDB', error)
       throw error
     }
   }
 
-  get variants(): Collection<any> {
-    return this.db.collection('variants')
+  get variants(): mongoose.Model<IVariant> {
+    return VariantSchema
   }
-  get options(): Collection<any> {
-    return this.db.collection('options')
+
+  get options(): mongoose.Model<IOptions> {
+    return OptionsSchema
   }
-  get products(): Collection<any> {
-    return this.db.collection('products')
+
+  get products(): mongoose.Model<IProduct> {
+    return ProductSchema
   }
 }
 
-// Tạo object từ class DatabaseService
 const databaseService = new DatabaseService()
 export default databaseService

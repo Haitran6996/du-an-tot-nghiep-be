@@ -1,35 +1,36 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongodb_1 = require("mongodb");
+const mongoose_1 = __importDefault(require("mongoose"));
+const Variant_models_1 = __importDefault(require("src/models/Variant.models"));
+const Options_model_1 = __importDefault(require("src/models/Options.model"));
+const Products_models_1 = __importDefault(require("src/models/Products.models"));
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority';
 class DatabaseService {
-    client;
-    db;
     constructor() {
-        this.client = new mongodb_1.MongoClient(uri);
-        this.db = this.client.db('datn');
+        this.connect();
     }
     async connect() {
         try {
-            // Send a ping to confirm a successful connection
-            await this.db.command({ ping: 1 });
-            console.log('Pinged your deployment. You successfully connected to MongoDB!');
+            await mongoose_1.default.connect(uri);
+            console.log('You successfully connected to MongoDB with Mongoose!');
         }
         catch (error) {
-            console.log('Error', error);
+            console.error('Error connecting to MongoDB', error);
             throw error;
         }
     }
     get variants() {
-        return this.db.collection('variants');
+        return Variant_models_1.default;
     }
     get options() {
-        return this.db.collection('options');
+        return Options_model_1.default;
     }
     get products() {
-        return this.db.collection('products');
+        return Products_models_1.default;
     }
 }
-// Tạo object từ class DatabaseService
 const databaseService = new DatabaseService();
 exports.default = databaseService;

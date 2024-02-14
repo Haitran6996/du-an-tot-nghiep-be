@@ -9,7 +9,7 @@ export const addProducts = async (req: Request, res: Response, next: NextFunctio
     const { name, description } = req.body
 
     // Tạo sản phẩm mới với mảng options rỗng
-    const productInsertion = await databaseService.products.insertOne({
+    const productInsertion = await databaseService.products.create({
       name,
       description,
       options: [] // Mảng options rỗng
@@ -17,7 +17,7 @@ export const addProducts = async (req: Request, res: Response, next: NextFunctio
 
     res.status(201).json({
       message: 'Product created successfully',
-      productId: productInsertion.insertedId
+      productId: productInsertion._id
     })
   } catch (error: any) {
     console.error('Error creating product:', error)
@@ -30,8 +30,8 @@ export const addProductsVariant = async (req: Request, res: Response, next: Next
   const optionData = req.body
 
   try {
-    const optionInsertion = await databaseService.options.insertOne(optionData)
-    const optionId = optionInsertion.insertedId
+    const optionInsertion = await databaseService.options.create(optionData)
+    const optionId = optionInsertion._id
 
     await databaseService.products.updateOne(
       { _id: new ObjectId(productId) },
@@ -85,7 +85,7 @@ export const deleteOptions = async (req: Request, res: Response, next: NextFunct
 }
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await databaseService.products.find({}).toArray()
+    const products = await databaseService.products.find({})
     res.status(200).json(products)
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to get products', error: error.message })
@@ -106,7 +106,7 @@ export const getProductById = async (req: Request, res: Response) => {
       }
     ]
 
-    const result = await databaseService.products.aggregate(pipeline).toArray()
+    const result = await databaseService.products.aggregate(pipeline)
     res.status(200).json(result)
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to get products', error: error.message })
