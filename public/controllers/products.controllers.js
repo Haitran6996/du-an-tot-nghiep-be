@@ -11,14 +11,14 @@ const addProducts = async (req, res, next) => {
         // Kết nối tới database nếu cần
         const { name, description } = req.body;
         // Tạo sản phẩm mới với mảng options rỗng
-        const productInsertion = await database_services_1.default.products.insertOne({
+        const productInsertion = await database_services_1.default.products.create({
             name,
             description,
             options: [] // Mảng options rỗng
         });
         res.status(201).json({
             message: 'Product created successfully',
-            productId: productInsertion.insertedId
+            productId: productInsertion._id
         });
     }
     catch (error) {
@@ -31,8 +31,8 @@ const addProductsVariant = async (req, res, next) => {
     const { productId } = req.params;
     const optionData = req.body;
     try {
-        const optionInsertion = await database_services_1.default.options.insertOne(optionData);
-        const optionId = optionInsertion.insertedId;
+        const optionInsertion = await database_services_1.default.options.create(optionData);
+        const optionId = optionInsertion._id;
         await database_services_1.default.products.updateOne({ _id: new mongodb_1.ObjectId(productId) }, { $push: { options: new mongodb_1.ObjectId(optionId) } });
         res.status(201).json({
             message: 'Option created and added to product successfully',
@@ -78,7 +78,7 @@ const deleteOptions = async (req, res, next) => {
 exports.deleteOptions = deleteOptions;
 const getAllProducts = async (req, res) => {
     try {
-        const products = await database_services_1.default.products.find({}).toArray();
+        const products = await database_services_1.default.products.find({});
         res.status(200).json(products);
     }
     catch (error) {
@@ -100,7 +100,7 @@ const getProductById = async (req, res) => {
                 }
             }
         ];
-        const result = await database_services_1.default.products.aggregate(pipeline).toArray();
+        const result = await database_services_1.default.products.aggregate(pipeline);
         res.status(200).json(result);
     }
     catch (error) {

@@ -36,7 +36,7 @@ async function removeVariantValue(variantId, elementId) {
         }
     };
     const result = await database_services_1.default.variants.updateOne(filter, update);
-    if (result.modifiedCount === 0) {
+    if (!result) {
         throw new Error('No document found with the provided elementId or no update made.');
     }
     return result; // Trả về document sau khi cập nhật
@@ -45,7 +45,7 @@ exports.removeVariantValue = removeVariantValue;
 async function getAllVariants() {
     const result = await database_services_1.default.variants.findOne({});
     console.log(result, 'resultresult');
-    if (result.modifiedCount === 0) {
+    if (!result) {
         throw new Error('No document found with the provided elementId or no update made.');
     }
     return result;
