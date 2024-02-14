@@ -6,6 +6,7 @@ const variantRoutes = express.Router()
 
 // Route để tạo biến thể mới
 variantRoutes.post('/', createVariant)
+
 variantRoutes.get('/', getAllVariant)
 variantRoutes.put('/:nameId/:variantId', updateVariant)
 variantRoutes.delete('/:variantId/:elementId', removeVariant)
