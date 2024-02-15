@@ -11,6 +11,8 @@ const database_services_1 = __importDefault(require("./services/database.service
 const port = 3001;
 const cors_1 = __importDefault(require("cors"));
 const cart_routes_1 = __importDefault(require("./routes/cart.routes"));
+const user_routes_1 = __importDefault(require("./routes/user.routes"));
+const news_routes_1 = __importDefault(require("./routes/news.routes"));
 app.use(express_1.default.json());
 database_services_1.default.connect();
 const corsOptions = {
@@ -23,6 +25,8 @@ app.get('/', (req, res) => {
 app.use('/products', products_routes_1.default);
 app.use('/cart', cart_routes_1.default);
 app.use('/variants', variants_routes_1.default);
+app.use('/users', user_routes_1.default);
+app.use('/news', news_routes_1.default);
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
