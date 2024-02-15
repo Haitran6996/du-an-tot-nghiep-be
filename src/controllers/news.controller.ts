@@ -3,18 +3,20 @@ import { Request, Response, NextFunction, Router } from 'express'
 import mongoose, { Schema, Document } from 'mongoose'
 
 import { ObjectId } from 'mongodb'
-import databaseService from '../services/database.services'
+import databaseService from 'src/services/database.services'
 
 export const addNews = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Kết nối tới database nếu cần
-    const { name, description, status_news } = req.body // Mảng options rỗng
+    const { name, description, status_news, date_create, date_update} = req.body // Mảng options rỗng
 
     // Tạo sản phẩm mới với mảng options rỗng
     const newInsertion = await databaseService.news.create({
       name,
       description,
-      status_news
+      status_news,
+      date_create,
+      date_update
     })
 
     res.status(201).json({
@@ -29,14 +31,14 @@ export const addNews = async (req: Request, res: Response, next: NextFunction) =
 
 export const updateNews = async (req: Request, res: Response) => {
     const { nameId, newId } = req.params
-    const { elementId, newValue } = req.body // elementId là ID của phần tử cần cập nhật, newValue là giá trị mới
+    const { elementId, newValue } = req.body 
   
     // Kiểm tra tính hợp lệ của ID
     if (!mongoose.Types.ObjectId.isValid(newId) || !mongoose.Types.ObjectId.isValid(elementId)) {
       return res.status(404).send('Invalid ID')
     }
   
-    const validNames = ['name', 'description', 'status_news']
+    const validNames = ['name', 'description', 'status_news', 'date_update']
     if (!validNames.includes(nameId)) {
       return res.status(400).send('Invalid array name')
     }
