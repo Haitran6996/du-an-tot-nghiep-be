@@ -6,6 +6,8 @@ import databaseService from './services/database.services'
 const port = 3001
 import cors, { CorsOptions } from 'cors'
 import cartRoutes from './routes/cart.routes'
+import usersRoutes from './routes/user.routes'
+import newsRoutes from './routes/news.routes'
 
 app.use(express.json())
 
@@ -23,6 +25,8 @@ app.get('/', (req: any, res: any) => {
 app.use('/products', productsRoutes)
 app.use('/cart', cartRoutes)
 app.use('/variants', variantRoutes)
+app.use('/users', usersRoutes)
+app.use('/news', newsRoutes)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

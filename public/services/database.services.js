@@ -7,6 +7,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const Variant_models_1 = __importDefault(require("src/models/Variant.models"));
 const Options_model_1 = __importDefault(require("src/models/Options.model"));
 const Products_models_1 = __importDefault(require("src/models/Products.models"));
+const Users_models_1 = __importDefault(require("src/models/Users.models"));
+const News_models_1 = __importDefault(require("src/models/News.models"));
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority';
 class DatabaseService {
     constructor() {
@@ -30,6 +32,12 @@ class DatabaseService {
     }
     get products() {
         return Products_models_1.default;
+    }
+    get users() {
+        return Users_models_1.default;
+    }
+    get news() {
+        return News_models_1.default;
     }
 }
 const databaseService = new DatabaseService();
