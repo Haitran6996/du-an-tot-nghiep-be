@@ -4,11 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const Variant_models_1 = __importDefault(require("src/models/Variant.models"));
-const Options_model_1 = __importDefault(require("src/models/Options.model"));
-const Products_models_1 = __importDefault(require("src/models/Products.models"));
-const Users_models_1 = __importDefault(require("src/models/Users.models"));
-const News_models_1 = __importDefault(require("src/models/News.models"));
+const Variant_models_1 = __importDefault(require("../models/Variant.models"));
+const Options_model_1 = __importDefault(require("../models/Options.model"));
+const Products_models_1 = __importDefault(require("../models/Products.models"));
+const Users_models_1 = __importDefault(require("../models/Users.models"));
+const News_models_1 = __importDefault(require("../models/News.models"));
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority';
 class DatabaseService {
     constructor() {
