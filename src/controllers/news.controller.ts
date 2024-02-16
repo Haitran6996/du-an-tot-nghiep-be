@@ -8,14 +8,15 @@ import databaseService from 'src/services/database.services'
 export const addNews = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Kết nối tới database nếu cần
-    const { name, description, image, status_news } = req.body // Mảng options rỗng
+    const { title, imageUrl, shortContent, content, statusNews } = req.body // Mảng options rỗng
 
     // Tạo sản phẩm mới với mảng options rỗng
     const newInsertion = await databaseService.news.create({
-      name,
-      description,
-      image,
-      status_news
+      title,
+      imageUrl,
+      shortContent,
+      content,
+      statusNews
     }
     )
 
@@ -31,17 +32,18 @@ export const addNews = async (req: Request, res: Response, next: NextFunction) =
 
 export const updateNews = async (req: Request, res: Response) => {
   const { newId } = req.params
-  const { name, image, description, status_news } = req.body
+  const { title, imageUrl, shortContent, content, statusNews } = req.body
 
   try {
 
     const updateResult = await databaseService.news.findByIdAndUpdate(
       { _id: new ObjectId(newId) },
       {
-        name: name,
-        image: image,
-        description: description,
-        status_news: status_news
+        title: title,
+        imageUrl: imageUrl,
+        content: content,
+        shortContent: shortContent,
+        statusNews: statusNews
       }
     )
     res.status(200).send('Updated successfully')
