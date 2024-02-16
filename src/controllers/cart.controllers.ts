@@ -5,7 +5,7 @@ import {
   updateCartServices,
   deleteItemCartServices,
   getCartServices
-} from 'src/services/cart.services'
+} from '../services/cart.services'
 
 export const addToCart = async (req: Request, res: Response) => {
   try {
