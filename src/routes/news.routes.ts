@@ -12,7 +12,7 @@ const NewsRoutes = Router()
 NewsRoutes.get('/', getAllNews)
 NewsRoutes.get('/:newId', getNewById)
 NewsRoutes.post('/', addNews)
-NewsRoutes.put('/', updateNews)
+NewsRoutes.put('/:newId', updateNews)
 NewsRoutes.delete('/:newId', deleteNews)
 
 export default NewsRoutes
