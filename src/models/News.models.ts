@@ -1,18 +1,19 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface INews extends Document {
-    name: string,
-    image: string,
-    description: string,
-    status_news: number
-    
+    title: string,
+    imageUrl: string,
+    shortContent: string,
+    content:string
+    statusNews: number
 }
 
 const NewsSchema: Schema = new Schema({
-    name: { type: String, required: true },
-    image: { type: String, required: true },
-    description: { type: String, required: true },
-    status_news: { type: Number, required: true },
+    title: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    shortContent: { type: String, required: true },
+    content: { type: String, required: true },
+    statusNews: { type: Number, required: true },
 },
     {
         timestamps: true,
