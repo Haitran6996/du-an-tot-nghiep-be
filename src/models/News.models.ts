@@ -9,7 +9,7 @@ export interface INews extends Document {
 }
 
 const NewsSchema: Schema = new Schema({
-    name: { type: String, required: true },
+    title: { type: String, required: true },
     imageUrl: { type: String, required: true },
     shortContent: { type: String, required: true },
     content: { type: String, required: true },
