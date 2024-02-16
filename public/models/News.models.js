@@ -27,6 +27,8 @@ const mongoose_1 = __importStar(require("mongoose"));
 const NewsSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
-    status_news: { type: String, required: true },
+    status_news: { type: Number, required: true },
+    date_create: { type: Date, require: true },
+    date_update: { type: Date, require: false }
 });
 exports.default = mongoose_1.default.model('news', NewsSchema);

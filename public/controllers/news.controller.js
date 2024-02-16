@@ -6,16 +6,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNewById = exports.getAllNews = exports.deleteNews = exports.updateNews = exports.addNews = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const mongodb_1 = require("mongodb");
-const database_services_1 = __importDefault(require("../services/database.services"));
+const database_services_1 = __importDefault(require("src/services/database.services"));
 const addNews = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { name, description, status_news } = req.body; // Mảng options rỗng
+        const { name, description, status_news, date_create, date_update } = req.body; // Mảng options rỗng
         // Tạo sản phẩm mới với mảng options rỗng
         const newInsertion = await database_services_1.default.news.create({
             name,
             description,
-            status_news
+            status_news,
+            date_create,
+            date_update
         });
         res.status(201).json({
             message: 'new created successfully',
@@ -30,12 +32,12 @@ const addNews = async (req, res, next) => {
 exports.addNews = addNews;
 const updateNews = async (req, res) => {
     const { nameId, newId } = req.params;
-    const { elementId, newValue } = req.body; // elementId là ID của phần tử cần cập nhật, newValue là giá trị mới
+    const { elementId, newValue } = req.body;
     // Kiểm tra tính hợp lệ của ID
     if (!mongoose_1.default.Types.ObjectId.isValid(newId) || !mongoose_1.default.Types.ObjectId.isValid(elementId)) {
         return res.status(404).send('Invalid ID');
     }
-    const validNames = ['name', 'description', 'status_news'];
+    const validNames = ['name', 'description', 'status_news', 'date_update'];
     if (!validNames.includes(nameId)) {
         return res.status(400).send('Invalid array name');
     }
