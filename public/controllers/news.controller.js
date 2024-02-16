@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNewById = exports.getAllNews = exports.deleteNews = exports.updateNews = exports.addNews = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const mongodb_1 = require("mongodb");
-const database_services_1 = __importDefault(require("src/services/database.services"));
+const database_services_1 = __importDefault(require("../services/database.services"));
 const addNews = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
