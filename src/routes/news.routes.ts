@@ -7,6 +7,7 @@ import {
   getNewById
 } from '../controllers/news.controller'
 
+
 const NewsRoutes = Router()
 
 NewsRoutes.get('/', getAllNews)
