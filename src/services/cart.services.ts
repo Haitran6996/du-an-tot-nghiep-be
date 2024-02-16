@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { Request, Response } from 'express'
-import CartModel from 'src/models/Cart.model'
+import CartModel from '../models/Cart.model'
 
 export async function addToCartServices(req: Request, res: Response) {
   try {

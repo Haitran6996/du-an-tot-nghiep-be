@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCartServices = exports.deleteItemCartServices = exports.updateCartServices = exports.addToCartServices = void 0;
-const Cart_model_1 = __importDefault(require("src/models/Cart.model"));
+const Cart_model_1 = __importDefault(require("../models/Cart.model"));
 async function addToCartServices(req, res) {
     try {
         const { userId, productId, options, quantity } = req.body;
