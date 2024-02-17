@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose'
 import md5 from 'md5'
 import { ObjectId } from 'mongodb'
 import bcrypt from 'bcryptjs'
-import databaseService from 'src/services/database.services'
+import databaseService from '../../services/database.services'
 
 const hash = 8
 export const register = async (req: Request, res: Response, next: NextFunction) => {
