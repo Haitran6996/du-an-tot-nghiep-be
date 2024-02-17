@@ -52,24 +52,12 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Failed to get users', error: error.message })
   }
 }
-export const getProductById = async (req: Request, res: Response) => {
-  const { productId } = req.params
+export const getUserById = async (req: Request, res: Response) => {
+  const { usersId } = req.params
   try {
-    const pipeline = [
-      { $match: { _id: new ObjectId(productId) } },
-      {
-        $lookup: {
-          from: 'options',
-          localField: 'options',
-          foreignField: '_id',
-          as: 'optionsDetails'
-        }
-      }
-    ]
-
-    const result = await databaseService.products.aggregate(pipeline)
+    const result = await databaseService.users.find({_id:usersId}).select('-password')
     res.status(200).json(result)
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to get products', error: error.message })
+    res.status(500).json({ message: 'Failed to get data Users', error: error.message })
   }
 }
