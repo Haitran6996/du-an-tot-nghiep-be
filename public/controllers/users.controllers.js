@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductById = exports.getAllUsers = exports.deleteUsers = exports.signUp = void 0;
+exports.getUserById = exports.getAllUsers = exports.deleteUsers = exports.signUp = void 0;
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
 const signUp = async (req, res, next) => {
@@ -48,7 +48,7 @@ const deleteUsers = async (req, res, next) => {
 exports.deleteUsers = deleteUsers;
 const getAllUsers = async (req, res) => {
     try {
-        const users = await database_services_1.default.products.find({}).select('-password');
+        const users = await database_services_1.default.users.find({}).select('-password');
         res.status(200).json(users);
     }
     catch (error) {
@@ -56,25 +56,14 @@ const getAllUsers = async (req, res) => {
     }
 };
 exports.getAllUsers = getAllUsers;
-const getProductById = async (req, res) => {
-    const { productId } = req.params;
+const getUserById = async (req, res) => {
+    const { usersId } = req.params;
     try {
-        const pipeline = [
-            { $match: { _id: new mongodb_1.ObjectId(productId) } },
-            {
-                $lookup: {
-                    from: 'options',
-                    localField: 'options',
-                    foreignField: '_id',
-                    as: 'optionsDetails'
-                }
-            }
-        ];
-        const result = await database_services_1.default.products.aggregate(pipeline);
+        const result = await database_services_1.default.users.find({ _id: usersId }).select('-password');
         res.status(200).json(result);
     }
     catch (error) {
-        res.status(500).json({ message: 'Failed to get products', error: error.message });
+        res.status(500).json({ message: 'Failed to get data Users', error: error.message });
     }
 };
-exports.getProductById = getProductById;
+exports.getUserById = getUserById;

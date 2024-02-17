@@ -4,24 +4,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNewById = exports.getAllNews = exports.deleteNews = exports.updateNews = exports.addNews = void 0;
-const mongoose_1 = __importDefault(require("mongoose"));
 const mongodb_1 = require("mongodb");
-const database_services_1 = __importDefault(require("../services/database.services"));
+const database_services_1 = __importDefault(require("src/services/database.services"));
 const addNews = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { name, description, status_news, date_create, date_update } = req.body; // Mảng options rỗng
+        const { title, imageUrl, shortContent, content, statusNews } = req.body; // Mảng options rỗng
         // Tạo sản phẩm mới với mảng options rỗng
         const newInsertion = await database_services_1.default.news.create({
-            name,
-            description,
-            status_news,
-            date_create,
-            date_update
+            title,
+            imageUrl,
+            shortContent,
+            content,
+            statusNews
         });
         res.status(201).json({
             message: 'new created successfully',
-            newId: newInsertion._id
+            newId: newInsertion
         });
     }
     catch (error) {
@@ -31,27 +30,20 @@ const addNews = async (req, res, next) => {
 };
 exports.addNews = addNews;
 const updateNews = async (req, res) => {
-    const { nameId, newId } = req.params;
-    const { elementId, newValue } = req.body;
-    // Kiểm tra tính hợp lệ của ID
-    if (!mongoose_1.default.Types.ObjectId.isValid(newId) || !mongoose_1.default.Types.ObjectId.isValid(elementId)) {
-        return res.status(404).send('Invalid ID');
-    }
-    const validNames = ['name', 'description', 'status_news', 'date_update'];
-    if (!validNames.includes(nameId)) {
-        return res.status(400).send('Invalid array name');
-    }
+    const { newId } = req.params;
+    const { title, imageUrl, shortContent, content, statusNews } = req.body;
     try {
-        const updateQuery = {};
-        updateQuery[`${nameId}.$.value`] = newValue;
-        const updateResult = await database_services_1.default.news.updateOne({ _id: new mongodb_1.ObjectId(newId), [`${nameId}.id`]: new mongodb_1.ObjectId(elementId) }, { $set: updateQuery });
-        if (updateResult.modifiedCount === 0) {
-            return res.status(404).send('No element found with that id');
-        }
+        const updateResult = await database_services_1.default.news.findByIdAndUpdate({ _id: new mongodb_1.ObjectId(newId) }, {
+            title: title,
+            imageUrl: imageUrl,
+            content: content,
+            shortContent: shortContent,
+            statusNews: statusNews
+        });
         res.status(200).send('Updated successfully');
     }
     catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json({ message: 'Error:' + error.message });
     }
 };
 exports.updateNews = updateNews;
