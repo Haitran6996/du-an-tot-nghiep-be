@@ -9,6 +9,6 @@ const authRoutes = Router()
 
 authRoutes.get('/login', login)
 authRoutes.post('/register', register)
-authRoutes.put('/refresh', refreshToken)
+// authRoutes.put('/refresh', refreshToken)
 
 export default authRoutes

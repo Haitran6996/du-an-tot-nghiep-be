@@ -1,12 +1,16 @@
 import { Request, Response, NextFunction, Router } from 'express'
+import mongoose, { Schema, Document } from 'mongoose'
+import md5 from 'md5'
 import { ObjectId } from 'mongodb'
 import bcrypt from 'bcryptjs'
 import databaseService from 'src/services/database.services'
 
+const hash = 8
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Kết nối tới database nếu cần
     const { username, mail, password, role } = req.body
+    const hashPassword = md5(password);
     //Check tài khoản có trong db hay không
     const checkExistUsername = await databaseService.users.findOne({username:username});
 	if (checkExistUsername) {
@@ -21,7 +25,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       const usersInsertion = await databaseService.users.create({
         username,
         mail,
-        password,
+        password:hashPassword,
         role
       })
 
@@ -67,21 +71,20 @@ export const login = async (req: Request, res: Response) => {
     const {username,password} = req.body;
     try {
     // get data
-	const user = await databaseService.users.findOne({username:username});
+	const user = await databaseService.users.find({username}).select('-mail ');
 	if (!user) {
-		return res.status(401).json('Tên đăng nhập hoặc mật khẩu không chính xác.');
+		return res.status(401).json('Tên đăng nhập không chính xác.');
 	}
+
     // check password
-	const isPasswordValid = bcrypt.compareSync(password, user.password);
-    
-    
-	if (!isPasswordValid) {
-        return res.status(401).json(user),
-		res.status(401).json('Tên đăng nhập hoặc mật khẩu không chính xác.');
+    const hashPassword = md5(password);
+	if (hashPassword!=user[0].password) {
+        return res.status(401).json(' mật khẩu không chính xác.');
 	}
+  const userDelPass = await databaseService.users.find({username}).select('-password');
     return res.json({
 		msg: 'Đăng nhập thành công.',
-		user
+		userDelPass
 	});
   } catch (error: any) {
     res.status(500).json({ message: 'Lỗi', error: error.message })
