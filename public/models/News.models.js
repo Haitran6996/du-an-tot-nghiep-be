@@ -25,10 +25,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const NewsSchema = new mongoose_1.Schema({
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    status_news: { type: Number, required: true },
-    date_create: { type: Date, require: true },
-    date_update: { type: Date, require: false }
+    title: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    shortContent: { type: String, required: true },
+    content: { type: String, required: true },
+    statusNews: { type: Number, required: true },
+}, {
+    timestamps: true,
 });
 exports.default = mongoose_1.default.model('news', NewsSchema);
