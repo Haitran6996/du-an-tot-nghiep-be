@@ -3,7 +3,7 @@ import { Request, Response, NextFunction, Router } from 'express'
 import mongoose, { Schema, Document } from 'mongoose'
 
 import { ObjectId } from 'mongodb'
-import databaseService from 'src/services/database.services'
+import databaseService from '../services/database.services'
 
 export const addNews = async (req: Request, res: Response, next: NextFunction) => {
   try {

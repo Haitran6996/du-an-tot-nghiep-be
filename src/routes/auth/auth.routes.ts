@@ -3,7 +3,7 @@ import {
   register,
   login,
   refreshToken
-} from 'src/controllers/auth/auth.controllers'
+} from '../../controllers/auth/auth.controllers'
 
 const authRoutes = Router()
 

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.getToken = exports.refreshToken = exports.register = void 0;
 const md5_1 = __importDefault(require("md5"));
 const mongodb_1 = require("mongodb");
-const database_services_1 = __importDefault(require("src/services/database.services"));
+const database_services_1 = __importDefault(require("../../services/database.services"));
 const hash = 8;
 const register = async (req, res, next) => {
     try {
