@@ -46,7 +46,7 @@ export const deleteUsers = async (req: Request, res: Response, next: NextFunctio
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await databaseService.products.find({}).select('-password')
+    const users = await databaseService.users.find({}).select('-password')
     res.status(200).json(users)
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to get users', error: error.message })
