@@ -2,7 +2,6 @@ import { Router } from 'express'
 import {
   register,
   login,
-  refreshToken
 } from '../../controllers/auth/auth.controllers'
 
 const authRoutes = Router()

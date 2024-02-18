@@ -11,12 +11,12 @@ export interface IUsers extends Document {
 }
 
 const UsersSchema: Schema = new Schema({
-  username: { type: String, required: true },
-  mail: { type: String, required: true },
+  username: { type: String, trim:true, required: true },
+  mail: { type: String, unique: true, lowercase: true, required: true },
   password: { type: String, required: true },
   image: { type: String},
   role: { type: Number, required: true },
-  refreshToken: { type: String},
+  refreshToken: { type: String, require:true},
   otp: { type: String }
 })
 
