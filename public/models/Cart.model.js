@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // models/Cart.js
 const mongoose_1 = __importStar(require("mongoose"));
 const CartSchema = new mongoose_1.Schema({
-    userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true }, // Giả sử bạn có một User model
+    userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users', required: true }, // Giả sử bạn có một User model
     items: [
         {
             product: { type: mongoose_1.Schema.Types.ObjectId, ref: 'product', required: true },

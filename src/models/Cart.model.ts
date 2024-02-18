@@ -11,7 +11,7 @@ interface ICart extends Document {
 }
 
 const CartSchema: Schema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Giả sử bạn có một User model
+  userId: { type: Schema.Types.ObjectId, ref: 'users', required: true }, // Giả sử bạn có một User model
   items: [
     {
       product: { type: Schema.Types.ObjectId, ref: 'product', required: true },
