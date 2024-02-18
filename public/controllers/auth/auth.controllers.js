@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.getToken = exports.refreshToken = exports.register = void 0;
+exports.login = exports.getToken = exports.register = void 0;
 const md5_1 = __importDefault(require("md5"));
-const mongodb_1 = require("mongodb");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_services_1 = __importDefault(require("../../services/database.services"));
 const hash = 8;
 const register = async (req, res, next) => {
@@ -45,20 +45,6 @@ const register = async (req, res, next) => {
     }
 };
 exports.register = register;
-const refreshToken = async (req, res, next) => {
-    const { userId } = req.params;
-    try {
-        await database_services_1.default.users.deleteOne({ _id: new mongodb_1.ObjectId(userId) });
-        res.status(200).json({
-            message: 'User deleted successfully'
-        });
-    }
-    catch (error) {
-        console.error('Error deleting user:', error);
-        res.status(500).json({ message: 'Failed to delete user', error: error.message });
-    }
-};
-exports.refreshToken = refreshToken;
 const getToken = async (req, res) => {
     try {
         const { username, } = req.body;
@@ -71,7 +57,7 @@ const getToken = async (req, res) => {
 };
 exports.getToken = getToken;
 const login = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, JWT_KEY } = req.body;
     try {
         // get data
         const user = await database_services_1.default.users.find({ username }).select('-mail ');
@@ -84,9 +70,17 @@ const login = async (req, res) => {
             return res.status(401).json(' mật khẩu không chính xác.');
         }
         const userDelPass = await database_services_1.default.users.find({ username }).select('-password');
+        const payload = {
+            _id: userDelPass[0]._id,
+            mail: userDelPass[0].mail,
+            role: userDelPass[0].role
+        };
+        const options = { expiresIn: '7d' };
+        const Token = jsonwebtoken_1.default.sign(payload, JWT_KEY, options);
         return res.json({
             msg: 'Đăng nhập thành công.',
-            userDelPass
+            userDelPass,
+            Token
         });
     }
     catch (error) {
