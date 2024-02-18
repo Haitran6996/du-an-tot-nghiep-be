@@ -69,7 +69,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json(' mật khẩu không chính xác.');
     }
     const userDelPass = await databaseService.users.find({ username }).select('-password');
-
+    
     const payload = {
       _id: userDelPass[0]._id,
       mail: userDelPass[0].mail,
@@ -78,6 +78,7 @@ export const login = async (req: Request, res: Response) => {
     const options = { expiresIn: '7d' };
 
     const Token = jwt.sign(payload, JWT_KEY, options);
+    await databaseService.users.findByIdAndUpdate({_id: userDelPass[0]._id},{refreshToken:Token})
     return res.json({
       msg: 'Đăng nhập thành công.',
       userDelPass,

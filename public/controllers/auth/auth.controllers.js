@@ -77,6 +77,7 @@ const login = async (req, res) => {
         };
         const options = { expiresIn: '7d' };
         const Token = jsonwebtoken_1.default.sign(payload, JWT_KEY, options);
+        await database_services_1.default.users.findByIdAndUpdate({ _id: userDelPass[0]._id }, { refreshToken: Token });
         return res.json({
             msg: 'Đăng nhập thành công.',
             userDelPass,
