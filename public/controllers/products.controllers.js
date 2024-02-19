@@ -9,11 +9,14 @@ const database_services_1 = __importDefault(require("../services/database.servic
 const addProducts = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { name, description } = req.body;
+        const { name, description, price, date, thumbnail } = req.body;
         // Tạo sản phẩm mới với mảng options rỗng
         const productInsertion = await database_services_1.default.products.create({
             name,
             description,
+            price,
+            date,
+            thumbnail,
             options: [] // Mảng options rỗng
         });
         res.status(201).json({

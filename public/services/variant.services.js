@@ -13,7 +13,8 @@ async function addVariantValue(variantId, field, value) {
         id: new mongoose_1.default.Types.ObjectId(), // Mongoose tự động tạo nếu bạn không cung cấp
         value: value
     };
-    const data = await database_services_1.default.variants.findOne({ _id: new mongodb_1.ObjectId(variantId) });
+    console.log(variantId, 'variantId');
+    const data = await database_services_1.default.variants.findOne({ _id: variantId });
     console.log(data, 'data');
     // Cập nhật sử dụng Mongoose
     const update = { $push: { [field]: element } };
@@ -43,9 +44,9 @@ async function removeVariantValue(variantId, elementId) {
 }
 exports.removeVariantValue = removeVariantValue;
 async function getAllVariants() {
-    const result = await database_services_1.default.variants.findOne({});
+    const result = await database_services_1.default.variants.find({});
     console.log(result, 'resultresult');
-    if (!result) {
+    if (result.length === 0) {
         throw new Error('No document found with the provided elementId or no update made.');
     }
     return result;
