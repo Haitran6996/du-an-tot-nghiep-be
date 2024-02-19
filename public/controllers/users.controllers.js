@@ -57,9 +57,9 @@ const getAllUsers = async (req, res) => {
 };
 exports.getAllUsers = getAllUsers;
 const getUserById = async (req, res) => {
-    const { usersId } = req.params;
+    const { _id } = req.params;
     try {
-        const user = await database_services_1.default.users.find({ _id: usersId }).select('-mail -password -refreshToken ');
+        const user = await database_services_1.default.users.find({ _id: _id }).select('-password -refreshToken');
         res.status(200).json(user);
     }
     catch (error) {

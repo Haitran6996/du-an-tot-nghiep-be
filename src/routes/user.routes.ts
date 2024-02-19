@@ -9,7 +9,7 @@ import {
 const usersRoutes = Router()
 
 usersRoutes.get('/', getAllUsers)
-usersRoutes.get('/:userId', getUserById)
+usersRoutes.get('/one/:_id', getUserById)
 usersRoutes.post('/', signUp)
 usersRoutes.delete('/:userId', deleteUsers)
 
