@@ -9,7 +9,9 @@ export async function addVariantValue(variantId: string, field: string, value: s
     value: value
   }
 
-  const data = await databaseService.variants.findOne({ _id: new ObjectId(variantId) })
+  console.log(variantId, 'variantId')
+
+  const data = await databaseService.variants.findOne({ _id: variantId })
 
   console.log(data, 'data')
 
@@ -46,9 +48,9 @@ export async function removeVariantValue(variantId: string, elementId: string) {
 }
 
 export async function getAllVariants() {
-  const result = await databaseService.variants.findOne({})
+  const result = await databaseService.variants.find({})
   console.log(result, 'resultresult')
-  if (!result) {
+  if (result.length === 0) {
     throw new Error('No document found with the provided elementId or no update made.')
   }
   return result
