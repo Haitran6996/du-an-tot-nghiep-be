@@ -69,7 +69,7 @@ const login = async (req, res) => {
         if (hashPassword != user[0].password) {
             return res.status(401).json(' mật khẩu không chính xác.');
         }
-        const userDelPass = await database_services_1.default.users.find({ username }).select('-password');
+        const userDelPass = await database_services_1.default.users.find({ username }).select('-password -refreshToken');
         const payload = {
             _id: userDelPass[0]._id,
             mail: userDelPass[0].mail,
