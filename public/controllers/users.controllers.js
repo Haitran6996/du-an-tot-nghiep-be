@@ -59,8 +59,8 @@ exports.getAllUsers = getAllUsers;
 const getUserById = async (req, res) => {
     const { usersId } = req.params;
     try {
-        const result = await database_services_1.default.users.find({ _id: usersId }).select('-password -refreshToken');
-        res.status(200).json(result);
+        const user = await database_services_1.default.users.find({ _id: usersId }).select('-mail -password -refreshToken ');
+        res.status(200).json(user);
     }
     catch (error) {
         res.status(500).json({ message: 'Failed to get data Users', error: error.message });
