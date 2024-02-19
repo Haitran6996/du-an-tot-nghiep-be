@@ -52,10 +52,11 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Failed to get users', error: error.message })
   }
 }
+
 export const getUserById = async (req: Request, res: Response) => {
-  const { usersId } = req.params
+  const { _id } = req.params
   try {
-    const user = await databaseService.users.find({ _id: usersId }).select('-mail -password -refreshToken ');
+    const user = await databaseService.users.find({ _id: _id }).select('-password -refreshToken');
     res.status(200).json(user)
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to get data Users', error: error.message })
