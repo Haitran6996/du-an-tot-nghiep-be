@@ -15,7 +15,7 @@ const CartSchema: Schema = new Schema({
   items: [
     {
       product: { type: Schema.Types.ObjectId, ref: 'product', required: true },
-      options: [{ type: Schema.Types.ObjectId, ref: 'variant' }],
+      options: [{ type: Schema.Types.ObjectId, ref: 'options' }],
       quantity: { type: Number, required: true }
     }
   ]
