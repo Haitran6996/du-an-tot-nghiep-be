@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express'
 
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
+import { IProduct } from 'src/models/Products.models'
 
 export const addProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -113,5 +114,33 @@ export const getProductById = async (req: Request, res: Response) => {
     res.status(200).json(result)
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to get products', error: error.message })
+  }
+}
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.productId
+    console.log(req.params.id, 'req.params.id')
+    const updateData = req.body // Dữ liệu cập nhật được gửi từ client
+
+    // Tìm sản phẩm để cập nhật
+    const product: any = await databaseService.products.findById(productId)
+
+    if (!product) {
+      return res.status(404).json({ message: 'Sản phẩm không tồn tại' })
+    }
+
+    // Cập nhật chỉ các thuộc tính được gửi từ client
+    Object.keys(updateData).forEach((key: any) => {
+      product[key] = updateData[key]
+    })
+
+    // Lưu sản phẩm đã cập nhật
+    await product.save()
+
+    // Trả về thông tin sản phẩm đã cập nhật
+    res.json({ message: 'Cập nhật sản phẩm thành công', product })
+  } catch (error) {
+    console.error('Lỗi khi cập nhật sản phẩm:', error)
+    res.status(500).json({ message: 'Đã xảy ra lỗi khi cập nhật sản phẩm' })
   }
 }
