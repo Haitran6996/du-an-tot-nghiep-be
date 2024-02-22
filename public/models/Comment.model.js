@@ -28,5 +28,7 @@ const CommentSchema = new mongoose_1.Schema({
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users', required: true }, // Giả sử bạn có một User model
     productId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'product', required: true },
     comment: { type: String, require: true }
+}, {
+    timestamps: true,
 });
 exports.default = mongoose_1.default.model('comment', CommentSchema);
