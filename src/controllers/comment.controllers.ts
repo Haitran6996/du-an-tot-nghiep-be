@@ -53,31 +53,22 @@ export const deleteCommentUser = async (req: Request, res: Response, next: NextF
 }
 
 export const getAllComment = async (req: Request, res: Response) => {
-    const { productId } = req.params
+    const { userId, role } = req.params
     try {
-        const comments = await databaseService.comments.find({ productId: productId })
-        res.status(200).json(comments)
+        const checkAdmin = await databaseService.users.find({ _id: userId, role: role })
+        if (checkAdmin[0].role == 0) {
+            const news = await databaseService.comments.find({})
+            res.status(200).json(news)
+        }
     } catch (error: any) {
         res.status(500).json({ message: 'Failed to get all comments', error: error.message })
     }
 }
-export const getNewById = async (req: Request, res: Response) => {
-    const { newId } = req.params
+export const getCommentWithProduct = async (req: Request, res: Response) => {
+    const { productId } = req.params
     try {
-        const pipeline = [
-            { $match: { _id: new ObjectId(newId) } },
-            {
-                $lookup: {
-                    from: 'options',
-                    localField: 'options',
-                    foreignField: '_id',
-                    as: 'optionsDetails'
-                }
-            }
-        ]
-
-        const result = await databaseService.news.aggregate(pipeline)
-        res.status(200).json(result)
+            const comments = await databaseService.comments.find({productId:productId})
+            res.status(200).json(comments)
     } catch (error: any) {
         res.status(500).json({ message: 'Failed to get news', error: error.message })
     }
