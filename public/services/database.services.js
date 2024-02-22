@@ -9,6 +9,7 @@ const Options_model_1 = __importDefault(require("../models/Options.model"));
 const Products_models_1 = __importDefault(require("../models/Products.models"));
 const Users_models_1 = __importDefault(require("../models/Users.models"));
 const News_models_1 = __importDefault(require("../models/News.models"));
+const Comment_model_1 = __importDefault(require("../models/Comment.model"));
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority';
 class DatabaseService {
     constructor() {
@@ -38,6 +39,9 @@ class DatabaseService {
     }
     get news() {
         return News_models_1.default;
+    }
+    get comments() {
+        return Comment_model_1.default;
     }
 }
 const databaseService = new DatabaseService();
