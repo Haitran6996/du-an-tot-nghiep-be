@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const users_controllers_1 = require("../controllers/users.controllers");
 const usersRoutes = (0, express_1.Router)();
+usersRoutes.post('/pagination', users_controllers_1.paginationUsers);
 usersRoutes.get('/', users_controllers_1.getAllUsers);
 usersRoutes.get('/one/:_id', users_controllers_1.getUserById);
 usersRoutes.post('/', users_controllers_1.signUp);

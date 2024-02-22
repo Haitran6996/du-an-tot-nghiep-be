@@ -3,9 +3,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProduct = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = void 0;
+exports.updateProduct = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.paginationProduct = void 0;
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
+const paginationProduct = async (req, res, next) => {
+    try {
+        // Kết nối tới database nếu cần
+        const { number, page } = req.body;
+        if (number == null || page == null) {
+            const number = 24;
+            const page = 1;
+        }
+        const data = await database_services_1.default.products.aggregate([
+            { $match: {} },
+            { $skip: (page - 1) * number },
+            { $limit: number }
+        ], {
+            $count: "total"
+        });
+        const total = data[0].total;
+        res.status(201).json({ data, page, number, total });
+    }
+    catch (error) {
+        console.error('Error get data:', error);
+        res.status(500).json({ message: 'Failed to data', error: error.message });
+    }
+};
+exports.paginationProduct = paginationProduct;
 const addProducts = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
