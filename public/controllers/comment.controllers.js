@@ -51,13 +51,10 @@ const deleteCommentUser = async (req, res, next) => {
 };
 exports.deleteCommentUser = deleteCommentUser;
 const getAllComment = async (req, res) => {
-    const { userId, role } = req.params;
+    const { productId } = req.params;
     try {
-        const checkAdmin = await database_services_1.default.users.find({ _id: userId, role: role });
-        if (checkAdmin[0].role == 0) {
-            const news = await database_services_1.default.comments.find({});
-            res.status(200).json(news);
-        }
+        const comments = await database_services_1.default.comments.find({ productId: productId });
+        res.status(200).json(comments);
     }
     catch (error) {
         res.status(500).json({ message: 'Failed to get all comments', error: error.message });
