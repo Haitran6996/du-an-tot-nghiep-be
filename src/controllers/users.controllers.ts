@@ -3,6 +3,30 @@ import { Request, Response, NextFunction, Router } from 'express'
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
 
+export const paginationUsers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Kết nối tới database nếu cần
+    const { number, page} = req.body
+    if (number == null || page == null) {
+      const number = 15
+      const page = 1
+    }
+    const data = await databaseService.users.aggregate([
+      { $project: { password: 0, refreshToken: 0 } },
+      { $skip: (page - 1) * number },
+      { $limit: number }
+    ],
+      {
+        $count: "total"
+      })
+    const total = data[0].total
+    res.status(201).json({ data, page, number, total })
+  } catch (error: any) {
+    console.error('Error get data:', error)
+    res.status(500).json({ message: 'Failed to data', error: error.message })
+  }
+}
+
 export const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Kết nối tới database nếu cần

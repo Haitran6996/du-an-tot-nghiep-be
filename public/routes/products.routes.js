@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const products_controllers_1 = require("../controllers/products.controllers");
 const productsRoutes = (0, express_1.Router)();
+productsRoutes.post('//pagination', products_controllers_1.paginationProduct);
 productsRoutes.get('/', products_controllers_1.getAllProducts);
 productsRoutes.get('/:productId', products_controllers_1.getProductById);
 productsRoutes.patch('/:productId', products_controllers_1.updateProduct);
