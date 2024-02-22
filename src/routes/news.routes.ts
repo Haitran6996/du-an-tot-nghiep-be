@@ -4,13 +4,14 @@ import {
   deleteNews,
   updateNews,
   getAllNews,
-  getNewById
+  getNewById,
+  paginationNews
 } from '../controllers/news.controller'
 
 
 const NewsRoutes = Router()
 
-NewsRoutes.get('/', getAllNews)
+NewsRoutes.post('/', paginationNews)
 NewsRoutes.get('/:newId', getNewById)
 NewsRoutes.post('/', addNews)
 NewsRoutes.put('/:newId', updateNews)

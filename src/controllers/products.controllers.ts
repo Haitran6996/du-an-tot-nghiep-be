@@ -4,6 +4,30 @@ import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
 import { IProduct } from 'src/models/Products.models'
 
+export const paginationProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+      // Kết nối tới database nếu cần
+      const { number, page } = req.body
+        if (number == null || page == null) {
+            const number = 24
+            const page = 1
+        }
+        const data = await databaseService.products.aggregate([
+            { $match : { } },
+            { $skip: (page - 1) * number },
+            { $limit: number }
+          ],
+          {
+            $count: "total"
+          })
+        const total = data[0].total
+        res.status(201).json({ data, page, number, total })
+  } catch (error: any) {
+      console.error('Error get data:', error)
+      res.status(500).json({ message: 'Failed to data', error: error.message })
+  }
+}
+
 export const addProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Kết nối tới database nếu cần

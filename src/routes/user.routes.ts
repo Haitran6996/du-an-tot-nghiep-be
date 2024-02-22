@@ -3,11 +3,12 @@ import {
   signUp,
   deleteUsers,
   getAllUsers,
-  getUserById
+  getUserById,
+  paginationUsers
 } from '../controllers/users.controllers'
 
 const usersRoutes = Router()
-
+usersRoutes.post('/pagination', paginationUsers)
 usersRoutes.get('/', getAllUsers)
 usersRoutes.get('/one/:_id', getUserById)
 usersRoutes.post('/', signUp)
