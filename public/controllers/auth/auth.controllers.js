@@ -47,7 +47,7 @@ const register = async (req, res, next) => {
 exports.register = register;
 const getToken = async (req, res) => {
     try {
-        const { username, } = req.body;
+        const { username } = req.body;
         const token = await database_services_1.default.users.find({}).select('-password');
         res.status(200).json(token);
     }
