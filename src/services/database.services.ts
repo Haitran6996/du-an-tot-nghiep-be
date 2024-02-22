@@ -4,6 +4,7 @@ import OptionsSchema, { IOptions } from '../models/Options.model'
 import ProductSchema, { IProduct } from '../models/Products.models'
 import UsersSchema, { IUsers } from '../models/Users.models'
 import NewsSchema, { INews } from '../models/News.models'
+import CommentSchema, { IComment } from '../models/Comment.model'
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 
 class DatabaseService {
@@ -37,6 +38,9 @@ class DatabaseService {
   }
   get news(): mongoose.Model<INews> {
     return NewsSchema
+  }
+  get comments(): mongoose.Model<IComment>{
+    return CommentSchema
   }
 }
 

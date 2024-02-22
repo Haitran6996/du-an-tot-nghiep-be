@@ -9,6 +9,7 @@ import cartRoutes from './routes/cart.routes'
 import usersRoutes from './routes/user.routes'
 import newsRoutes from './routes/news.routes'
 import authRoutes from './routes/auth/auth.routes'
+import CommentRoutes from './routes/comment.routes'
 
 app.use(express.json())
 
@@ -29,6 +30,7 @@ app.use('/variants', variantRoutes)
 app.use('/users', usersRoutes)
 app.use('/news', newsRoutes)
 app.use('/auth', authRoutes)
+app.use('/comment', CommentRoutes)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
