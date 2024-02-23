@@ -8,33 +8,31 @@ const Cart_model_1 = __importDefault(require("../models/Cart.model"));
 async function addToCartServices(req, res) {
     try {
         const { userId, productId, options, quantity } = req.body;
-        // Tìm giỏ hàng của người dùng
         let cart = await Cart_model_1.default.findOne({ userId });
         if (cart) {
-            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
-            const itemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
-            if (itemIndex > -1) {
-                // Sản phẩm đã tồn tại, cập nhật số lượng;la
-                let item = cart.items[itemIndex];
-                item.quantity += quantity;
-                cart.items[itemIndex] = item;
+            const existingItemIndex = cart.items.findIndex((item) => item.product._id.toString() === productId && item.options.includes(options));
+            if (existingItemIndex !== -1) {
+                const existingItem = cart.items[existingItemIndex];
+                if (existingItem.quantity !== undefined) {
+                    existingItem.quantity += quantity;
+                }
+                else {
+                    existingItem.quantity = quantity;
+                }
             }
             else {
-                // Thêm sản phẩm mới vào giỏ hàng
                 cart.items.push({ product: productId, options, quantity });
             }
             await cart.save();
         }
         else {
-            // Tạo giỏ hàng mới nếu người dùng chưa có giỏ hàng
             const newCart = new Cart_model_1.default({
                 userId,
                 items: [{ product: productId, options, quantity }]
             });
-            await newCart.save();
-            cart = newCart;
+            cart = await newCart.save();
         }
-        return cart;
+        res.json(cart); // Chỉ gửi phản hồi ở đây, sau khi đã xử lý toàn bộ logic
     }
     catch (error) {
         res.status(500).send(error.message);
@@ -53,19 +51,19 @@ async function updateCartServices(req, res) {
             return res.status(404).send('Cart not found');
         }
         // Tìm sản phẩm trong giỏ hàng
-        const itemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
+        const itemIndex = cart.items.findIndex((item) => item._id.toString() === productId);
         if (itemIndex > -1) {
             // Cập nhật số lượng sản phẩm
             cart.items[itemIndex].quantity = quantity;
             await cart.save();
-            return cart;
+            return cart; // Sử dụng return ở đây
         }
         else {
-            res.status(404).send('Item not found in cart');
+            return res.status(404).send('Item not found in cart');
         }
     }
     catch (error) {
-        res.status(500).send(error.message);
+        return res.status(500).send(error.message);
     }
 }
 exports.updateCartServices = updateCartServices;
@@ -78,7 +76,7 @@ async function deleteItemCartServices(req, res) {
             return res.status(404).send('Cart not found');
         }
         // Kiểm tra sản phẩm có trong giỏ hàng không
-        const itemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
+        const itemIndex = cart.items.findIndex((item) => item._id.toString() === productId);
         if (itemIndex > -1) {
             // Xóa sản phẩm khỏi giỏ hàng
             cart.items.splice(itemIndex, 1);
@@ -101,7 +99,14 @@ async function getCartServices(req, res) {
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-        return cart;
+        let totalAmount = 0;
+        // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
+        cart.items.forEach((item) => {
+            const productPrice = item.product.price; // Giá của sản phẩm
+            const quantity = item.quantity; // Số lượng sản phẩm
+            totalAmount += productPrice * quantity; // Tính tổng tiền cho sản phẩm này
+        });
+        return res.json({ cart, totalAmount }); // Trả về giỏ hàng và tổng tiền
     }
     catch (error) {
         console.error('Error fetching cart:', error);

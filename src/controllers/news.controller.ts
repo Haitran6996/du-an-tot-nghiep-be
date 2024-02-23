@@ -5,6 +5,31 @@ import mongoose, { Schema, Document } from 'mongoose'
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
 
+export const paginationNews = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Kết nối tới database nếu cần
+    const { n, p } = req.params
+    if (n == null || p == null) {
+      const n = 12
+      const p = 1
+    }
+    const data = await databaseService.news.aggregate([
+      { $match: {} },
+      { $skip: (Number(p) * Number(n)) - Number(n) },
+      { $limit: Number(n) }
+    ])
+    const total = await databaseService.news.aggregate([
+      { $match: {} },
+      { $count: "total" }
+    ])
+    const Total = total[0].total
+    res.status(201).json({ data, p, n, Total })
+  } catch (error: any) {
+    console.error('Error get data:', error)
+    res.status(500).json({ message: 'Failed to data', error: error.message })
+  }
+}
+
 export const addNews = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Kết nối tới database nếu cần

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const news_controller_1 = require("../controllers/news.controller");
 const NewsRoutes = (0, express_1.Router)();
-NewsRoutes.get('/', news_controller_1.getAllNews);
+NewsRoutes.get('/pagination/:n/:p', news_controller_1.paginationNews);
 NewsRoutes.get('/:newId', news_controller_1.getNewById);
 NewsRoutes.post('/', news_controller_1.addNews);
 NewsRoutes.put('/:newId', news_controller_1.updateNews);

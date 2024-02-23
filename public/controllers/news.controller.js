@@ -3,9 +3,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNewById = exports.getAllNews = exports.deleteNews = exports.updateNews = exports.addNews = void 0;
+exports.getNewById = exports.getAllNews = exports.deleteNews = exports.updateNews = exports.addNews = exports.paginationNews = void 0;
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
+const paginationNews = async (req, res, next) => {
+    try {
+        // Kết nối tới database nếu cần
+        const { n, p } = req.params;
+        if (n == null || p == null) {
+            const n = 12;
+            const p = 1;
+        }
+        const data = await database_services_1.default.news.aggregate([
+            { $match: {} },
+            { $skip: (Number(p) * Number(n)) - Number(n) },
+            { $limit: Number(n) }
+        ]);
+        const total = await database_services_1.default.news.aggregate([
+            { $match: {} },
+            { $count: "total" }
+        ]);
+        const Total = total[0].total;
+        res.status(201).json({ data, p, n, Total });
+    }
+    catch (error) {
+        console.error('Error get data:', error);
+        res.status(500).json({ message: 'Failed to data', error: error.message });
+    }
+};
+exports.paginationNews = paginationNews;
 const addNews = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần

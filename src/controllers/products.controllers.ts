@@ -3,6 +3,34 @@ import { Request, Response, NextFunction, Router } from 'express'
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
 import { IProduct } from 'src/models/Products.models'
+import { isNumberObject } from 'util/types'
+import { table } from 'console'
+Router({ mergeParams: true });
+
+export const paginationProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Kết nối tới database nếu cần
+    const { n, p } = req.params
+    if (n == null || p == null) {
+      const n = 24
+      const p = 1
+    }
+    const data = await databaseService.products.aggregate([
+      { $match: {} },
+      { $skip: (Number(p) * Number(n)) - Number(n) },
+      { $limit: Number(n) }
+    ])
+    const total = await databaseService.products.aggregate([
+      { $match: {} },
+      { $count: "total" }
+    ])
+    const Total = total[0].total
+    res.status(201).json({ data, p, n, Total })
+  } catch (error: any) {
+    console.error('Error get data:', error)
+    res.status(500).json({ message: 'Failed to data', error: error.message })
+  }
+}
 
 export const addProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {

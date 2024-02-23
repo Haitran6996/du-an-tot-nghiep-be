@@ -3,9 +3,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = void 0;
+exports.updateProduct = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.paginationProduct = void 0;
+const express_1 = require("express");
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
+(0, express_1.Router)({ mergeParams: true });
+const paginationProduct = async (req, res, next) => {
+    try {
+        // Kết nối tới database nếu cần
+        const { n, p } = req.params;
+        if (n == null || p == null) {
+            const n = 24;
+            const p = 1;
+        }
+        const data = await database_services_1.default.products.aggregate([
+            { $match: {} },
+            { $skip: (Number(p) * Number(n)) - Number(n) },
+            { $limit: Number(n) }
+        ]);
+        const total = await database_services_1.default.products.aggregate([
+            { $match: {} },
+            { $count: "total" }
+        ]);
+        const Total = total[0].total;
+        res.status(201).json({ data, p, n, Total });
+    }
+    catch (error) {
+        console.error('Error get data:', error);
+        res.status(500).json({ message: 'Failed to data', error: error.message });
+    }
+};
+exports.paginationProduct = paginationProduct;
 const addProducts = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
@@ -111,3 +139,28 @@ const getProductById = async (req, res) => {
     }
 };
 exports.getProductById = getProductById;
+const updateProduct = async (req, res) => {
+    try {
+        const productId = req.params.productId;
+        console.log(req.params.id, 'req.params.id');
+        const updateData = req.body; // Dữ liệu cập nhật được gửi từ client
+        // Tìm sản phẩm để cập nhật
+        const product = await database_services_1.default.products.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+        }
+        // Cập nhật chỉ các thuộc tính được gửi từ client
+        Object.keys(updateData).forEach((key) => {
+            product[key] = updateData[key];
+        });
+        // Lưu sản phẩm đã cập nhật
+        await product.save();
+        // Trả về thông tin sản phẩm đã cập nhật
+        res.json({ message: 'Cập nhật sản phẩm thành công', product });
+    }
+    catch (error) {
+        console.error('Lỗi khi cập nhật sản phẩm:', error);
+        res.status(500).json({ message: 'Đã xảy ra lỗi khi cập nhật sản phẩm' });
+    }
+};
+exports.updateProduct = updateProduct;

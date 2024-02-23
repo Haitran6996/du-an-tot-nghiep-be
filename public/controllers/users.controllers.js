@@ -3,9 +3,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getAllUsers = exports.deleteUsers = exports.signUp = void 0;
+exports.getUserById = exports.getAllUsers = exports.deleteUsers = exports.signUp = exports.paginationUsers = void 0;
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
+const paginationUsers = async (req, res, next) => {
+    try {
+        // Kết nối tới database nếu cần
+        const { n, p } = req.params;
+        if (n == null || p == null) {
+            const n = 15;
+            const p = 1;
+        }
+        const data = await database_services_1.default.users.aggregate([
+            { $match: { role: 1 } },
+            { $skip: (Number(p) * Number(n)) - Number(n) },
+            { $limit: Number(n) }
+        ]);
+        const total = await database_services_1.default.users.aggregate([
+            { $match: { role: 1 } },
+            { $count: "total" }
+        ]);
+        const Total = total[0].total;
+        res.status(201).json({ data, p, n, Total });
+    }
+    catch (error) {
+        console.error('Error get data:', error);
+        res.status(500).json({ message: 'Failed to data', error: error.message });
+    }
+};
+exports.paginationUsers = paginationUsers;
 const signUp = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
