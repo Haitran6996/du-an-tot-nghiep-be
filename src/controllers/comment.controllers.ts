@@ -8,25 +8,26 @@ import databaseService from '../services/database.services'
 export const paginationComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Kết nối tới database nếu cần
-        const { number, page, productId } = req.body
-        if (number == null || page == null) {
-            const number = 5
-            const page = 1
+        const { n, p, productId } = req.params
+        if (n == null || p == null) {
+          const n = 8
+          const py = 1
         }
         const data = await databaseService.comments.aggregate([
-            { $match : { productID : productId } },
-            { $skip: (page - 1) * number },
-            { $limit: number }
-          ],
-          {
-            $count: "total"
-          })
-        const total = data[0].total
-        res.status(201).json({ data, page, number, total })
-    } catch (error: any) {
+          { $match: {productId:productId} },
+          { $skip: (Number(p) * Number(n)) - Number(n) },
+          { $limit: Number(n) }
+        ])
+        const total = await databaseService.comments.aggregate([
+          { $match: {productId:productId} },
+          { $count: "total" }
+        ])
+        const Total = total[0].total
+        res.status(201).json({ data, p, n, Total })
+      } catch (error: any) {
         console.error('Error get data:', error)
         res.status(500).json({ message: 'Failed to data', error: error.message })
-    }
+      }
 }
 
 export const addComment = async (req: Request, res: Response, next: NextFunction) => {

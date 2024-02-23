@@ -11,7 +11,7 @@ import {
 
 const NewsRoutes = Router()
 
-NewsRoutes.post('/', paginationNews)
+NewsRoutes.get('/pagination/:n/:p', paginationNews)
 NewsRoutes.get('/:newId', getNewById)
 NewsRoutes.post('/', addNews)
 NewsRoutes.put('/:newId', updateNews)

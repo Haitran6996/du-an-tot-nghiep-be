@@ -4,25 +4,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateProduct = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.paginationProduct = void 0;
+const express_1 = require("express");
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
+(0, express_1.Router)({ mergeParams: true });
 const paginationProduct = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { number, page } = req.body;
-        if (number == null || page == null) {
-            const number = 24;
-            const page = 1;
+        const { n, p } = req.params;
+        if (n == null || p == null) {
+            const n = 24;
+            const p = 1;
         }
         const data = await database_services_1.default.products.aggregate([
             { $match: {} },
-            { $skip: (page - 1) * number },
-            { $limit: number }
-        ], {
-            $count: "total"
-        });
-        const total = data[0].total;
-        res.status(201).json({ data, page, number, total });
+            { $skip: (Number(p) * Number(n)) - Number(n) },
+            { $limit: Number(n) }
+        ]);
+        const total = await database_services_1.default.products.aggregate([
+            { $match: {} },
+            { $count: "total" }
+        ]);
+        const Total = total[0].total;
+        res.status(201).json({ data, p, n, Total });
     }
     catch (error) {
         console.error('Error get data:', error);
