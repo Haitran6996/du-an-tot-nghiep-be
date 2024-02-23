@@ -8,7 +8,7 @@ import {
 } from '../controllers/users.controllers'
 
 const usersRoutes = Router()
-usersRoutes.post('/pagination', paginationUsers)
+usersRoutes.get('/pagination/:n/:p', paginationUsers)
 usersRoutes.get('/', getAllUsers)
 usersRoutes.get('/one/:_id', getUserById)
 usersRoutes.post('/', signUp)

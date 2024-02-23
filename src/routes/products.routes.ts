@@ -11,7 +11,7 @@ import {
 } from '../controllers/products.controllers'
 
 const productsRoutes = Router()
-productsRoutes.post('//pagination', paginationProduct)
+productsRoutes.get('/pagination/:n/:p', paginationProduct)
 productsRoutes.get('/', getAllProducts)
 productsRoutes.get('/:productId', getProductById)
 productsRoutes.patch('/:productId', updateProduct)

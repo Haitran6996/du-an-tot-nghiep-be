@@ -5,7 +5,7 @@ import { addComment, deleteCommentUser, getAllComment, getCommentWithProduct, pa
 const CommentRoutes = Router()
 
 CommentRoutes.get('/', getAllComment)
-CommentRoutes.post('/pagination/:productId', paginationComment)
+CommentRoutes.get('/:productId/:n/:p', paginationComment)
 CommentRoutes.post('/', addComment)
 // CommentRoutes.put('/:newId', updateNews)
 CommentRoutes.delete('/:commentId', deleteCommentUser)
