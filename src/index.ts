@@ -9,7 +9,9 @@ import cartRoutes from './routes/cart.routes'
 import usersRoutes from './routes/user.routes'
 import newsRoutes from './routes/news.routes'
 import authRoutes from './routes/auth/auth.routes'
+import vnpayRouters from './routes/vnpay.routes'
 
+process.env.TZ = 'Asia/Ho_Chi_Minh'
 app.use(express.json())
 
 databaseService.connect()
@@ -29,6 +31,7 @@ app.use('/variants', variantRoutes)
 app.use('/users', usersRoutes)
 app.use('/news', newsRoutes)
 app.use('/auth', authRoutes)
+app.use('/vnpay', vnpayRouters)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
