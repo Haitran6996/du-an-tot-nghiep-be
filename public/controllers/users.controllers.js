@@ -36,7 +36,7 @@ const getUsernameById = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
         const { userId } = req.params;
-        const username = await database_services_1.default.users.findById({ userId }).select('+username -password -role -image -status -mail -refreshToken');
+        const username = await database_services_1.default.users.findById(userId).select('+username -password -role -image -status -mail -refreshToken');
         res.status(201).json({ username });
     }
     catch (error) {
