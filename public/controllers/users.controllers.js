@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getAllUsers = exports.deleteUsers = exports.signUp = exports.paginationUsers = void 0;
+exports.getUserById = exports.getAllUsers = exports.deleteUsers = exports.signUp = exports.getUsernameById = exports.paginationUsers = void 0;
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
 const paginationUsers = async (req, res, next) => {
@@ -32,6 +32,19 @@ const paginationUsers = async (req, res, next) => {
     }
 };
 exports.paginationUsers = paginationUsers;
+const getUsernameById = async (req, res, next) => {
+    try {
+        // Kết nối tới database nếu cần
+        const { userId } = req.params;
+        const username = await database_services_1.default.users.findById({ userId }).select('+username -password -role -image -status -mail -refreshToken');
+        res.status(201).json({ username });
+    }
+    catch (error) {
+        console.error('Error get data:', error);
+        res.status(500).json({ message: 'Failed to data', error: error.message });
+    }
+};
+exports.getUsernameById = getUsernameById;
 const signUp = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
