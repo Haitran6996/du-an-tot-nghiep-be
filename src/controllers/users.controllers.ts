@@ -32,7 +32,7 @@ export const getUsernameById = async (req: Request, res: Response, next: NextFun
   try {
     // Kết nối tới database nếu cần
     const {userId } = req.params
-    const username = await databaseService.users.findById({ userId }). select('+username -password -role -image -status -mail -refreshToken')
+    const username = await databaseService.users.findById(userId). select('+username -password -role -image -status -mail -refreshToken')
     res.status(201).json({ username })
   } catch (error: any) {
     console.error('Error get data:', error)
