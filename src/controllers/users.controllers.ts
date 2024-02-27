@@ -32,8 +32,8 @@ export const getUsernameById = async (req: Request, res: Response, next: NextFun
   try {
     // Kết nối tới database nếu cần
     const {userId } = req.params
-    const username = await databaseService.users.findById(userId). select('+username -password -role -image -status -mail -refreshToken')
-    res.status(201).json({ username })
+    const data = await databaseService.users.findById({_id:userId}).select('-__v -_id -password -role -image -status -mail -refreshToken')
+    res.status(201).json(data?.username)
   } catch (error: any) {
     console.error('Error get data:', error)
     res.status(500).json({ message: 'Failed to data', error: error.message })
