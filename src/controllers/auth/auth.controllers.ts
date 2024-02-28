@@ -44,6 +44,42 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
   }
 }
 
+export const createAdmin = async (req: Request, res: Response) =>{
+  try {
+    // Kết nối tới database nếu cần
+    const { username, mail, password, role } = req.body
+    const hashPassword = md5(password)
+    //Check tài khoản có trong db hay không
+    const checkExistUsername = await databaseService.users.findOne({ username: username })
+    if (checkExistUsername) {
+      return res.status(401).json('Tên đăng nhập đã được sử dụng.')
+    }
+    const checkExistMail = await databaseService.users.findOne({ mail: mail })
+    if (checkExistMail) {
+      return res.status(401).json('Mail đã được sử dụng.')
+    }
+    // Tạo tài khoản mới
+    if (role == 0) {
+      const usersInsertion = await databaseService.users.create({
+        username,
+        mail,
+        password: hashPassword,
+        role
+      })
+
+      res.status(201).json({
+        message: 'Register successfully',
+        userId: usersInsertion._id
+      })
+    } else if (role == 0) {
+      res.status(401).json('Create failed')
+    }
+  } catch (error: any) {
+    console.error('Error register:', error)
+    res.status(500).json({ message: 'Failed to register', error: error.message })
+  }
+}
+
 export const getToken = async (req: Request, res: Response) => {
   try {
     const { username } = req.body
