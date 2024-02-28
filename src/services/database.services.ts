@@ -5,6 +5,7 @@ import ProductSchema, { IProduct } from '../models/Products.models'
 import UsersSchema, { IUsers } from '../models/Users.models'
 import NewsSchema, { INews } from '../models/News.models'
 import CommentSchema, { IComment } from '../models/Comment.model'
+import GiftSchema, {IGift} from '../models/gift.model'
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 
 class DatabaseService {
@@ -41,6 +42,9 @@ class DatabaseService {
   }
   get comments(): mongoose.Model<IComment>{
     return CommentSchema
+  }
+  get gifts():mongoose.Model<IGift>{
+    return GiftSchema
   }
 }
 
