@@ -14,7 +14,9 @@ const cart_routes_1 = __importDefault(require("./routes/cart.routes"));
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const news_routes_1 = __importDefault(require("./routes/news.routes"));
 const auth_routes_1 = __importDefault(require("./routes/auth/auth.routes"));
+const vnpay_routes_1 = __importDefault(require("./routes/vnpay.routes"));
 const comment_routes_1 = __importDefault(require("./routes/comment.routes"));
+process.env.TZ = 'Asia/Ho_Chi_Minh';
 app.use(express_1.default.json());
 database_services_1.default.connect();
 const corsOptions = {
@@ -30,6 +32,7 @@ app.use('/variants', variants_routes_1.default);
 app.use('/users', user_routes_1.default);
 app.use('/news', news_routes_1.default);
 app.use('/auth', auth_routes_1.default);
+app.use('/vnpay', vnpay_routes_1.default);
 app.use('/comment', comment_routes_1.default);
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

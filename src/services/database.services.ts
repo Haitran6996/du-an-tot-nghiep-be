@@ -7,6 +7,7 @@ import NewsSchema, { INews } from '../models/News.models'
 import CommentSchema, { IComment } from '../models/Comment.model'
 import CartSchema, { ICart } from '../models/Cart.model'
 import OrderSchema, { IOrder } from 'src/models/Order.model'
+import GiftSchema, { IGift } from '../models/gift.model'
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 
 class DatabaseService {
@@ -49,8 +50,13 @@ class DatabaseService {
   }
   get orders(): mongoose.Model<IOrder> {
     return OrderSchema
+    // get gifts():mongoose.Model<IGift>{
+    //   return GiftSchema
+    // }
+  }
+  get gifts(): mongoose.Model<IGift> {
+    return GiftSchema
   }
 }
-
 const databaseService = new DatabaseService()
 export default databaseService
