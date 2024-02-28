@@ -5,6 +5,8 @@ import ProductSchema, { IProduct } from '../models/Products.models'
 import UsersSchema, { IUsers } from '../models/Users.models'
 import NewsSchema, { INews } from '../models/News.models'
 import CommentSchema, { IComment } from '../models/Comment.model'
+import CartSchema, { ICart } from '../models/Cart.model'
+import OrderSchema, { IOrder } from 'src/models/Order.model'
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 
 class DatabaseService {
@@ -39,8 +41,14 @@ class DatabaseService {
   get news(): mongoose.Model<INews> {
     return NewsSchema
   }
-  get comments(): mongoose.Model<IComment>{
+  get comments(): mongoose.Model<IComment> {
     return CommentSchema
+  }
+  get carts(): mongoose.Model<ICart> {
+    return CartSchema
+  }
+  get orders(): mongoose.Model<IOrder> {
+    return OrderSchema
   }
 }
 

@@ -22,6 +22,7 @@ function sortObject(obj: any) {
 }
 
 export function createVnpay(req: Request, res: Response, next: NextFunction) {
+  console.log('======')
   process.env.TZ = 'Asia/Ho_Chi_Minh'
 
   const date = new Date()
@@ -49,7 +50,7 @@ export function createVnpay(req: Request, res: Response, next: NextFunction) {
   vnp_Params['vnp_Locale'] = locale
   vnp_Params['vnp_CurrCode'] = currCode
   vnp_Params['vnp_TxnRef'] = orderId
-  vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId
+  vnp_Params['vnp_OrderInfo'] = 'Thanh toán cho đơn hàng XYZ'
   vnp_Params['vnp_OrderType'] = 'other'
   vnp_Params['vnp_Amount'] = amount * 100
   vnp_Params['vnp_ReturnUrl'] = returnUrl
