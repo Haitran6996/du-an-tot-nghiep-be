@@ -15,11 +15,15 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
       return res.status(404).json({ message: 'Cart not found' })
     }
 
-    console.log(cart, 'cart')
+    let totalAmount = 0
 
-    // Tạo ra một object đơn hàng từ giỏ hàng
+    // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
+    cart.items.forEach((item: any) => {
+      const productPrice = item?.product?.price // Giá của sản phẩm
+      const quantity = item?.quantity // Số lượng sản phẩm
+      totalAmount += productPrice * quantity // Tính tổng tiền cho sản phẩm này
+    })
 
-    // Creating an order object from the cart
     const orderData = {
       userId: cart.userId,
       items: cart.items.map((item: any) => ({
@@ -36,7 +40,7 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
         quantity: item.quantity
       })),
       status: 'pending',
-      totalAmount: cart.totalAmount
+      totalAmount: totalAmount
     }
 
     const newOrder = new OrderModel(orderData)
@@ -61,8 +65,19 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
       return res.status(404).send({ message: 'Order not found' })
     }
 
+    // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
+    if (status === 'completed') {
+      await Promise.all(
+        order.items.map(async (item: any) => {
+          const productId = item.product._id
+          // Tăng trường purchases lên 1
+          await databaseService.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } })
+        })
+      )
+    }
+
     res.send(order)
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).send({ message: 'Server error', error })
   }
 }
