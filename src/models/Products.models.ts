@@ -8,6 +8,7 @@ export interface IProduct extends Document {
   thumbnail: string
   price: number
   options: IOptions['_id'][]
+  purchases: number
 }
 
 const ProductSchema: Schema = new Schema({
@@ -15,6 +16,7 @@ const ProductSchema: Schema = new Schema({
   description: { type: String, required: true },
   date: { type: String, required: true },
   thumbnail: { type: String, required: true },
+  purchases: { type: Number, default: 0 },
   price: { type: Number, required: true },
   options: [{ type: Schema.Types.ObjectId, ref: 'options' }]
 })

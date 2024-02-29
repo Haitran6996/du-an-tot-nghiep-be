@@ -12,6 +12,7 @@ import authRoutes from './routes/auth/auth.routes'
 import vnpayRouters from './routes/vnpay.routes'
 import CommentRoutes from './routes/comment.routes'
 import OrderRouters from './routes/order.routes'
+import revenueRouters from './routes/revenue.routes'
 
 process.env.TZ = 'Asia/Ho_Chi_Minh'
 app.use(express.json())
@@ -35,6 +36,7 @@ app.use('/news', newsRoutes)
 app.use('/auth', authRoutes)
 app.use('/order', OrderRouters)
 app.use('/vnpay', vnpayRouters)
+app.use('/revenue', revenueRouters)
 app.use('/comment', CommentRoutes)
 
 app.listen(port, () => {
