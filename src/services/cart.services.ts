@@ -97,26 +97,21 @@ export async function deleteItemCartServices(req: Request, res: Response) {
   }
 }
 export async function getCartServices(req: Request, res: Response) {
-  try {
-    const userId = req.params.userId
-    const cart = await CartModel.findOne({ userId }).populate('items.product').populate('items.options')
+  const userId = req.params.userId
+  const cart = await CartModel.findOne({ userId }).populate('items.product').populate('items.options')
 
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' })
-    }
-
-    let totalAmount = 0
-
-    // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
-    cart.items.forEach((item: any) => {
-      const productPrice = item?.product?.price // Giá của sản phẩm
-      const quantity = item?.quantity // Số lượng sản phẩm
-      totalAmount += productPrice * quantity // Tính tổng tiền cho sản phẩm này
-    })
-
-    return { cart, totalAmount } // Trả về giỏ hàng và tổng tiền
-  } catch (error: any) {
-    console.error('Error fetching cart:', error)
-    res.status(500).json({ message: 'Failed to get cart', error: error.message })
+  if (!cart) {
+    // Thay vì ném lỗi, bạn có thể trả về null hoặc undefined để biểu thị không tìm thấy cart,
+    // hoặc trả về một object đặc biệt nào đó.
+    return null
   }
+
+  let totalAmount = 0
+  cart.items.forEach((item: any) => {
+    const productPrice = item?.product?.price
+    const quantity = item?.quantity
+    totalAmount += productPrice * quantity
+  })
+
+  return { cart, totalAmount }
 }
