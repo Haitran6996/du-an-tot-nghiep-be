@@ -8,6 +8,6 @@ const express_1 = __importDefault(require("express"));
 const vnpay_controllers_1 = require("../controllers/vnpay.controllers");
 const vnpayRouters = express_1.default.Router();
 // Route để tạo biến thể mới
-vnpayRouters.post('/', vnpay_controllers_1.createVnpay);
+vnpayRouters.post('', vnpay_controllers_1.createVnpay);
 // vnpayRouters.post('/vnpay_return', returnVnpay)
 exports.default = vnpayRouters;
