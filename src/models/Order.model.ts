@@ -4,6 +4,7 @@ export interface IOrder extends Document {
   userId: mongoose.Types.ObjectId
   items: any
   status: string
+  totalAmount: number
   createdAt: Date
   updatedAt: Date
 }
@@ -17,6 +18,7 @@ const OrderSchema: Schema = new Schema({
     enum: ['pending', 'paid', 'completed', 'shipped', 'cancelled'], // Ví dụ về các giá trị enum
     default: 'pending'
   },
+  totalAmount: { type: Number, default: null },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 })

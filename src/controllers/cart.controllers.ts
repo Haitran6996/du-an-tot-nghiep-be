@@ -10,7 +10,7 @@ import {
 export const addToCart = async (req: Request, res: Response) => {
   try {
     const data = await addToCartServices(req, res)
-    res.status(200).json(data)
+    return data
   } catch (error: any) {
     res.status(400).json({ message: error.message })
   }
@@ -19,7 +19,7 @@ export const addToCart = async (req: Request, res: Response) => {
 export const updateCart = async (req: Request, res: Response) => {
   try {
     const data = await updateCartServices(req, res)
-    res.status(200).json(data)
+    return data
   } catch (error: any) {
     res.status(400).json({ message: error.message })
   }
@@ -27,7 +27,7 @@ export const updateCart = async (req: Request, res: Response) => {
 export const deleteItemCart = async (req: Request, res: Response) => {
   try {
     const data = await deleteItemCartServices(req, res)
-    res.status(200).json(data)
+    return data
   } catch (error: any) {
     res.status(400).json({ message: error.message })
   }
@@ -35,7 +35,7 @@ export const deleteItemCart = async (req: Request, res: Response) => {
 export const getCart = async (req: Request, res: Response) => {
   try {
     const data = await getCartServices(req, res)
-    res.status(200).json(data)
+    return data
   } catch (error: any) {
     res.status(400).json({ message: error.message })
   }

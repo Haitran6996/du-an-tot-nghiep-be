@@ -5,7 +5,7 @@ import databaseService from '../services/database.services'
 import { IProduct } from 'src/models/Products.models'
 import { isNumberObject } from 'util/types'
 import { table } from 'console'
-Router({ mergeParams: true });
+Router({ mergeParams: true })
 
 export const paginationProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,13 +17,10 @@ export const paginationProduct = async (req: Request, res: Response, next: NextF
     }
     const data = await databaseService.products.aggregate([
       { $match: {} },
-      { $skip: (Number(p) * Number(n)) - Number(n) },
+      { $skip: Number(p) * Number(n) - Number(n) },
       { $limit: Number(n) }
     ])
-    const total = await databaseService.products.aggregate([
-      { $match: {} },
-      { $count: "total" }
-    ])
+    const total = await databaseService.products.aggregate([{ $match: {} }, { $count: 'total' }])
     const Total = total[0].total
     res.status(201).json({ data, p, n, Total })
   } catch (error: any) {
@@ -117,7 +114,24 @@ export const deleteOptions = async (req: Request, res: Response, next: NextFunct
 }
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await databaseService.products.find({})
+    const { name, sort } = req.query
+
+    let query = {}
+    if (name) {
+      query = {
+        ...query,
+        name: { $regex: new RegExp(name.toString(), 'i') }
+      }
+    }
+
+    let products
+    if (sort === 'purchases') {
+      // Sắp xếp theo số lượng mua giảm dần và giới hạn số lượng sản phẩm trả về
+      products = await databaseService.products.find(query).sort({ purchases: -1 }) // Sắp xếp theo số lượng mua giảm dần
+    } else {
+      products = await databaseService.products.find(query)
+    }
+
     res.status(200).json(products)
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to get products', error: error.message })
