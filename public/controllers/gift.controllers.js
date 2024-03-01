@@ -82,7 +82,7 @@ const updateGift = async (req, res) => {
 };
 exports.updateGift = updateGift;
 const deleteGift = async (req, res, next) => {
-    const { giftId, userId, role } = req.params;
+    const { giftId, userId, role } = req.body;
     try {
         const checkCommentId = await database_services_1.default.comments.find({ _id: giftId });
         const checkRoleUser = await database_services_1.default.users.find({ _id: userId });

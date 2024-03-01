@@ -58,7 +58,7 @@ export const addComment = async (req: Request, res: Response, next: NextFunction
 }
 
 export const deleteCommentUser = async (req: Request, res: Response, next: NextFunction) => {
-    const { commentId, userId, role } = req.params
+    const { commentId, userId, role } = req.body
 
     try {
         const checkCommentId = await databaseService.comments.find({ _id: commentId })

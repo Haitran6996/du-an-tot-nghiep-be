@@ -85,7 +85,7 @@ export const updateGift = async (req: Request, res: Response) => {
 }
 
 export const deleteGift = async (req: Request, res: Response, next: NextFunction) => {
-    const { giftId, userId, role } = req.params
+    const { giftId, userId, role } = req.body
 
     try {
         const checkCommentId = await databaseService.comments.find({ _id: giftId })

@@ -8,5 +8,5 @@ usersRoutes.get('/', users_controllers_1.getAllUsers);
 usersRoutes.get('/one/:_id', users_controllers_1.getUserById);
 usersRoutes.get('/username/:userId', users_controllers_1.getUsernameById);
 usersRoutes.post('/', users_controllers_1.signUp);
-usersRoutes.delete('/:userId', users_controllers_1.deleteUsers);
+usersRoutes.delete('/', users_controllers_1.deleteUsers);
 exports.default = usersRoutes;

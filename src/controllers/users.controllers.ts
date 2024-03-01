@@ -67,7 +67,7 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
 }
 
 export const deleteUsers = async (req: Request, res: Response, next: NextFunction) => {
-  const { userId } = req.params
+  const { userId } = req.body
 
   try {
     await databaseService.users.deleteOne({ _id: new ObjectId(userId) })
