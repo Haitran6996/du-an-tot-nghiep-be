@@ -18,13 +18,10 @@ const paginationProduct = async (req, res, next) => {
         }
         const data = await database_services_1.default.products.aggregate([
             { $match: {} },
-            { $skip: (Number(p) * Number(n)) - Number(n) },
+            { $skip: Number(p) * Number(n) - Number(n) },
             { $limit: Number(n) }
         ]);
-        const total = await database_services_1.default.products.aggregate([
-            { $match: {} },
-            { $count: "total" }
-        ]);
+        const total = await database_services_1.default.products.aggregate([{ $match: {} }, { $count: 'total' }]);
         const Total = total[0].total;
         res.status(201).json({ data, p, n, Total });
     }
@@ -109,7 +106,22 @@ const deleteOptions = async (req, res, next) => {
 exports.deleteOptions = deleteOptions;
 const getAllProducts = async (req, res) => {
     try {
-        const products = await database_services_1.default.products.find({});
+        const { name, sort } = req.query;
+        let query = {};
+        if (name) {
+            query = {
+                ...query,
+                name: { $regex: new RegExp(name.toString(), 'i') }
+            };
+        }
+        let products;
+        if (sort === 'purchases') {
+            // Sắp xếp theo số lượng mua giảm dần và giới hạn số lượng sản phẩm trả về
+            products = await database_services_1.default.products.find(query).sort({ purchases: -1 }); // Sắp xếp theo số lượng mua giảm dần
+        }
+        else {
+            products = await database_services_1.default.products.find(query);
+        }
         res.status(200).json(products);
     }
     catch (error) {
