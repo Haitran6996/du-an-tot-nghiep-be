@@ -114,7 +114,7 @@ export async function getCartServices(req: Request, res: Response) {
       totalAmount += productPrice * quantity // Tính tổng tiền cho sản phẩm này
     })
 
-    return res.json({ cart, totalAmount }) // Trả về giỏ hàng và tổng tiền
+    return { cart, totalAmount } // Trả về giỏ hàng và tổng tiền
   } catch (error: any) {
     console.error('Error fetching cart:', error)
     res.status(500).json({ message: 'Failed to get cart', error: error.message })
