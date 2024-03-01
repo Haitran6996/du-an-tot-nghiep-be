@@ -10,7 +10,10 @@ const Products_models_1 = __importDefault(require("../models/Products.models"));
 const Users_models_1 = __importDefault(require("../models/Users.models"));
 const News_models_1 = __importDefault(require("../models/News.models"));
 const Comment_model_1 = __importDefault(require("../models/Comment.model"));
+const Cart_model_1 = __importDefault(require("../models/Cart.model"));
+const Order_model_1 = __importDefault(require("src/models/Order.model"));
 const gift_model_1 = __importDefault(require("../models/gift.model"));
+const Category_model_1 = __importDefault(require("src/models/Category.model"));
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority';
 class DatabaseService {
     constructor() {
@@ -44,8 +47,20 @@ class DatabaseService {
     get comments() {
         return Comment_model_1.default;
     }
+    get carts() {
+        return Cart_model_1.default;
+    }
+    get orders() {
+        return Order_model_1.default;
+        // get gifts():mongoose.Model<IGift>{
+        //   return GiftSchema
+        // }
+    }
     get gifts() {
         return gift_model_1.default;
+    }
+    get categorys() {
+        return Category_model_1.default;
     }
 }
 const databaseService = new DatabaseService();
