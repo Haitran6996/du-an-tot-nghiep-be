@@ -19,6 +19,7 @@ const comment_routes_1 = __importDefault(require("./routes/comment.routes"));
 const order_routes_1 = __importDefault(require("./routes/order.routes"));
 const category_routes_1 = __importDefault(require("./routes/category.routes"));
 const revenue_routes_1 = __importDefault(require("./routes/revenue.routes"));
+const gift_routes_1 = __importDefault(require("./routes/gift.routes"));
 process.env.TZ = 'Asia/Ho_Chi_Minh';
 app.use(express_1.default.json());
 database_services_1.default.connect();
@@ -40,6 +41,7 @@ app.use('/vnpay', vnpay_routes_1.default);
 app.use('/revenue', revenue_routes_1.default);
 app.use('/comment', comment_routes_1.default);
 app.use('/category', category_routes_1.default);
+app.use('/gift', gift_routes_1.default);
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getGiftWithCode = exports.getAllComment = exports.deleteGift = exports.updateGift = exports.addGift = exports.paginationGift = void 0;
+exports.getGiftWithCode = exports.getAllGift = exports.deleteGift = exports.updateGift = exports.addGift = exports.paginationGift = void 0;
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
 const paginationGift = async (req, res, next) => {
@@ -33,23 +33,24 @@ exports.paginationGift = paginationGift;
 const addGift = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { userId, role, code, sale, start, expire, content } = req.body; // Mảng options rỗng
+        const { code, sale, start, expire, content, limit } = req.body; // Mảng options rỗng
         // check user
-        const checkRoleUser = await database_services_1.default.users.find({ _id: userId, role: role });
-        // check product
-        if (checkRoleUser[0]._id == userId && checkRoleUser[0]._id == 0) {
-            const giftInsertion = await database_services_1.default.gifts.create({
-                code,
-                sale,
-                start,
-                expire,
-                content
-            });
-            res.status(201).json({
-                message: 'Giftcode created successfully',
-                giftId: giftInsertion
-            });
-        }
+        // const checkRoleUser = await databaseService.users.find({ _id: userId, role: role })
+        // // check product
+        // if (checkRoleUser[0]._id == userId && checkRoleUser[0]._id == 0) {
+        const giftInsertion = await database_services_1.default.gifts.create({
+            code,
+            sale,
+            start,
+            expire,
+            content,
+            limit
+        });
+        res.status(201).json({
+            message: 'Giftcode created successfully',
+            giftId: giftInsertion
+        });
+        // }
     }
     catch (error) {
         console.error('Error create Gift:', error);
@@ -58,40 +59,31 @@ const addGift = async (req, res, next) => {
 };
 exports.addGift = addGift;
 const updateGift = async (req, res) => {
+    const { giftId } = req.params;
+    const { code, sale, start, expire, limit } = req.body;
     try {
-        const { giftId } = req.params;
-        const updateData = req.body; // Dữ liệu cập nhật được gửi từ client
-        // Tìm sản phẩm để cập nhật
-        const gift = await database_services_1.default.gifts.findById(giftId);
-        if (!gift) {
-            return res.status(404).json({ message: 'Giftcode không tồn tại' });
-        }
-        // Cập nhật chỉ các thuộc tính được gửi từ client
-        Object.keys(updateData).forEach((key) => {
-            gift[key] = updateData[key];
+        const updateResult = await database_services_1.default.gifts.findByIdAndUpdate({ _id: giftId }, {
+            code: code,
+            sale: sale,
+            start: start,
+            expire: expire,
+            limit: limit
         });
-        // Lưu sản phẩm đã cập nhật
-        await gift.save();
-        // Trả về thông tin sản phẩm đã cập nhật
-        res.json({ message: 'Cập nhật giftcode thành công', gift });
+        res.status(200).json({ message: 'Cập nhật Gift thành công' });
     }
     catch (error) {
-        console.error('Lỗi khi cập nhật giftcode:', error);
-        res.status(500).json({ message: 'Đã xảy ra lỗi khi cập nhật giftcode' });
+        console.error('Lỗi khi cập nhật Giftcode:', error);
+        res.status(500).json({ message: 'Đã xảy ra lỗi khi cập nhật Giftcode' });
     }
 };
 exports.updateGift = updateGift;
 const deleteGift = async (req, res, next) => {
-    const { giftId, userId, role } = req.body;
+    const { giftId } = req.params;
     try {
-        const checkCommentId = await database_services_1.default.comments.find({ _id: giftId });
-        const checkRoleUser = await database_services_1.default.users.find({ _id: userId });
-        if (checkCommentId[0].userId == checkRoleUser[0]._id && Number(role) == checkRoleUser[0].role) {
-            await database_services_1.default.comments.deleteOne({ _id: new mongodb_1.ObjectId(giftId) });
-            res.status(200).json({
-                message: 'Giftcode deleted successfully'
-            });
-        }
+        await database_services_1.default.comments.deleteOne({ _id: new mongodb_1.ObjectId(giftId) });
+        res.status(200).json({
+            message: 'Giftcode deleted successfully'
+        });
     }
     catch (error) {
         console.error('Error deleting Gift:', error);
@@ -99,20 +91,16 @@ const deleteGift = async (req, res, next) => {
     }
 };
 exports.deleteGift = deleteGift;
-const getAllComment = async (req, res) => {
-    const { userId, role } = req.params;
+const getAllGift = async (req, res) => {
     try {
-        const checkAdmin = await database_services_1.default.users.find({ _id: userId, role: role });
-        if (checkAdmin[0].role == 0) {
-            const news = await database_services_1.default.comments.find({});
-            res.status(200).json(news);
-        }
+        const news = await database_services_1.default.gifts.find({});
+        res.status(200).json(news);
     }
     catch (error) {
-        res.status(500).json({ message: 'Failed to get all comments', error: error.message });
+        res.status(500).json({ message: 'Failed to get all Gift', error: error.message });
     }
 };
-exports.getAllComment = getAllComment;
+exports.getAllGift = getAllGift;
 const getGiftWithCode = async (req, res) => {
     const { code } = req.params;
     try {

@@ -29,6 +29,7 @@ const GiftSchema = new mongoose_1.Schema({
     sale: { type: Number, require: true },
     start: { type: Date, require: true },
     expire: { type: Date, require: true },
+    limit: { type: Number, require: true },
     content: { type: String, require: true }
 }, {
     timestamps: true,
