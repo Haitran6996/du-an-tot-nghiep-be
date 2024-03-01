@@ -79,7 +79,7 @@ const updateCategory = async (req, res) => {
 };
 exports.updateCategory = updateCategory;
 const deleteCategory = async (req, res, next) => {
-    const { CategoryId, userId, role } = req.params;
+    const { CategoryId, userId, role } = req.body;
     try {
         const checkRoleUser = await database_services_1.default.users.find({ _id: userId });
         if (Number(role) == checkRoleUser[0].role && Number(role) == 0) {

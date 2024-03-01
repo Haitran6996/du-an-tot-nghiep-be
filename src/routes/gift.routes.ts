@@ -14,6 +14,6 @@ NewsRoutes.get('/pagination/:n/:p', paginationGift)
 NewsRoutes.get('/:code', getGiftWithCode)
 NewsRoutes.post('/', addGift)
 NewsRoutes.put('/:giftId', updateGift)
-NewsRoutes.delete('/:giftId', deleteGift)
+NewsRoutes.delete('/', deleteGift)
 
 export default NewsRoutes

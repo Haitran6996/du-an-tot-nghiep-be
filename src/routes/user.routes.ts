@@ -14,6 +14,6 @@ usersRoutes.get('/', getAllUsers)
 usersRoutes.get('/one/:_id', getUserById)
 usersRoutes.get('/username/:userId',getUsernameById)
 usersRoutes.post('/', signUp)
-usersRoutes.delete('/:userId', deleteUsers)
+usersRoutes.delete('/', deleteUsers)
 
 export default usersRoutes

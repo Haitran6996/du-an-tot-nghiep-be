@@ -59,7 +59,7 @@ const addComment = async (req, res, next) => {
 };
 exports.addComment = addComment;
 const deleteCommentUser = async (req, res, next) => {
-    const { commentId, userId, role } = req.params;
+    const { commentId, userId, role } = req.body;
     try {
         const checkCommentId = await database_services_1.default.comments.find({ _id: commentId });
         const checkRoleUser = await database_services_1.default.users.find({ _id: userId });

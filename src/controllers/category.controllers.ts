@@ -82,7 +82,7 @@ export const updateCategory = async (req: Request, res: Response) => {
 }
 
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { CategoryId, userId, role } = req.params
+    const { CategoryId, userId, role } = req.body
 
     try {
         const checkRoleUser = await databaseService.users.find({ _id: userId })
