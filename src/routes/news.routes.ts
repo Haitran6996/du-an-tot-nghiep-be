@@ -14,6 +14,7 @@ const NewsRoutes = Router()
 NewsRoutes.get('/pagination/:n/:p', paginationNews)
 NewsRoutes.get('/:newId', getNewById)
 NewsRoutes.post('/', addNews)
+NewsRoutes.get('/', getAllNews)
 NewsRoutes.put('/:newId', updateNews)
 NewsRoutes.delete('/:newId', deleteNews)
 

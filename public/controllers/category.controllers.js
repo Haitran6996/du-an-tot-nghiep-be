@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllCategory = exports.deleteCategory = exports.updateCategory = exports.addCategory = exports.paginationCategory = void 0;
+exports.getOneCategory = exports.getAllCategory = exports.deleteCategory = exports.updateCategory = exports.addCategory = exports.paginationCategory = void 0;
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
 const paginationCategory = async (req, res, next) => {
@@ -33,20 +33,15 @@ exports.paginationCategory = paginationCategory;
 const addCategory = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { userId, role, name, image } = req.body; // Mảng options rỗng
-        // check user
-        const checkRoleUser = await database_services_1.default.users.find({ _id: userId, role: role });
-        // check product
-        if (checkRoleUser[0]._id == userId && checkRoleUser[0]._id == 0) {
-            const CategoryInsertion = await database_services_1.default.categorys.create({
-                name,
-                image
-            });
-            res.status(201).json({
-                message: 'Categorycode created successfully',
-                CategoryId: CategoryInsertion
-            });
-        }
+        const { name, image } = req.body; // Mảng options rỗng
+        const CategoryInsertion = await database_services_1.default.categorys.create({
+            name,
+            image
+        });
+        res.status(201).json({
+            message: 'Categorycode created successfully',
+            CategoryId: CategoryInsertion
+        });
     }
     catch (error) {
         console.error('Error create Category:', error);
@@ -55,22 +50,14 @@ const addCategory = async (req, res, next) => {
 };
 exports.addCategory = addCategory;
 const updateCategory = async (req, res) => {
+    const { categoryId } = req.params;
+    const { name, image } = req.body;
     try {
-        const { CategoryId } = req.params;
-        const updateData = req.body; // Dữ liệu cập nhật được gửi từ client
-        // Tìm sản phẩm để cập nhật
-        const Category = await database_services_1.default.categorys.findById(CategoryId);
-        if (!Category) {
-            return res.status(404).json({ message: 'Categorycode không tồn tại' });
-        }
-        // Cập nhật chỉ các thuộc tính được gửi từ client
-        Object.keys(updateData).forEach((key) => {
-            Category[key] = updateData[key];
+        const updateResult = await database_services_1.default.categorys.findByIdAndUpdate({ _id: categoryId }, {
+            name: name,
+            image: image,
         });
-        // Lưu sản phẩm đã cập nhật
-        await Category.save();
-        // Trả về thông tin sản phẩm đã cập nhật
-        res.json({ message: 'Cập nhật Categorycode thành công', Category });
+        res.status(200).json({ message: 'Cập nhật Category thành công' });
     }
     catch (error) {
         console.error('Lỗi khi cập nhật Categorycode:', error);
@@ -79,15 +66,12 @@ const updateCategory = async (req, res) => {
 };
 exports.updateCategory = updateCategory;
 const deleteCategory = async (req, res, next) => {
-    const { CategoryId, userId, role } = req.body;
+    const { categoryId } = req.params;
     try {
-        const checkRoleUser = await database_services_1.default.users.find({ _id: userId });
-        if (Number(role) == checkRoleUser[0].role && Number(role) == 0) {
-            await database_services_1.default.categorys.deleteOne({ _id: new mongodb_1.ObjectId(CategoryId) });
-            res.status(200).json({
-                message: 'Categorycode deleted successfully'
-            });
-        }
+        await database_services_1.default.categorys.deleteOne({ _id: new mongodb_1.ObjectId(categoryId) });
+        res.status(200).json({
+            message: 'Categorycode deleted successfully'
+        });
     }
     catch (error) {
         console.error('Error deleting Category:', error);
@@ -96,10 +80,8 @@ const deleteCategory = async (req, res, next) => {
 };
 exports.deleteCategory = deleteCategory;
 const getAllCategory = async (req, res) => {
-    const { userId, role } = req.params;
     try {
-        const checkAdmin = await database_services_1.default.users.find({ _id: userId, role: role });
-        if (checkAdmin[0].role == 0) {
+        {
             const news = await database_services_1.default.categorys.find({});
             res.status(200).json(news);
         }
@@ -109,3 +91,16 @@ const getAllCategory = async (req, res) => {
     }
 };
 exports.getAllCategory = getAllCategory;
+const getOneCategory = async (req, res) => {
+    try {
+        const { categoryId } = req.params;
+        {
+            const news = await database_services_1.default.categorys.find({ _id: categoryId });
+            res.status(200).json(news);
+        }
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Failed to get all category', error: error.message });
+    }
+};
+exports.getOneCategory = getOneCategory;

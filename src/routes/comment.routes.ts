@@ -9,6 +9,6 @@ CommentRoutes.get('/all/:productId', getCommentWithProduct)
 CommentRoutes.get('/:productId/:n/:p', paginationComment)
 CommentRoutes.post('/', addComment)
 // CommentRoutes.put('/:newId', updateNews)
-CommentRoutes.delete('/', deleteCommentUser)
+CommentRoutes.delete('/:commentId', deleteCommentUser)
 
 export default CommentRoutes

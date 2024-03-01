@@ -8,5 +8,5 @@ CommentRoutes.get('/', comment_controllers_1.getAllComment),
 CommentRoutes.get('/:productId/:n/:p', comment_controllers_1.paginationComment);
 CommentRoutes.post('/', comment_controllers_1.addComment);
 // CommentRoutes.put('/:newId', updateNews)
-CommentRoutes.delete('/', comment_controllers_1.deleteCommentUser);
+CommentRoutes.delete('/:commentId', comment_controllers_1.deleteCommentUser);
 exports.default = CommentRoutes;
