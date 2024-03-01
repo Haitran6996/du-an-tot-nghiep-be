@@ -1,6 +1,6 @@
 // variantRouter.ts
 import express from 'express'
-import { getRevenue } from 'src/controllers/revenue.controllers'
+import { getRevenue } from '../controllers/revenue.controllers'
 
 const revenueRouters = express.Router()
 
