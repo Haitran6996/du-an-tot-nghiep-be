@@ -144,6 +144,21 @@ export const getProductById = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Failed to get products', error: error.message })
   }
 }
+
+export const soSanh = async (req: Request, res: Response) => {
+  const { listId } = req.body
+  try {
+
+    const data:any = [];
+    for (let index = 0; index < 2; index++) {
+      const product: any = await databaseService.products.findById(listId[index])
+      data.push(product)
+    }
+    res.status(200).json(data)
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to get products', error: error.message })
+  }
+}
 export const updateProduct = async (req: Request, res: Response) => {
   try {
     const productId = req.params.productId
