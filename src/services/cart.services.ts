@@ -33,7 +33,7 @@ export async function addToCartServices(req: Request, res: Response) {
       cart = await newCart.save()
     }
 
-    res.json(cart) // Chỉ gửi phản hồi ở đây, sau khi đã xử lý toàn bộ logic
+    return res.json(cart)
   } catch (error: any) {
     res.status(500).send(error.message)
   }
@@ -61,7 +61,7 @@ export async function updateCartServices(req: Request, res: Response) {
       // Cập nhật số lượng sản phẩm
       cart.items[itemIndex].quantity = quantity
       await cart.save()
-      return cart // Sử dụng return ở đây
+      return res.json(cart) // Sử dụng return ở đây
     } else {
       return res.status(404).send('Item not found in cart')
     }
@@ -88,7 +88,7 @@ export async function deleteItemCartServices(req: Request, res: Response) {
       // Xóa sản phẩm khỏi giỏ hàng
       cart.items.splice(itemIndex, 1)
       await cart.save()
-      return cart
+      return res.json(cart)
     } else {
       res.status(404).send('Item not found in cart')
     }
@@ -113,5 +113,5 @@ export async function getCartServices(req: Request, res: Response) {
     totalAmount += productPrice * quantity
   })
 
-  return { cart, totalAmount }
+  return res.json({ cart, totalAmount })
 }
