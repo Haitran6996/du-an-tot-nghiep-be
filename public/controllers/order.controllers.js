@@ -16,9 +16,13 @@ const addOrder = async (req, res, next) => {
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-        console.log(cart, 'cart');
-        // Tạo ra một object đơn hàng từ giỏ hàng
-        // Creating an order object from the cart
+        let totalAmount = 0;
+        // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
+        cart.items.forEach((item) => {
+            const productPrice = item?.product?.price; // Giá của sản phẩm
+            const quantity = item?.quantity; // Số lượng sản phẩm
+            totalAmount += productPrice * quantity; // Tính tổng tiền cho sản phẩm này
+        });
         const orderData = {
             userId: cart.userId,
             items: cart.items.map((item) => ({
@@ -35,7 +39,7 @@ const addOrder = async (req, res, next) => {
                 quantity: item.quantity
             })),
             status: 'pending',
-            totalAmount: cart.totalAmount
+            totalAmount: totalAmount
         };
         const newOrder = new Order_model_1.default(orderData);
         const savedOrder = await newOrder.save();
@@ -56,6 +60,14 @@ const updateOrder = async (req, res, next) => {
         const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status }, { new: true });
         if (!order) {
             return res.status(404).send({ message: 'Order not found' });
+        }
+        // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
+        if (status === 'completed') {
+            await Promise.all(order.items.map(async (item) => {
+                const productId = item.product._id;
+                // Tăng trường purchases lên 1
+                await database_services_1.default.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } });
+            }));
         }
         res.send(order);
     }

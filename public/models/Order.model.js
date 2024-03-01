@@ -33,6 +33,7 @@ const OrderSchema = new mongoose_1.Schema({
         enum: ['pending', 'paid', 'completed', 'shipped', 'cancelled'], // Ví dụ về các giá trị enum
         default: 'pending'
     },
+    totalAmount: { type: Number, default: null },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

@@ -29,6 +29,7 @@ const ProductSchema = new mongoose_1.Schema({
     description: { type: String, required: true },
     date: { type: String, required: true },
     thumbnail: { type: String, required: true },
+    purchases: { type: Number, default: 0 },
     price: { type: Number, required: true },
     options: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'options' }]
 });
