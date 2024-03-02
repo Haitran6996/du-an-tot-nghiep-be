@@ -6,6 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAll = exports.getById = exports.updateOrder = exports.addOrder = void 0;
 const database_services_1 = __importDefault(require("../services/database.services"));
 const Order_model_1 = __importDefault(require("../models/Order.model"));
+const Cart_model_1 = __importDefault(require("src/models/Cart.model"));
+async function placeOrder(userId, items) {
+    await Cart_model_1.default.findOneAndDelete({ userId });
+}
 const addOrder = async (req, res, next) => {
     try {
         // Giả sử req.body.userId là ID của người dùng đang đặt hàng
@@ -30,25 +34,31 @@ const addOrder = async (req, res, next) => {
             userId: cart.userId,
             items: cart.items.map((item) => ({
                 product: {
-                    _id: item.product._id,
-                    name: item.product.name,
-                    description: item.product.description,
-                    date: item.product.date,
-                    thumbnail: item.product.thumbnail,
-                    price: item.product.price,
+                    _id: item?.product?._id,
+                    name: item?.product?.name,
+                    description: item?.product?.description,
+                    date: item?.product?.date,
+                    thumbnail: item?.product?.thumbnail,
+                    price: item?.product?.price,
                     options: [...item.options]
                     // This should now be populated with option objects
                 },
-                quantity: item.quantity
+                quantity: item?.quantity
             })),
             status: 'pending',
-            totalAmount: totalAmount
+            totalAmount: totalAmount,
+            name: req.body.name,
+            phone: req.body.phone,
+            address: req.body.address
         };
         const newOrder = new Order_model_1.default(orderData);
         const savedOrder = await newOrder.save();
+        if (savedOrder)
+            await placeOrder(req.body.userId, cart.items);
         res.status(201).json(savedOrder);
     }
     catch (err) {
+        console.log(err, 'errr');
         res.status(500).json(err);
     }
 };
