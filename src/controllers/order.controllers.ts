@@ -81,3 +81,23 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     res.status(500).send({ message: 'Server error', error })
   }
 }
+export const getById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.params
+
+    const orders = await databaseService.orders.find({ userId: userId }).sort({ createdAt: -1 }) // Sắp xếp từ mới nhất đến cũ nhất
+
+    res.status(200).json(orders)
+  } catch (error: any) {
+    res.status(500).send({ message: 'Server error', error: error.message })
+  }
+}
+export const getAll = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const orders = await databaseService.orders.find({}).sort({ createdAt: -1 }) // Sắp xếp từ mới nhất đến cũ nhất
+
+    res.status(200).json(orders)
+  } catch (error: any) {
+    res.status(500).send({ message: 'Server error', error: error.message })
+  }
+}
