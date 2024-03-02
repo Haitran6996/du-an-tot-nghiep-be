@@ -73,3 +73,49 @@ export const getRevenue = async (req: Request, res: Response, next: NextFunction
     res.status(500).json({ message: error.message })
   }
 }
+
+export const getRevenueYear = async (req: Request, res: Response, next: NextFunction) => {
+  let { year }: any = req.query
+
+  try {
+    // Chuyển đổi year sang số.
+    year = parseInt(year, 10)
+
+    if (!year || isNaN(year)) {
+      return res.status(400).json({ message: 'Year must be a valid number' })
+    }
+
+    // Thiết lập ngày bắt đầu và kết thúc cho cả năm.
+    const start = new Date(year, 0, 1) // Đầu năm
+    const end = new Date(year + 1, 0, 1) // Đầu năm tiếp theo, không bao gồm trong khoảng thời gian
+
+    const stats = await databaseService.orders.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: start, $lt: end },
+          status: 'completed' // Chỉ tính những đơn hàng đã hoàn thành
+        }
+      },
+      {
+        $group: {
+          _id: { $month: '$createdAt' }, // Nhóm theo tháng của createdAt
+          totalIncome: { $sum: '$totalAmount' } // Tính tổng totalAmount cho mỗi nhóm
+        }
+      },
+      {
+        $sort: { _id: 1 } // Sắp xếp kết quả theo tháng, từ tháng 1 đến tháng 12
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          totalIncome: 1
+        }
+      }
+    ])
+
+    res.json(stats)
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}

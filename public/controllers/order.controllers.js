@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOrder = exports.addOrder = void 0;
+exports.getAll = exports.getById = exports.updateOrder = exports.addOrder = void 0;
 const database_services_1 = __importDefault(require("../services/database.services"));
 const Order_model_1 = __importDefault(require("../models/Order.model"));
 const addOrder = async (req, res, next) => {
@@ -76,3 +76,24 @@ const updateOrder = async (req, res, next) => {
     }
 };
 exports.updateOrder = updateOrder;
+const getById = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const orders = await database_services_1.default.orders.find({ userId: userId }).sort({ createdAt: -1 }); // Sắp xếp từ mới nhất đến cũ nhất
+        res.status(200).json(orders);
+    }
+    catch (error) {
+        res.status(500).send({ message: 'Server error', error: error.message });
+    }
+};
+exports.getById = getById;
+const getAll = async (req, res, next) => {
+    try {
+        const orders = await database_services_1.default.orders.find({}).sort({ createdAt: -1 }); // Sắp xếp từ mới nhất đến cũ nhất
+        res.status(200).json(orders);
+    }
+    catch (error) {
+        res.status(500).send({ message: 'Server error', error: error.message });
+    }
+};
+exports.getAll = getAll;
