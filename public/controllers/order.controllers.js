@@ -92,7 +92,7 @@ const getById = async (req, res, next) => {
 exports.getById = getById;
 const getAll = async (req, res, next) => {
     try {
-        const orders = await database_services_1.default.orders.find({}).sort({ createdAt: -1 }); // Sắp xếp từ mới nhất đến cũ nhất
+        const orders = await database_services_1.default.orders.find({}).sort({ createdAt: -1 }).populate('userId'); // Sắp xếp từ mới nhất đến cũ nhất
         res.status(200).json(orders);
     }
     catch (error) {

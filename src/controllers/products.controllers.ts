@@ -160,11 +160,18 @@ export const getProductById = async (req: Request, res: Response) => {
 }
 
 export const soSanh = async (req: Request, res: Response) => {
-  const { listId } = req.body
+  const array: any = []
+  if (req.params.id1 && req.params.id2) {
+    array.push(req.params.id1)
+    array.push(req.params.id2)
+  }
+  if (req.params.id3) {
+    array.push(req.params.id3)
+  }
   try {
     const data: any = []
-    for (let index = 0; index < 2; index++) {
-      const product: any = await databaseService.products.findById(listId[index])
+    for (let index = 0; index < array.length; index++) {
+      const product: any = await databaseService.products.findById(array[index])
       data.push(product)
     }
     res.status(200).json(data)

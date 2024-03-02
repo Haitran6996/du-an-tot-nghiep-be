@@ -152,11 +152,18 @@ const getProductById = async (req, res) => {
 };
 exports.getProductById = getProductById;
 const soSanh = async (req, res) => {
-    const { listId } = req.body;
+    const array = [];
+    if (req.params.id1 && req.params.id2) {
+        array.push(req.params.id1);
+        array.push(req.params.id2);
+    }
+    if (req.params.id3) {
+        array.push(req.params.id3);
+    }
     try {
         const data = [];
-        for (let index = 0; index < 2; index++) {
-            const product = await database_services_1.default.products.findById(listId[index]);
+        for (let index = 0; index < array.length; index++) {
+            const product = await database_services_1.default.products.findById(array[index]);
             data.push(product);
         }
         res.status(200).json(data);
