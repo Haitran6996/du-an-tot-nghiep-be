@@ -11,9 +11,9 @@ const Users_models_1 = __importDefault(require("../models/Users.models"));
 const News_models_1 = __importDefault(require("../models/News.models"));
 const Comment_model_1 = __importDefault(require("../models/Comment.model"));
 const Cart_model_1 = __importDefault(require("../models/Cart.model"));
-const Order_model_1 = __importDefault(require("src/models/Order.model"));
+const Order_model_1 = __importDefault(require("../models/Order.model"));
 const gift_model_1 = __importDefault(require("../models/gift.model"));
-const Category_model_1 = __importDefault(require("src/models/Category.model"));
+const Category_model_1 = __importDefault(require("../models/Category.model"));
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority';
 class DatabaseService {
     constructor() {
