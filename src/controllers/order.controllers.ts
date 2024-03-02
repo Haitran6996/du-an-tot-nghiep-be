@@ -6,10 +6,13 @@ import OrderModel from '../models/Order.model'
 export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Giả sử req.body.userId là ID của người dùng đang đặt hàng
-    const cart = await databaseService.carts
-      .findOne({ userId: req.body.userId })
-      .populate('items.product')
-      .populate('items.options')
+    const cart = await databaseService.carts.findOne({ userId: req.body.userId }).populate({
+      path: 'items.product',
+      populate: {
+        path: 'options', // Populate nested options của product
+        model: 'options' // Đảm bảo tên mô hình là đúng
+      }
+    })
 
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' })
