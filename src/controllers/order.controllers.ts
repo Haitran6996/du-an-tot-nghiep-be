@@ -97,7 +97,7 @@ export const getById = async (req: Request, res: Response, next: NextFunction) =
 }
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const orders = await databaseService.orders.find({}).sort({ createdAt: -1 }) // Sắp xếp từ mới nhất đến cũ nhất
+    const orders = await databaseService.orders.find({}).sort({ createdAt: -1 }).populate('userId') // Sắp xếp từ mới nhất đến cũ nhất
 
     res.status(200).json(orders)
   } catch (error: any) {
