@@ -9,10 +9,13 @@ const Order_model_1 = __importDefault(require("../models/Order.model"));
 const addOrder = async (req, res, next) => {
     try {
         // Giả sử req.body.userId là ID của người dùng đang đặt hàng
-        const cart = await database_services_1.default.carts
-            .findOne({ userId: req.body.userId })
-            .populate('items.product')
-            .populate('items.options');
+        const cart = await database_services_1.default.carts.findOne({ userId: req.body.userId }).populate({
+            path: 'items.product',
+            populate: {
+                path: 'options', // Populate nested options của product
+                model: 'options' // Đảm bảo tên mô hình là đúng
+            }
+        });
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
