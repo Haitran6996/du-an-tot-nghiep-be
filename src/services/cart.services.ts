@@ -82,13 +82,13 @@ export async function deleteItemCartServices(req: Request, res: Response) {
     }
 
     // Kiểm tra sản phẩm có trong giỏ hàng không
-    const itemIndex = cart.items.findIndex((item: any) => item._id.toString() === productId)
+    const itemIndex = cart.items.findIndex((item: any) => item?.product?._id.toString() === productId)
 
     if (itemIndex > -1) {
       // Xóa sản phẩm khỏi giỏ hàng
       cart.items.splice(itemIndex, 1)
       await cart.save()
-      return cart
+      return res.json(cart)
     } else {
       res.status(404).send('Item not found in cart')
     }
