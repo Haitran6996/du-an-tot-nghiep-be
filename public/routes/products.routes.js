@@ -8,7 +8,7 @@ productsRoutes.get('/', products_controllers_1.getAllProducts);
 productsRoutes.get('/:productId', products_controllers_1.getProductById);
 productsRoutes.patch('/:productId', products_controllers_1.updateProduct);
 productsRoutes.post('/', products_controllers_1.addProducts);
-productsRoutes.get('/sosanh', products_controllers_1.soSanh);
+productsRoutes.get('/sosanh/:id1/:id2', products_controllers_1.soSanh);
 productsRoutes.delete('/:productId', products_controllers_1.deleteProducts);
 productsRoutes.delete('/:productId/options/:optionId', products_controllers_1.deleteOptions);
 productsRoutes.post('/:productId/options', products_controllers_1.addProductsVariant);
