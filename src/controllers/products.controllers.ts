@@ -162,8 +162,7 @@ export const getProductById = async (req: Request, res: Response) => {
 export const soSanh = async (req: Request, res: Response) => {
   const { listId } = req.body
   try {
-
-    const data:any = [];
+    const data: any = []
     for (let index = 0; index < 2; index++) {
       const product: any = await databaseService.products.findById(listId[index])
       data.push(product)
