@@ -33,7 +33,7 @@ export async function addToCartServices(req: Request, res: Response) {
       cart = await newCart.save()
     }
 
-    return res.json(cart)
+    res.json(cart) // Chỉ gửi phản hồi ở đây, sau khi đã xử lý toàn bộ logic
   } catch (error: any) {
     res.status(500).send(error.message)
   }
@@ -61,7 +61,7 @@ export async function updateCartServices(req: Request, res: Response) {
       // Cập nhật số lượng sản phẩm
       cart.items[itemIndex].quantity = quantity
       await cart.save()
-      return res.json(cart) // Sử dụng return ở đây
+      return cart // Sử dụng return ở đây
     } else {
       return res.status(404).send('Item not found in cart')
     }
@@ -88,7 +88,7 @@ export async function deleteItemCartServices(req: Request, res: Response) {
       // Xóa sản phẩm khỏi giỏ hàng
       cart.items.splice(itemIndex, 1)
       await cart.save()
-      return res.json(cart)
+      return cart
     } else {
       res.status(404).send('Item not found in cart')
     }
@@ -97,21 +97,32 @@ export async function deleteItemCartServices(req: Request, res: Response) {
   }
 }
 export async function getCartServices(req: Request, res: Response) {
-  const userId = req.params.userId
-  const cart = await CartModel.findOne({ userId }).populate('items.product').populate('items.options')
+  try {
+    const userId = req.params.userId
+    const cart = await CartModel.findOne({ userId }).populate({
+      path: 'items.product',
+      populate: {
+        path: 'options', // Populate nested options của product
+        model: 'options' // Đảm bảo tên mô hình là đúng
+      }
+    })
 
-  if (!cart) {
-    // Thay vì ném lỗi, bạn có thể trả về null hoặc undefined để biểu thị không tìm thấy cart,
-    // hoặc trả về một object đặc biệt nào đó.
-    return null
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' })
+    }
+
+    let totalAmount = 0
+
+    // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
+    cart.items.forEach((item: any) => {
+      const productPrice = item?.product?.price // Giá của sản phẩm
+      const quantity = item?.quantity // Số lượng sản phẩm
+      totalAmount += productPrice * quantity // Tính tổng tiền cho sản phẩm này
+    })
+
+    return res.json({ cart, totalAmount }) // Trả về giỏ hàng và tổng tiền
+  } catch (error: any) {
+    console.error('Error fetching cart:', error)
+    res.status(500).json({ message: 'Failed to get cart', error: error.message })
   }
-
-  let totalAmount = 0
-  cart.items.forEach((item: any) => {
-    const productPrice = item?.product?.price
-    const quantity = item?.quantity
-    totalAmount += productPrice * quantity
-  })
-
-  return res.json({ cart, totalAmount })
 }
