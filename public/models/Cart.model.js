@@ -34,6 +34,6 @@ const CartSchema = new mongoose_1.Schema({
             quantity: { type: Number, required: true }
         }
     ],
-    totalAmount: { type: Number, required: true }
+    totalAmount: { type: Number }
 });
 exports.default = mongoose_1.default.model('Cart', CartSchema);
