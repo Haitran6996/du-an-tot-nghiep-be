@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 
 import databaseService from '../services/database.services'
-import OrderModel from 'src/models/Order.model'
+import OrderModel from '../models/Order.model'
 
 export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
