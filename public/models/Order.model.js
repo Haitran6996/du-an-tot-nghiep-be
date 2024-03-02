@@ -27,6 +27,9 @@ const mongoose_1 = __importStar(require("mongoose"));
 const OrderSchema = new mongoose_1.Schema({
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users', required: true },
     items: [],
+    name: { type: String, required: true },
+    phone: { type: String, required: true },
+    address: { type: String, required: true },
     status: {
         type: String,
         required: true,

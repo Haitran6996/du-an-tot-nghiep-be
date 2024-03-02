@@ -2,6 +2,11 @@ import { NextFunction, Request, Response } from 'express'
 
 import databaseService from '../services/database.services'
 import OrderModel from '../models/Order.model'
+import CartModel from 'src/models/Cart.model'
+
+async function placeOrder(userId: string, items: any[]) {
+  await CartModel.findOneAndDelete({ userId })
+}
 
 export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,25 +36,30 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
       userId: cart.userId,
       items: cart.items.map((item: any) => ({
         product: {
-          _id: item.product._id,
-          name: item.product.name,
-          description: item.product.description,
-          date: item.product.date,
-          thumbnail: item.product.thumbnail,
-          price: item.product.price,
+          _id: item?.product?._id,
+          name: item?.product?.name,
+          description: item?.product?.description,
+          date: item?.product?.date,
+          thumbnail: item?.product?.thumbnail,
+          price: item?.product?.price,
           options: [...item.options]
           // This should now be populated with option objects
         },
-        quantity: item.quantity
+        quantity: item?.quantity
       })),
       status: 'pending',
-      totalAmount: totalAmount
+      totalAmount: totalAmount,
+      name: req.body.name,
+      phone: req.body.phone,
+      address: req.body.address
     }
 
     const newOrder = new OrderModel(orderData)
     const savedOrder = await newOrder.save()
+    if (savedOrder) await placeOrder(req.body.userId, cart.items)
     res.status(201).json(savedOrder)
   } catch (err) {
+    console.log(err, 'errr')
     res.status(500).json(err)
   }
 }

@@ -1,10 +1,7 @@
-import { Request, Response, NextFunction, Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
-import { IProduct } from '../models/Products.models'
-import { isNumberObject } from 'util/types'
-import { table } from 'console'
 Router({ mergeParams: true })
 
 export const paginationProduct = async (req: Request, res: Response, next: NextFunction) => {
