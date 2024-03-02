@@ -33,6 +33,7 @@ const CartSchema = new mongoose_1.Schema({
             options: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'options' }],
             quantity: { type: Number, required: true }
         }
-    ]
+    ],
+    totalAmount: { type: Number, required: true }
 });
 exports.default = mongoose_1.default.model('Cart', CartSchema);

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProduct = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.paginationProduct = void 0;
+exports.updateProduct = exports.soSanh = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.paginationProduct = void 0;
 const express_1 = require("express");
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
@@ -18,13 +18,10 @@ const paginationProduct = async (req, res, next) => {
         }
         const data = await database_services_1.default.products.aggregate([
             { $match: {} },
-            { $skip: (Number(p) * Number(n)) - Number(n) },
+            { $skip: Number(p) * Number(n) - Number(n) },
             { $limit: Number(n) }
         ]);
-        const total = await database_services_1.default.products.aggregate([
-            { $match: {} },
-            { $count: "total" }
-        ]);
+        const total = await database_services_1.default.products.aggregate([{ $match: {} }, { $count: 'total' }]);
         const Total = total[0].total;
         res.status(201).json({ data, p, n, Total });
     }
@@ -109,7 +106,22 @@ const deleteOptions = async (req, res, next) => {
 exports.deleteOptions = deleteOptions;
 const getAllProducts = async (req, res) => {
     try {
-        const products = await database_services_1.default.products.find({});
+        const { name, sort } = req.query;
+        let query = {};
+        if (name) {
+            query = {
+                ...query,
+                name: { $regex: new RegExp(name.toString(), 'i') }
+            };
+        }
+        let products;
+        if (sort === 'purchases') {
+            // Sắp xếp theo số lượng mua giảm dần và giới hạn số lượng sản phẩm trả về
+            products = await database_services_1.default.products.find(query).sort({ purchases: -1 }); // Sắp xếp theo số lượng mua giảm dần
+        }
+        else {
+            products = await database_services_1.default.products.find(query);
+        }
         res.status(200).json(products);
     }
     catch (error) {
@@ -139,6 +151,21 @@ const getProductById = async (req, res) => {
     }
 };
 exports.getProductById = getProductById;
+const soSanh = async (req, res) => {
+    const { listId } = req.body;
+    try {
+        const data = [];
+        for (let index = 0; index < 2; index++) {
+            const product = await database_services_1.default.products.findById(listId[index]);
+            data.push(product);
+        }
+        res.status(200).json(data);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Failed to get products', error: error.message });
+    }
+};
+exports.soSanh = soSanh;
 const updateProduct = async (req, res) => {
     try {
         const productId = req.params.productId;

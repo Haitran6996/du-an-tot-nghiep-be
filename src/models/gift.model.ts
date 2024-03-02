@@ -5,6 +5,7 @@ export interface IGift extends Document {
     start: Date
     expire: Date
     sale:number
+    limit:number
     content: string
 }
 
@@ -13,6 +14,7 @@ const GiftSchema: Schema = new Schema({
     sale: {type: Number, require:true},
     start: {type: Date, require:true},
     expire: {type: Date, require:true},
+    limit: {type: Number, require:true},
     content: { type: String, require: true }
 },
     {

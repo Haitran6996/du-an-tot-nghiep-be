@@ -31,25 +31,26 @@ export const paginationGift = async (req: Request, res: Response, next: NextFunc
 export const addGift = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Kết nối tới database nếu cần
-        const { userId, role, code, sale, start, expire, content } = req.body // Mảng options rỗng
+        const { code, sale, start, expire, content, limit } = req.body // Mảng options rỗng
 
         // check user
-        const checkRoleUser = await databaseService.users.find({ _id: userId, role: role })
-        // check product
-        if (checkRoleUser[0]._id == userId && checkRoleUser[0]._id == 0) {
-            const giftInsertion = await databaseService.gifts.create({
-                code,
-                sale,
-                start,
-                expire,
-                content
-            }
-            )
-            res.status(201).json({
-                message: 'Giftcode created successfully',
-                giftId: giftInsertion
-            })
+        // const checkRoleUser = await databaseService.users.find({ _id: userId, role: role })
+        // // check product
+        // if (checkRoleUser[0]._id == userId && checkRoleUser[0]._id == 0) {
+        const giftInsertion = await databaseService.gifts.create({
+            code,
+            sale,
+            start,
+            expire,
+            content,
+            limit
         }
+        )
+        res.status(201).json({
+            message: 'Giftcode created successfully',
+            giftId: giftInsertion
+        })
+        // }
     } catch (error: any) {
         console.error('Error create Gift:', error)
         res.status(500).json({ message: 'Failed to create Gift', error: error.message })
@@ -57,63 +58,48 @@ export const addGift = async (req: Request, res: Response, next: NextFunction) =
 }
 
 export const updateGift = async (req: Request, res: Response) => {
+    const { giftId } = req.params
+    const { code, sale, start, expire, limit } = req.body
     try {
-        const { giftId }= req.params
-        const updateData = req.body // Dữ liệu cập nhật được gửi từ client
-
-        // Tìm sản phẩm để cập nhật
-        const gift: any = await databaseService.gifts.findById(giftId)
-
-        if (!gift) {
-            return res.status(404).json({ message: 'Giftcode không tồn tại' })
-        }
-
-        // Cập nhật chỉ các thuộc tính được gửi từ client
-        Object.keys(updateData).forEach((key: any) => {
-            gift[key] = updateData[key]
-        })
-
-        // Lưu sản phẩm đã cập nhật
-        await gift.save()
-
-        // Trả về thông tin sản phẩm đã cập nhật
-        res.json({ message: 'Cập nhật giftcode thành công', gift })
+        const updateResult = await databaseService.gifts.findByIdAndUpdate(
+            { _id: giftId },
+            {
+                code: code,
+                sale: sale,
+                start: start,
+                expire: expire,
+                limit: limit
+            }
+        )
+        res.status(200).json({ message: 'Cập nhật Gift thành công' })
     } catch (error) {
-        console.error('Lỗi khi cập nhật giftcode:', error)
-        res.status(500).json({ message: 'Đã xảy ra lỗi khi cập nhật giftcode' })
+        console.error('Lỗi khi cập nhật Giftcode:', error)
+        res.status(500).json({ message: 'Đã xảy ra lỗi khi cập nhật Giftcode' })
     }
 }
 
 export const deleteGift = async (req: Request, res: Response, next: NextFunction) => {
-    const { giftId, userId, role } = req.params
+    const { giftId } = req.params
 
     try {
-        const checkCommentId = await databaseService.comments.find({ _id: giftId })
-        const checkRoleUser = await databaseService.users.find({ _id: userId })
 
-        if (checkCommentId[0].userId == checkRoleUser[0]._id && Number(role) == checkRoleUser[0].role) {
-            await databaseService.comments.deleteOne({ _id: new ObjectId(giftId) })
+        await databaseService.comments.deleteOne({ _id: new ObjectId(giftId) })
 
-            res.status(200).json({
-                message: 'Giftcode deleted successfully'
-            })
-        }
+        res.status(200).json({
+            message: 'Giftcode deleted successfully'
+        })
     } catch (error: any) {
-        console.error('Error deleting Gift:', error)
-        res.status(500).json({ message: 'Failed to delete Gift', error: error.message })
-    }
+    console.error('Error deleting Gift:', error)
+    res.status(500).json({ message: 'Failed to delete Gift', error: error.message })
+}
 }
 
-export const getAllComment = async (req: Request, res: Response) => {
-    const { userId, role } = req.params
+export const getAllGift = async (req: Request, res: Response) => {
     try {
-        const checkAdmin = await databaseService.users.find({ _id: userId, role: role })
-        if (checkAdmin[0].role == 0) {
-            const news = await databaseService.comments.find({})
-            res.status(200).json(news)
-        }
+        const news = await databaseService.gifts.find({})
+        res.status(200).json(news)
     } catch (error: any) {
-        res.status(500).json({ message: 'Failed to get all comments', error: error.message })
+        res.status(500).json({ message: 'Failed to get all Gift', error: error.message })
     }
 }
 export const getGiftWithCode = async (req: Request, res: Response) => {

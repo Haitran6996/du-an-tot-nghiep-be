@@ -72,7 +72,7 @@ const signUp = async (req, res, next) => {
 };
 exports.signUp = signUp;
 const deleteUsers = async (req, res, next) => {
-    const { userId } = req.params;
+    const { userId } = req.body;
     try {
         await database_services_1.default.users.deleteOne({ _id: new mongodb_1.ObjectId(userId) });
         res.status(200).json({

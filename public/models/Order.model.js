@@ -24,13 +24,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const ProductSchema = new mongoose_1.Schema({
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    date: { type: String, required: true },
-    thumbnail: { type: String, required: true },
-    purchases: { type: Number, default: 0 },
-    price: { type: Number, required: true },
-    options: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'options' }]
+const OrderSchema = new mongoose_1.Schema({
+    userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users', required: true },
+    items: [],
+    status: {
+        type: String,
+        required: true,
+        enum: ['pending', 'paid', 'completed', 'shipped', 'cancelled'], // Ví dụ về các giá trị enum
+        default: 'pending'
+    },
+    totalAmount: { type: Number, default: null },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
-exports.default = mongoose_1.default.model('product', ProductSchema);
+exports.default = mongoose_1.default.model('Order', OrderSchema);

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express'
 
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
-import { IProduct } from 'src/models/Products.models'
+import { IProduct } from '../models/Products.models'
 import { isNumberObject } from 'util/types'
 import { table } from 'console'
 Router({ mergeParams: true })
@@ -154,6 +154,21 @@ export const getProductById = async (req: Request, res: Response) => {
 
     const result = await databaseService.products.aggregate(pipeline)
     res.status(200).json(result)
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to get products', error: error.message })
+  }
+}
+
+export const soSanh = async (req: Request, res: Response) => {
+  const { listId } = req.body
+  try {
+
+    const data:any = [];
+    for (let index = 0; index < 2; index++) {
+      const product: any = await databaseService.products.findById(listId[index])
+      data.push(product)
+    }
+    res.status(200).json(data)
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to get products', error: error.message })
   }

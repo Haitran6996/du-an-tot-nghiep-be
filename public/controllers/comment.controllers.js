@@ -9,10 +9,10 @@ const database_services_1 = __importDefault(require("../services/database.servic
 const paginationComment = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { n, p, productId } = req.params;
+        const { n, p, productId } = req.body;
         if (n == null || p == null) {
             const n = 8;
-            const py = 1;
+            const p = 1;
         }
         const data = await database_services_1.default.comments.aggregate([
             { $match: { productId: productId } },
@@ -59,11 +59,12 @@ const addComment = async (req, res, next) => {
 };
 exports.addComment = addComment;
 const deleteCommentUser = async (req, res, next) => {
-    const { commentId, userId, role } = req.params;
+    const { commentId } = req.params;
+    const { userId, role } = req.body;
     try {
         const checkCommentId = await database_services_1.default.comments.find({ _id: commentId });
         const checkRoleUser = await database_services_1.default.users.find({ _id: userId });
-        if (checkCommentId[0].userId == checkRoleUser[0]._id && Number(role) == checkRoleUser[0].role) {
+        if (checkCommentId[0].userId == checkRoleUser[0]._id && Number(role) == checkRoleUser[0].role && checkRoleUser[0].role == 0) {
             await database_services_1.default.comments.deleteOne({ _id: new mongodb_1.ObjectId(commentId) });
             res.status(200).json({
                 message: 'new deleted successfully'
@@ -77,13 +78,9 @@ const deleteCommentUser = async (req, res, next) => {
 };
 exports.deleteCommentUser = deleteCommentUser;
 const getAllComment = async (req, res) => {
-    const { userId, role } = req.params;
     try {
-        const checkAdmin = await database_services_1.default.users.find({ _id: userId, role: role });
-        if (checkAdmin[0].role == 0) {
-            const news = await database_services_1.default.comments.find({});
-            res.status(200).json(news);
-        }
+        const news = await database_services_1.default.comments.find({});
+        res.status(200).json(news);
     }
     catch (error) {
         res.status(500).json({ message: 'Failed to get all comments', error: error.message });

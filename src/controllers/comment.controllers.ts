@@ -8,26 +8,26 @@ import databaseService from '../services/database.services'
 export const paginationComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Kết nối tới database nếu cần
-        const { n, p, productId } = req.params
+        const { n, p, productId } = req.body
         if (n == null || p == null) {
-          const n = 8
-          const py = 1
+            const n = 8
+            const p = 1
         }
         const data = await databaseService.comments.aggregate([
-          { $match: {productId:productId} },
-          { $skip: (Number(p) * Number(n)) - Number(n) },
-          { $limit: Number(n) }
+            { $match: { productId: productId } },
+            { $skip: (Number(p) * Number(n)) - Number(n) },
+            { $limit: Number(n) }
         ])
         const total = await databaseService.comments.aggregate([
-          { $match: {productId:productId} },
-          { $count: "total" }
+            { $match: { productId: productId } },
+            { $count: "total" }
         ])
         const Total = total[0].total
         res.status(201).json({ data, p, n, Total })
-      } catch (error: any) {
+    } catch (error: any) {
         console.error('Error get data:', error)
         res.status(500).json({ message: 'Failed to data', error: error.message })
-      }
+    }
 }
 
 export const addComment = async (req: Request, res: Response, next: NextFunction) => {
@@ -58,13 +58,14 @@ export const addComment = async (req: Request, res: Response, next: NextFunction
 }
 
 export const deleteCommentUser = async (req: Request, res: Response, next: NextFunction) => {
-    const { commentId, userId, role } = req.params
+    const { commentId } = req.params
+    const { userId, role } =req.body
 
     try {
         const checkCommentId = await databaseService.comments.find({ _id: commentId })
         const checkRoleUser = await databaseService.users.find({ _id: userId })
 
-        if (checkCommentId[0].userId == checkRoleUser[0]._id && Number(role) == checkRoleUser[0].role) {
+        if (checkCommentId[0].userId == checkRoleUser[0]._id  && Number(role) == checkRoleUser[0].role && checkRoleUser[0].role == 0) {
             await databaseService.comments.deleteOne({ _id: new ObjectId(commentId) })
 
             res.status(200).json({
@@ -78,13 +79,9 @@ export const deleteCommentUser = async (req: Request, res: Response, next: NextF
 }
 
 export const getAllComment = async (req: Request, res: Response) => {
-    const { userId, role } = req.params
     try {
-        const checkAdmin = await databaseService.users.find({ _id: userId, role: role })
-        if (checkAdmin[0].role == 0) {
-            const news = await databaseService.comments.find({})
-            res.status(200).json(news)
-        }
+        const news = await databaseService.comments.find({})
+        res.status(200).json(news)
     } catch (error: any) {
         res.status(500).json({ message: 'Failed to get all comments', error: error.message })
     }
