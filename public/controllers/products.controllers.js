@@ -98,10 +98,11 @@ exports.filterPriceNoneCategory = filterPriceNoneCategory;
 const addProducts = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { name, description, price, date, thumbnail } = req.body;
+        const { name, categoryId, description, price, date, thumbnail } = req.body;
         // Tạo sản phẩm mới với mảng options rỗng
         const productInsertion = await database_services_1.default.products.create({
             name,
+            categoryId,
             description,
             price,
             date,
