@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOneCategory = exports.getAllCategory = exports.deleteCategory = exports.updateCategory = exports.addCategory = exports.paginationCategory = void 0;
+exports.getNameById = exports.getOneCategory = exports.getAllCategory = exports.deleteCategory = exports.updateCategory = exports.addCategory = exports.paginationCategory = void 0;
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
 const paginationCategory = async (req, res, next) => {
@@ -104,3 +104,16 @@ const getOneCategory = async (req, res) => {
     }
 };
 exports.getOneCategory = getOneCategory;
+const getNameById = async (req, res, next) => {
+    try {
+        // Kết nối tới database nếu cần
+        const { categorIdId } = req.params;
+        const data = await database_services_1.default.categorys.findById({ _id: categorIdId }).select('-image');
+        res.status(201).json(data?.name);
+    }
+    catch (error) {
+        console.error('Error get data:', error);
+        res.status(500).json({ message: 'Failed to data', error: error.message });
+    }
+};
+exports.getNameById = getNameById;

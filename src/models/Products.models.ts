@@ -9,10 +9,12 @@ export interface IProduct extends Document {
   price: number
   options: IOptions['_id'][]
   purchases: number
+  categoryId: string
 }
 
 const ProductSchema: Schema = new Schema({
   name: { type: String, required: true },
+  categoryId: { type: String, required: true },
   description: { type: String, required: true },
   date: { type: String, required: true },
   thumbnail: { type: String, required: true },

@@ -102,3 +102,14 @@ export const getOneCategory = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Failed to get all category', error: error.message })
     }
 }
+export const getNameById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Kết nối tới database nếu cần
+      const {categorIdId } = req.params
+      const data = await databaseService.categorys.findById({_id:categorIdId}).select('-image')
+      res.status(201).json(data?.name)
+    } catch (error: any) {
+      console.error('Error get data:', error)
+      res.status(500).json({ message: 'Failed to data', error: error.message })
+    }
+  }

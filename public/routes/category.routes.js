@@ -8,5 +8,6 @@ categoryRoutes.put('/:categoryId', category_controllers_1.updateCategory);
 categoryRoutes.delete('/delete/:categoryId', category_controllers_1.deleteCategory);
 categoryRoutes.get('/', category_controllers_1.getAllCategory);
 categoryRoutes.get('/:categoryId', category_controllers_1.getOneCategory);
+categoryRoutes.get('/name/:categoryId', category_controllers_1.getNameById);
 categoryRoutes.get('/pagination/:n/:p', category_controllers_1.paginationCategory);
 exports.default = categoryRoutes;
