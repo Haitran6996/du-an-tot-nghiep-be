@@ -21,9 +21,9 @@ productsRoutes.get('/:productId', getProductById)
 productsRoutes.patch('/:productId', updateProduct)
 productsRoutes.post('/', addProducts)
 productsRoutes.get('/sosanh/:id1/:id2', soSanh)
-productsRoutes.post('/filter/category', filterWithCategory) //body truyền lên categoryId
-productsRoutes.post('/filter', filterPriceNoneCategory) //body truyền lên start, end
-productsRoutes.post('/filter/price/category', filterPriceWithCategory) //body truyền lên categoryId, start, end
+productsRoutes.post('/filter/category', filterWithCategory) //body truyền lên categoryId, sort
+productsRoutes.post('/filter', filterPriceNoneCategory) //body truyền lên start, end ,sort
+productsRoutes.post('/filter/price/category', filterPriceWithCategory) //body truyền lên categoryId, start, end ,sort
 productsRoutes.delete('/:productId', deleteProducts)
 productsRoutes.delete('/:productId/options/:optionId', deleteOptions)
 productsRoutes.post('/:productId/options', addProductsVariant)

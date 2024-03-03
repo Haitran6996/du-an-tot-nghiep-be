@@ -29,13 +29,16 @@ export const paginationProduct = async (req: Request, res: Response, next: NextF
 
 export const filterPriceWithCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { categorId, start, end } = req.body
+    const { categorId, start, end, sort } = req.body
     const data = await databaseService.products.aggregate([
       {
         $match: {
           "categoryId": categorId,
           "price": { "$lte": end, "$gte": start }
         }
+      },
+      {
+        $sort: { "price": sort }
       }
     ])
     res.status(201).json(data)
@@ -46,12 +49,15 @@ export const filterPriceWithCategory = async (req: Request, res: Response, next:
 }
 export const filterWithCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { categoryId } = req.body
+    const { categoryId, sort } = req.body
     const data = await databaseService.products.aggregate([
       {
         $match: {
           "categoryId": categoryId,
         }
+      },
+      {
+        $sort: { "price": sort }
       }
     ])
     res.status(201).json(data)
@@ -62,12 +68,15 @@ export const filterWithCategory = async (req: Request, res: Response, next: Next
 }
 export const filterPriceNoneCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { start, end } = req.body
+    const { start, end, sort } = req.body
     const data = await databaseService.products.aggregate([
       {
         $match: {
           "price": { "$lte": end, "$gte": start }
         }
+      },
+      {
+        $sort: { "price": sort }
       }
     ])
     res.status(201).json(data)
