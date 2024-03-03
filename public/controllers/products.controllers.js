@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProduct = exports.soSanh = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.filterPriceNCategory = exports.filterPrice = exports.paginationProduct = void 0;
+exports.updateProduct = exports.soSanh = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.filterPriceNoneCategory = exports.filterWithCategory = exports.filterPriceWithCategory = exports.paginationProduct = void 0;
 const express_1 = require("express");
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
@@ -31,40 +31,14 @@ const paginationProduct = async (req, res, next) => {
     }
 };
 exports.paginationProduct = paginationProduct;
-const filterPrice = async (req, res, next) => {
+const filterPriceWithCategory = async (req, res, next) => {
     try {
-        const { categoryId } = req.body;
-        const data = await database_services_1.default.products.aggregate([
-            { $match: ({ 'categoryId': categoryId }) },
-            {
-                $project: {
-                    '0-9999999': { $cond: { $if: { $gte: 0, $lte: 9999999 }, $then: true, $else: false } },
-                    '10000000-20000000': { $cond: { $if: { $gte: ['price', 10000000], $lte: 20000000 }, $then: true, $else: false } },
-                    '20000001-30000000': { $cond: { $if: { $gte: ['price', 20000001], $lte: 30000000 }, $then: true, $else: false } },
-                    '30000001-40000000': { $cond: { $if: { $gte: ['price', 30000001], $lte: 40000000 }, $then: true, $else: false } },
-                    '40000001-50000000': { $cond: { $if: { $gte: ['price', 40000001], $lte: 50000000 }, $then: true, $else: false } },
-                    '50000000+': { $cond: { $if: { $gte: ['price', 50000001] }, $then: true, $else: false } }
-                }
-            },
-            {
-                $group: { _id: { 'duoi-10tr': '$0-9999999', '10-20tr': '$10000000-20000000', 'tren-20tr': '$20000001-30000000', 'tren-30tr': '$30000001-40000000', 'tren-40tr': '$30000001-40000000', 'tren-50tr': '$50000000+' }, count: { $sum: 1 } }
-            }
-        ]);
-        res.status(201).json({ data });
-    }
-    catch (error) {
-        console.error('Error get product:', error);
-        res.status(500).json({ message: 'Failed to get product', error: error.message });
-    }
-};
-exports.filterPrice = filterPrice;
-const filterPriceNCategory = async (req, res, next) => {
-    try {
-        const { start, end } = req.body;
+        const { categorId, start, end } = req.body;
         const data = await database_services_1.default.products.aggregate([
             {
                 $match: {
-                    "price": { "$lte": start, "$gte": end }
+                    "categoryId": categorId,
+                    "price": { "$lte": end, "$gte": start }
                 }
             }
         ]);
@@ -75,7 +49,43 @@ const filterPriceNCategory = async (req, res, next) => {
         res.status(500).json({ message: 'Failed to get product', error: error.message });
     }
 };
-exports.filterPriceNCategory = filterPriceNCategory;
+exports.filterPriceWithCategory = filterPriceWithCategory;
+const filterWithCategory = async (req, res, next) => {
+    try {
+        const { categoryId } = req.body;
+        const data = await database_services_1.default.products.aggregate([
+            {
+                $match: {
+                    "categoryId": categoryId,
+                }
+            }
+        ]);
+        res.status(201).json(data);
+    }
+    catch (error) {
+        console.error('Error get product:', error);
+        res.status(500).json({ message: 'Failed to get product', error: error.message });
+    }
+};
+exports.filterWithCategory = filterWithCategory;
+const filterPriceNoneCategory = async (req, res, next) => {
+    try {
+        const { start, end } = req.body;
+        const data = await database_services_1.default.products.aggregate([
+            {
+                $match: {
+                    "price": { "$lte": end, "$gte": start }
+                }
+            }
+        ]);
+        res.status(201).json(data);
+    }
+    catch (error) {
+        console.error('Error get product:', error);
+        res.status(500).json({ message: 'Failed to get product', error: error.message });
+    }
+};
+exports.filterPriceNoneCategory = filterPriceNoneCategory;
 const addProducts = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
