@@ -9,7 +9,7 @@ const database_services_1 = __importDefault(require("../services/database.servic
 const paginationComment = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { n, p, productId } = req.body;
+        const { n, p, productId } = req.params;
         if (n == null || p == null) {
             const n = 8;
             const p = 1;
@@ -90,7 +90,7 @@ exports.getAllComment = getAllComment;
 const getCommentWithProduct = async (req, res) => {
     const { productId } = req.params;
     try {
-        const comments = await database_services_1.default.comments.find({ productId: productId });
+        const comments = await database_services_1.default.comments.find({ productId: productId }).populate('userId', 'username');
         res.status(200).json(comments);
     }
     catch (error) {

@@ -9,6 +9,7 @@ productsRoutes.get('/:productId', products_controllers_1.getProductById);
 productsRoutes.patch('/:productId', products_controllers_1.updateProduct);
 productsRoutes.post('/', products_controllers_1.addProducts);
 productsRoutes.get('/sosanh/:id1/:id2', products_controllers_1.soSanh);
+productsRoutes.get('/addview/:productId', products_controllers_1.addViewProductById);
 productsRoutes.post('/filter/category', products_controllers_1.filterWithCategory); //body truyền lên categoryId, sort
 productsRoutes.post('/filter', products_controllers_1.filterPriceNoneCategory); //body truyền lên start, end ,sort
 productsRoutes.post('/filter/price/category', products_controllers_1.filterPriceWithCategory); //body truyền lên categoryId, start, end ,sort

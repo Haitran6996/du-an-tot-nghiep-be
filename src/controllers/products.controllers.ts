@@ -195,6 +195,24 @@ export const getAllProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Failed to get products', error: error.message })
   }
 }
+
+export const addViewProductById = async (req: Request, res: Response) => {
+  const {productId} = req.params
+  try {
+    const product = await databaseService.products.findById(productId);
+    const viewPro = Number(product?.view) + 1
+    await databaseService.products.findByIdAndUpdate(productId,{
+      view: viewPro
+    })
+
+    res.status(200).json('add view product')
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to get products', error: error.message })
+  }
+
+}
+
+
 export const getProductById = async (req: Request, res: Response) => {
   const { productId } = req.params
   try {

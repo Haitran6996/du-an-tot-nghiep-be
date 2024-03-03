@@ -8,7 +8,7 @@ import databaseService from '../services/database.services'
 export const paginationComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Kết nối tới database nếu cần
-        const { n, p, productId } = req.body
+        const { n, p, productId } = req.params
         if (n == null || p == null) {
             const n = 8
             const p = 1
@@ -89,7 +89,7 @@ export const getAllComment = async (req: Request, res: Response) => {
 export const getCommentWithProduct = async (req: Request, res: Response) => {
     const { productId } = req.params
     try {
-        const comments = await databaseService.comments.find({ productId: productId })
+        const comments = await databaseService.comments.find({ productId: productId }).populate('userId','username')
         res.status(200).json(comments)
     } catch (error: any) {
         res.status(500).json({ message: 'Failed to get news', error: error.message })
