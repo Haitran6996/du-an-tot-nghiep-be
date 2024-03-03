@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express'
 
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
+import categoryRoutes from 'src/routes/category.routes'
 Router({ mergeParams: true })
 
 export const paginationProduct = async (req: Request, res: Response, next: NextFunction) => {
@@ -23,6 +24,56 @@ export const paginationProduct = async (req: Request, res: Response, next: NextF
   } catch (error: any) {
     console.error('Error get data:', error)
     res.status(500).json({ message: 'Failed to data', error: error.message })
+  }
+}
+
+export const filterPriceWithCategory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { categorId, start, end } = req.body
+    const data = await databaseService.products.aggregate([
+      {
+        $match: {
+          "categoryId": categorId,
+          "price": { "$lte": end, "$gte": start }
+        }
+      }
+    ])
+    res.status(201).json(data)
+  } catch (error: any) {
+    console.error('Error get product:', error)
+    res.status(500).json({ message: 'Failed to get product', error: error.message })
+  }
+}
+export const filterWithCategory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { categoryId } = req.body
+    const data = await databaseService.products.aggregate([
+      {
+        $match: {
+          "categoryId": categoryId,
+        }
+      }
+    ])
+    res.status(201).json(data)
+  } catch (error: any) {
+    console.error('Error get product:', error)
+    res.status(500).json({ message: 'Failed to get product', error: error.message })
+  }
+}
+export const filterPriceNoneCategory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { start, end } = req.body
+    const data = await databaseService.products.aggregate([
+      {
+        $match: {
+          "price": { "$lte": end, "$gte": start }
+        }
+      }
+    ])
+    res.status(201).json(data)
+  } catch (error: any) {
+    console.error('Error get product:', error)
+    res.status(500).json({ message: 'Failed to get product', error: error.message })
   }
 }
 

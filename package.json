@@ -50,6 +50,7 @@
     "moment-timezone": "^0.5.45",
     "mongodb": "^6.3.0",
     "mongoose": "^8.1.2",
+    "mongoose-find-and-filter": "^1.0.0",
     "validator": "^13.11.0"
   }
 }
