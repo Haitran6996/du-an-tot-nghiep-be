@@ -32,6 +32,7 @@ const ProductSchema = new mongoose_1.Schema({
     thumbnail: { type: String, required: true },
     purchases: { type: Number, default: 0 },
     price: { type: Number, required: true },
+    view: { type: Number, require: false },
     options: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'options' }]
 });
 exports.default = mongoose_1.default.model('product', ProductSchema);

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProduct = exports.soSanh = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.filterPriceNoneCategory = exports.filterWithCategory = exports.filterPriceWithCategory = exports.paginationProduct = void 0;
+exports.updateProduct = exports.soSanh = exports.getProductById = exports.addViewProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.filterPriceNoneCategory = exports.filterWithCategory = exports.filterPriceWithCategory = exports.paginationProduct = void 0;
 const express_1 = require("express");
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
@@ -194,6 +194,21 @@ const getAllProducts = async (req, res) => {
     }
 };
 exports.getAllProducts = getAllProducts;
+const addViewProductById = async (req, res) => {
+    const { productId } = req.params;
+    try {
+        const product = await database_services_1.default.products.findById(productId);
+        const viewPro = Number(product?.view) + 1;
+        await database_services_1.default.products.findByIdAndUpdate(productId, {
+            view: viewPro
+        });
+        res.status(200).json('add view product');
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Failed to get products', error: error.message });
+    }
+};
+exports.addViewProductById = addViewProductById;
 const getProductById = async (req, res) => {
     const { productId } = req.params;
     try {
