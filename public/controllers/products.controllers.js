@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProduct = exports.soSanh = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.filterPrice = exports.paginationProduct = void 0;
+exports.updateProduct = exports.soSanh = exports.getProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.filterPriceNCategory = exports.filterPrice = exports.paginationProduct = void 0;
 const express_1 = require("express");
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
@@ -58,6 +58,24 @@ const filterPrice = async (req, res, next) => {
     }
 };
 exports.filterPrice = filterPrice;
+const filterPriceNCategory = async (req, res, next) => {
+    try {
+        const { start, end } = req.body;
+        const data = await database_services_1.default.products.aggregate([
+            {
+                $match: {
+                    "price": { "$lte": start, "$gte": end }
+                }
+            }
+        ]);
+        res.status(201).json(data);
+    }
+    catch (error) {
+        console.error('Error get product:', error);
+        res.status(500).json({ message: 'Failed to get product', error: error.message });
+    }
+};
+exports.filterPriceNCategory = filterPriceNCategory;
 const addProducts = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
