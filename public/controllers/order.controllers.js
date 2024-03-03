@@ -6,13 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAll = exports.getById = exports.updateOrder = exports.addOrder = void 0;
 const database_services_1 = __importDefault(require("../services/database.services"));
 const Order_model_1 = __importDefault(require("../models/Order.model"));
+const Cart_model_1 = __importDefault(require("src/models/Cart.model"));
+async function placeOrder(userId, items) {
+    await Cart_model_1.default.findOneAndDelete({ userId });
+}
 const addOrder = async (req, res, next) => {
     try {
         // Giả sử req.body.userId là ID của người dùng đang đặt hàng
-        const cart = await database_services_1.default.carts
-            .findOne({ userId: req.body.userId })
-            .populate('items.product')
-            .populate('items.options');
+        const cart = await database_services_1.default.carts.findOne({ userId: req.body.userId }).populate({
+            path: 'items.product',
+            populate: {
+                path: 'options', // Populate nested options của product
+                model: 'options' // Đảm bảo tên mô hình là đúng
+            }
+        });
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
@@ -27,25 +34,31 @@ const addOrder = async (req, res, next) => {
             userId: cart.userId,
             items: cart.items.map((item) => ({
                 product: {
-                    _id: item.product._id,
-                    name: item.product.name,
-                    description: item.product.description,
-                    date: item.product.date,
-                    thumbnail: item.product.thumbnail,
-                    price: item.product.price,
+                    _id: item?.product?._id,
+                    name: item?.product?.name,
+                    description: item?.product?.description,
+                    date: item?.product?.date,
+                    thumbnail: item?.product?.thumbnail,
+                    price: item?.product?.price,
                     options: [...item.options]
                     // This should now be populated with option objects
                 },
-                quantity: item.quantity
+                quantity: item?.quantity
             })),
             status: 'pending',
-            totalAmount: totalAmount
+            totalAmount: totalAmount,
+            name: req.body.name,
+            phone: req.body.phone,
+            address: req.body.address
         };
         const newOrder = new Order_model_1.default(orderData);
         const savedOrder = await newOrder.save();
+        if (savedOrder)
+            await placeOrder(req.body.userId, cart.items);
         res.status(201).json(savedOrder);
     }
     catch (err) {
+        console.log(err, 'errr');
         res.status(500).json(err);
     }
 };
@@ -89,7 +102,7 @@ const getById = async (req, res, next) => {
 exports.getById = getById;
 const getAll = async (req, res, next) => {
     try {
-        const orders = await database_services_1.default.orders.find({}).sort({ createdAt: -1 }); // Sắp xếp từ mới nhất đến cũ nhất
+        const orders = await database_services_1.default.orders.find({}).sort({ createdAt: -1 }).populate('userId'); // Sắp xếp từ mới nhất đến cũ nhất
         res.status(200).json(orders);
     }
     catch (error) {

@@ -4,6 +4,9 @@ export interface IOrder extends Document {
   userId: mongoose.Types.ObjectId
   items: any
   status: string
+  name: string
+  phone: string
+  address: string
   totalAmount: number
   createdAt: Date
   updatedAt: Date
@@ -12,6 +15,9 @@ export interface IOrder extends Document {
 const OrderSchema: Schema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   items: [],
+  name: { type: String, required: true },
+  phone: { type: String, required: true },
+  address: { type: String, required: true },
   status: {
     type: String,
     required: true,
