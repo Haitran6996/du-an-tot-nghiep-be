@@ -9,8 +9,9 @@ import {
   updateProduct,
   paginationProduct,
   soSanh,
-  filterPrice,
-  filterPriceNCategory
+  filterPriceWithCategory,
+  filterPriceNoneCategory,
+  filterWithCategory
 } from '../controllers/products.controllers'
 
 const productsRoutes = Router()
@@ -20,8 +21,9 @@ productsRoutes.get('/:productId', getProductById)
 productsRoutes.patch('/:productId', updateProduct)
 productsRoutes.post('/', addProducts)
 productsRoutes.get('/sosanh/:id1/:id2', soSanh)
-productsRoutes.post('/filter/category', filterPrice)
-productsRoutes.post('/filter', filterPriceNCategory)
+productsRoutes.post('/filter/category', filterWithCategory) //body truyền lên categoryId
+productsRoutes.post('/filter', filterPriceNoneCategory) //body truyền lên start, end
+productsRoutes.post('/filter/price/category', filterPriceWithCategory) //body truyền lên categoryId, start, end
 productsRoutes.delete('/:productId', deleteProducts)
 productsRoutes.delete('/:productId/options/:optionId', deleteOptions)
 productsRoutes.post('/:productId/options', addProductsVariant)

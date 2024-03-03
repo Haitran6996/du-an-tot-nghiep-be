@@ -27,39 +27,46 @@ export const paginationProduct = async (req: Request, res: Response, next: NextF
   }
 }
 
-export const filterPrice = async (req: Request, res: Response, next: NextFunction) => {
+export const filterPriceWithCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { categoryId } = req.body
+    const { categorId, start, end } = req.body
     const data = await databaseService.products.aggregate([
-      { $match: ({ 'categoryId': categoryId }) }
-      , {
-        $project: {
-          '0-9999999': { $cond: { $if: { $gte: 0, $lte: 9999999 }, $then: true, $else: false } },
-          '10000000-20000000': { $cond: { $if: { $gte: ['price', 10000000], $lte: 20000000 }, $then: true, $else: false } },
-          '20000001-30000000': { $cond: { $if: { $gte: ['price', 20000001], $lte: 30000000 }, $then: true, $else: false } },
-          '30000001-40000000': { $cond: { $if: { $gte: ['price', 30000001], $lte: 40000000 }, $then: true, $else: false } },
-          '40000001-50000000': { $cond: { $if: { $gte: ['price', 40000001], $lte: 50000000 }, $then: true, $else: false } },
-          '50000000+': { $cond: { $if: { $gte: ['price', 50000001] }, $then: true, $else: false } }
-        }
-      },
       {
-        $group: { _id: { 'duoi-10tr': '$0-9999999', '10-20tr': '$10000000-20000000', 'tren-20tr': '$20000001-30000000', 'tren-30tr': '$30000001-40000000', 'tren-40tr': '$30000001-40000000', 'tren-50tr': '$50000000+' }, count: { $sum: 1 } }
+        $match: {
+          "categoryId": categorId,
+          "price": { "$lte": end, "$gte": start }
+        }
       }
     ])
-    res.status(201).json({ data })
+    res.status(201).json(data)
   } catch (error: any) {
     console.error('Error get product:', error)
     res.status(500).json({ message: 'Failed to get product', error: error.message })
   }
 }
-
-export const filterPriceNCategory = async (req: Request, res: Response, next: NextFunction) => {
+export const filterWithCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { start,end } = req.body
+    const { categoryId } = req.body
     const data = await databaseService.products.aggregate([
       {
         $match: {
-          "price": { "$lte": start, "$gte": end }
+          "categoryId": categoryId,
+        }
+      }
+    ])
+    res.status(201).json(data)
+  } catch (error: any) {
+    console.error('Error get product:', error)
+    res.status(500).json({ message: 'Failed to get product', error: error.message })
+  }
+}
+export const filterPriceNoneCategory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { start, end } = req.body
+    const data = await databaseService.products.aggregate([
+      {
+        $match: {
+          "price": { "$lte": end, "$gte": start }
         }
       }
     ])
