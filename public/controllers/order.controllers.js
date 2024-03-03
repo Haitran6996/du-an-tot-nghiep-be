@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAll = exports.getById = exports.updateOrder = exports.addOrder = void 0;
 const database_services_1 = __importDefault(require("../services/database.services"));
 const Order_model_1 = __importDefault(require("../models/Order.model"));
-const Cart_model_1 = __importDefault(require("src/models/Cart.model"));
+const Cart_model_1 = __importDefault(require("../models/Cart.model"));
 async function placeOrder(userId, items) {
     await Cart_model_1.default.findOneAndDelete({ userId });
 }

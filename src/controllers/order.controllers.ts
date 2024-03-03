@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 
 import databaseService from '../services/database.services'
 import OrderModel from '../models/Order.model'
-import CartModel from 'src/models/Cart.model'
+import CartModel from '../models/Cart.model'
 
 async function placeOrder(userId: string, items: any[]) {
   await CartModel.findOneAndDelete({ userId })
