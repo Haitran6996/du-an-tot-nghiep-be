@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAll = exports.getById = exports.updateOrder = exports.addOrder = void 0;
 const database_services_1 = __importDefault(require("../services/database.services"));
 const Order_model_1 = __importDefault(require("../models/Order.model"));
-const Cart_model_1 = __importDefault(require("src/models/Cart.model"));
+const Cart_model_1 = __importDefault(require("../models/Cart.model"));
 async function placeOrder(userId, items) {
     await Cart_model_1.default.findOneAndDelete({ userId });
 }
@@ -92,7 +92,16 @@ exports.updateOrder = updateOrder;
 const getById = async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const orders = await database_services_1.default.orders.find({ userId: userId }).sort({ createdAt: -1 }); // Sắp xếp từ mới nhất đến cũ nhất
+        const orders = await database_services_1.default.orders
+            .find({ userId: userId })
+            .sort({ createdAt: -1 })
+            .populate({
+            path: 'items.product',
+            populate: {
+                path: 'options', // Populate nested options của product
+                model: 'options' // Đảm bảo tên mô hình là đúng
+            }
+        }); // Sắp xếp từ mới nhất đến cũ nhất
         res.status(200).json(orders);
     }
     catch (error) {
@@ -102,7 +111,17 @@ const getById = async (req, res, next) => {
 exports.getById = getById;
 const getAll = async (req, res, next) => {
     try {
-        const orders = await database_services_1.default.orders.find({}).sort({ createdAt: -1 }).populate('userId'); // Sắp xếp từ mới nhất đến cũ nhất
+        const orders = await database_services_1.default.orders
+            .find({})
+            .sort({ createdAt: -1 })
+            .populate('userId')
+            .populate({
+            path: 'items.product',
+            populate: {
+                path: 'options', // Populate nested options của product
+                model: 'options' // Đảm bảo tên mô hình là đúng
+            }
+        }); // Sắp xếp từ mới nhất đến cũ nhất
         res.status(200).json(orders);
     }
     catch (error) {
