@@ -67,9 +67,6 @@ async function updateCartServices(req, res) {
     }
 }
 exports.updateCartServices = updateCartServices;
-async function placeOrder(userId, items) {
-    await Cart_model_1.default.findOneAndDelete({ userId });
-}
 async function deleteItemCartServices(req, res) {
     try {
         const { userId, productId } = req.body;
@@ -79,7 +76,7 @@ async function deleteItemCartServices(req, res) {
             return res.status(404).send('Cart not found');
         }
         // Kiểm tra sản phẩm có trong giỏ hàng không
-        const itemIndex = cart.items.findIndex((item) => item?._id.toString() === productId);
+        const itemIndex = cart.items.findIndex((item) => item?.product?._id.toString() === productId);
         if (itemIndex > -1) {
             // Xóa sản phẩm khỏi giỏ hàng
             cart.items.splice(itemIndex, 1);
