@@ -196,9 +196,15 @@ const getAllProducts = async (req, res) => {
 exports.getAllProducts = getAllProducts;
 const addViewProductById = async (req, res) => {
     const { productId } = req.params;
+    let viewPro = 0;
     try {
         const product = await database_services_1.default.products.findById(productId);
-        const viewPro = Number(product?.view) + 1;
+        if (product?.view) {
+            viewPro = Number(product?.view) + 1;
+        }
+        else {
+            viewPro = 1;
+        }
         await database_services_1.default.products.findByIdAndUpdate(productId, {
             view: viewPro
         });
