@@ -70,10 +70,6 @@ export async function updateCartServices(req: Request, res: Response) {
   }
 }
 
-async function placeOrder(userId: string, items: any[]) {
-  await CartModel.findOneAndDelete({ userId })
-}
-
 export async function deleteItemCartServices(req: Request, res: Response) {
   try {
     const { userId, productId } = req.body
@@ -86,7 +82,7 @@ export async function deleteItemCartServices(req: Request, res: Response) {
     }
 
     // Kiểm tra sản phẩm có trong giỏ hàng không
-    const itemIndex = cart.items.findIndex((item: any) => item?._id.toString() === productId)
+    const itemIndex = cart.items.findIndex((item: any) => item?.product?._id.toString() === productId)
 
     if (itemIndex > -1) {
       // Xóa sản phẩm khỏi giỏ hàng
