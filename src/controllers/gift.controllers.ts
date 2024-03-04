@@ -32,7 +32,7 @@ export const addGift = async (req: Request, res: Response, next: NextFunction) =
     try {
         const { code, sale, start, expire, content, limit } = req.body
         const codeExist = await databaseService.gifts.find({ 'code': code })
-        if(codeExist[0]==null) {
+        if (codeExist[0] == null) {
             const giftInsertion = await databaseService.gifts.create({
                 code,
                 sale,
@@ -49,9 +49,9 @@ export const addGift = async (req: Request, res: Response, next: NextFunction) =
         }
         else if (codeExist) {
             console.error('Error:code đã tồn tại')
-            res.status(500).json({ message:'Error:code đã tồn tại'})
+            res.status(500).json({ message: 'Error:code đã tồn tại' })
         }
-        
+
     } catch (error: any) {
         console.error('Error create Gift:', error)
         res.status(500).json({ message: 'Failed to create Gift', error: error.message })
@@ -62,17 +62,24 @@ export const updateGift = async (req: Request, res: Response) => {
     const { giftId } = req.params
     const { code, sale, start, expire, limit } = req.body
     try {
-        const updateResult = await databaseService.gifts.findByIdAndUpdate(
-            { _id: giftId },
-            {
-                code: code,
-                sale: sale,
-                start: start,
-                expire: expire,
-                limit: limit
-            }
-        )
-        res.status(200).json({ message: 'Cập nhật Gift thành công' })
+        const codeExist = await databaseService.gifts.find({ 'code': code })
+        if (codeExist[0] == null) {
+            const updateResult = await databaseService.gifts.findByIdAndUpdate(
+                { _id: giftId },
+                {
+                    code: code,
+                    sale: sale,
+                    start: start,
+                    expire: expire,
+                    limit: limit
+                }
+            )
+            res.status(200).json({ message: 'Cập nhật Gift thành công' })
+        }
+        else if (codeExist) {
+            console.error('Error:code đã tồn tại')
+            res.status(500).json({ message: 'Error:code đã tồn tại' })
+        }
     } catch (error) {
         console.error('Lỗi khi cập nhật Giftcode:', error)
         res.status(500).json({ message: 'Đã xảy ra lỗi khi cập nhật Giftcode' })
@@ -90,9 +97,9 @@ export const deleteGift = async (req: Request, res: Response, next: NextFunction
             message: 'Giftcode deleted successfully'
         })
     } catch (error: any) {
-    console.error('Error deleting Gift:', error)
-    res.status(500).json({ message: 'Failed to delete Gift', error: error.message })
-}
+        console.error('Error deleting Gift:', error)
+        res.status(500).json({ message: 'Failed to delete Gift', error: error.message })
+    }
 }
 
 export const getAllGift = async (req: Request, res: Response) => {
