@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const slider_controllers_1 = require("../controllers/slider.controllers");
+const sliderRoutes = (0, express_1.Router)();
+sliderRoutes.post('/add', slider_controllers_1.addSlider);
+sliderRoutes.put('/:sliderId', slider_controllers_1.updateSlider);
+sliderRoutes.delete('/delete/:sliderId', slider_controllers_1.deleteSlider);
+sliderRoutes.get('/', slider_controllers_1.getAllSlider);
+sliderRoutes.get('/:sliderId', slider_controllers_1.getOneSlider);
+sliderRoutes.get('/pagination/:n/:p', slider_controllers_1.paginationSlider);
+exports.default = sliderRoutes;
