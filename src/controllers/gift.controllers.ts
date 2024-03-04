@@ -30,27 +30,28 @@ export const paginationGift = async (req: Request, res: Response, next: NextFunc
 
 export const addGift = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // Kết nối tới database nếu cần
-        const { code, sale, start, expire, content, limit } = req.body // Mảng options rỗng
-
-        // check user
-        // const checkRoleUser = await databaseService.users.find({ _id: userId, role: role })
-        // // check product
-        // if (checkRoleUser[0]._id == userId && checkRoleUser[0]._id == 0) {
-        const giftInsertion = await databaseService.gifts.create({
-            code,
-            sale,
-            start,
-            expire,
-            content,
-            limit
+        const { code, sale, start, expire, content, limit } = req.body
+        const codeExist = await databaseService.gifts.find({ 'code': code })
+        if(codeExist[0]==null) {
+            const giftInsertion = await databaseService.gifts.create({
+                code,
+                sale,
+                start,
+                expire,
+                content,
+                limit
+            }
+            )
+            res.status(201).json({
+                message: 'Giftcode created successfully',
+                giftId: giftInsertion
+            })
         }
-        )
-        res.status(201).json({
-            message: 'Giftcode created successfully',
-            giftId: giftInsertion
-        })
-        // }
+        else if (codeExist) {
+            console.error('Error:code đã tồn tại')
+            res.status(500).json({ message:'Error:code đã tồn tại'})
+        }
+        
     } catch (error: any) {
         console.error('Error create Gift:', error)
         res.status(500).json({ message: 'Failed to create Gift', error: error.message })
