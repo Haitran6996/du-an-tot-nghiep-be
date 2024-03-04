@@ -9,6 +9,7 @@ import CartSchema, { ICart } from '../models/Cart.model'
 import OrderSchema, { IOrder } from '../models/Order.model'
 import GiftSchema, { IGift } from '../models/gift.model'
 import CategorySchema, { ICategory } from '../models/Category.model'
+import SliderSchema, {ISlider} from 'src/models/Slider.model'
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 
 class DatabaseService {
@@ -60,6 +61,9 @@ class DatabaseService {
   }
   get categorys(): mongoose.Model<ICategory> {
     return CategorySchema
+  }
+  get slider(): mongoose.Model<ISlider> {
+    return SliderSchema
   }
 }
 const databaseService = new DatabaseService()
