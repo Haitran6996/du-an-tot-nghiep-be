@@ -21,7 +21,7 @@ const ProductSchema: Schema = new Schema({
   thumbnail: { type: String, required: true },
   purchases: { type: Number, default: 0 },
   price: { type: Number, required: true },
-  view: {type: Number, require:false},
+  view: {type: Number,default:0, require:false},
   options: [{ type: Schema.Types.ObjectId, ref: 'options' }]
 })
 
