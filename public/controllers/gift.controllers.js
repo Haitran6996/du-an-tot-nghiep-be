@@ -32,13 +32,8 @@ const paginationGift = async (req, res, next) => {
 exports.paginationGift = paginationGift;
 const addGift = async (req, res, next) => {
     try {
-        // Kết nối tới database nếu cần
-        const { code, sale, start, expire, content, limit } = req.body; // Mảng options rỗng
+        const { code, sale, start, expire, content, limit } = req.body;
         const codeExist = await database_services_1.default.gifts.find({ 'code': code });
-        // check user
-        // const checkRoleUser = await databaseService.users.find({ _id: userId, role: role })
-        // // check product
-        // if (checkRoleUser[0]._id == userId && checkRoleUser[0]._id == 0) {
         if (codeExist[0] == null) {
             const giftInsertion = await database_services_1.default.gifts.create({
                 code,
@@ -68,14 +63,21 @@ const updateGift = async (req, res) => {
     const { giftId } = req.params;
     const { code, sale, start, expire, limit } = req.body;
     try {
-        const updateResult = await database_services_1.default.gifts.findByIdAndUpdate({ _id: giftId }, {
-            code: code,
-            sale: sale,
-            start: start,
-            expire: expire,
-            limit: limit
-        });
-        res.status(200).json({ message: 'Cập nhật Gift thành công' });
+        const codeExist = await database_services_1.default.gifts.find({ 'code': code });
+        if (codeExist[0] == null) {
+            const updateResult = await database_services_1.default.gifts.findByIdAndUpdate({ _id: giftId }, {
+                code: code,
+                sale: sale,
+                start: start,
+                expire: expire,
+                limit: limit
+            });
+            res.status(200).json({ message: 'Cập nhật Gift thành công' });
+        }
+        else if (codeExist) {
+            console.error('Error:code đã tồn tại');
+            res.status(500).json({ message: 'Error:code đã tồn tại' });
+        }
     }
     catch (error) {
         console.error('Lỗi khi cập nhật Giftcode:', error);
