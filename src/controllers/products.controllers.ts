@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express'
 
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
-import categoryRoutes from 'src/routes/category.routes'
+import categoryRoutes from '../routes/category.routes'
 Router({ mergeParams: true })
 
 export const paginationProduct = async (req: Request, res: Response, next: NextFunction) => {
