@@ -14,7 +14,7 @@ const Cart_model_1 = __importDefault(require("../models/Cart.model"));
 const Order_model_1 = __importDefault(require("../models/Order.model"));
 const gift_model_1 = __importDefault(require("../models/gift.model"));
 const Category_model_1 = __importDefault(require("../models/Category.model"));
-const Slider_model_1 = __importDefault(require("src/models/Slider.model"));
+const Slider_model_1 = __importDefault(require("../models/Slider.model"));
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority';
 class DatabaseService {
     constructor() {
