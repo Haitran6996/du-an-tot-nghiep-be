@@ -16,4 +16,5 @@ productsRoutes.post('/filter/price/category', products_controllers_1.filterPrice
 productsRoutes.delete('/:productId', products_controllers_1.deleteProducts);
 productsRoutes.delete('/:productId/options/:optionId', products_controllers_1.deleteOptions);
 productsRoutes.post('/:productId/options', products_controllers_1.addProductsVariant);
+productsRoutes.get('/rate/:productId', products_controllers_1.updateRating);
 exports.default = productsRoutes;

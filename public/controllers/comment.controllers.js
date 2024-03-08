@@ -35,7 +35,7 @@ exports.paginationComment = paginationComment;
 const addComment = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
-        const { userId, role, productId, comment } = req.body; // Mảng options rỗng
+        const { userId, role, productId, rating, comment } = req.body; // Mảng options rỗng
         // check user
         const checkRoleUser = await database_services_1.default.users.find({ _id: userId, role: role });
         // check product
@@ -44,7 +44,8 @@ const addComment = async (req, res, next) => {
             const commentInsertion = await database_services_1.default.comments.create({
                 userId,
                 productId,
-                comment
+                comment,
+                rating
             });
             res.status(201).json({
                 message: 'new created successfully',

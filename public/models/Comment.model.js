@@ -27,6 +27,12 @@ const mongoose_1 = __importStar(require("mongoose"));
 const CommentSchema = new mongoose_1.Schema({
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users', required: true }, // Giả sử bạn có một User model
     productId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'product', required: true },
+    rating: {
+        type: Number, default: 5, enum: {
+            values: [1, 2, 3, 4, 5],
+            message: '{VALUE} không được phép'
+        }
+    },
     comment: { type: String, require: true }
 }, {
     timestamps: true,

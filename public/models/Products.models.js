@@ -33,6 +33,12 @@ const ProductSchema = new mongoose_1.Schema({
     purchases: { type: Number, default: 0 },
     price: { type: Number, required: true },
     view: { type: Number, default: 0, require: false },
+    rating: {
+        type: Number, default: 5, enum: {
+            values: [1, 2, 3, 4, 5],
+            message: '{VALUE} không được phép'
+        }
+    },
     options: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'options' }]
 });
 exports.default = mongoose_1.default.model('product', ProductSchema);

@@ -3,11 +3,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProduct = exports.soSanh = exports.getProductById = exports.addViewProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.filterPriceNoneCategory = exports.filterWithCategory = exports.filterPriceWithCategory = exports.paginationProduct = void 0;
+exports.updateProduct = exports.soSanh = exports.getProductById = exports.addViewProductById = exports.getAllProducts = exports.deleteOptions = exports.deleteProducts = exports.addProductsVariant = exports.addProducts = exports.filterPriceNoneCategory = exports.filterWithCategory = exports.filterPriceWithCategory = exports.paginationProduct = exports.updateRating = void 0;
 const express_1 = require("express");
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
 (0, express_1.Router)({ mergeParams: true });
+const updateRating = async (req, res, next) => {
+    try {
+        const { productId } = req.params;
+        const existP = await database_services_1.default.products.findById(productId);
+        if (existP) {
+            const avg = await database_services_1.default.comments.aggregate([
+                { $group: { _id: productId, avgRate: { $avg: '$rating' } } }
+            ]);
+            const rate = Number(avg[0].avgRate);
+            await database_services_1.default.products.findByIdAndUpdate(productId, { rating: rate });
+            res.status(201).json({ rate });
+        }
+    }
+    catch (error) {
+        console.error('Error get data:', error);
+        res.status(500).json({ message: 'Failed to data', error: error.message });
+    }
+};
+exports.updateRating = updateRating;
 const paginationProduct = async (req, res, next) => {
     try {
         // Kết nối tới database nếu cần
