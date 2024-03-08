@@ -4,7 +4,7 @@ import mongoose, { Schema, Document } from 'mongoose'
 
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
-
+import { updateRating } from './products.controllers'
 export const paginationComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Kết nối tới database nếu cần
@@ -33,7 +33,7 @@ export const paginationComment = async (req: Request, res: Response, next: NextF
 export const addComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Kết nối tới database nếu cần
-        const { userId, role, productId, comment } = req.body // Mảng options rỗng
+        const { userId, role, productId,rating, comment } = req.body // Mảng options rỗng
 
         // check user
         const checkRoleUser = await databaseService.users.find({ _id: userId, role: role })
@@ -43,7 +43,8 @@ export const addComment = async (req: Request, res: Response, next: NextFunction
             const commentInsertion = await databaseService.comments.create({
                 userId,
                 productId,
-                comment
+                comment,
+                rating
             }
             )
             res.status(201).json({

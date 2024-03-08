@@ -12,7 +12,8 @@ import {
   filterPriceWithCategory,
   filterPriceNoneCategory,
   filterWithCategory,
-  addViewProductById
+  addViewProductById,
+  updateRating
 } from '../controllers/products.controllers'
 
 const productsRoutes = Router()
@@ -29,6 +30,6 @@ productsRoutes.post('/filter/price/category', filterPriceWithCategory) //body tr
 productsRoutes.delete('/:productId', deleteProducts)
 productsRoutes.delete('/:productId/options/:optionId', deleteOptions)
 productsRoutes.post('/:productId/options', addProductsVariant)
-
+productsRoutes.get('/rate/:productId',updateRating)
 
 export default productsRoutes

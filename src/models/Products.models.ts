@@ -11,6 +11,7 @@ export interface IProduct extends Document {
   purchases: number
   categoryId: string
   view: number
+  rating: number
 }
 
 const ProductSchema: Schema = new Schema({
@@ -21,7 +22,13 @@ const ProductSchema: Schema = new Schema({
   thumbnail: { type: String, required: true },
   purchases: { type: Number, default: 0 },
   price: { type: Number, required: true },
-  view: {type: Number,default:0, require:false},
+  view: { type: Number, default: 0, require: false },
+  rating: {
+    type: Number, default: 5, enum: {
+      values: [1, 2, 3, 4, 5],
+      message: '{VALUE} không được phép'
+    }
+  },
   options: [{ type: Schema.Types.ObjectId, ref: 'options' }]
 })
 

@@ -5,6 +5,25 @@ import databaseService from '../services/database.services'
 import categoryRoutes from '../routes/category.routes'
 Router({ mergeParams: true })
 
+export const updateRating = async (req: Request, res: Response, next: NextFunction) => {
+
+  try {
+    const { productId } = req.params
+    const existP = await databaseService.products.findById(productId)
+    if (existP) {
+      const avg = await databaseService.comments.aggregate([
+        { $group: { _id: productId, avgRate: { $avg: '$rating' } } }])
+      const rate = Number(avg[0].avgRate)
+      await databaseService.products.findByIdAndUpdate(productId, { rating: rate })
+      res.status(201).json({rate})
+    }
+  } catch (error: any) {
+    console.error('Error get data:', error)
+    res.status(500).json({ message: 'Failed to data', error: error.message })
+  }
+}
+
+
 export const paginationProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Kết nối tới database nếu cần
