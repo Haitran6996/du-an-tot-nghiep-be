@@ -21,7 +21,7 @@ const OrderSchema: Schema = new Schema({
   status: {
     type: String,
     required: true,
-    enum: ['pending', 'paid', 'completed', 'shipped', 'cancelled'], // Ví dụ về các giá trị enum
+    enum: ['pending', 'check', 'paid', 'completed', 'shipped', 'cancelled'], // Ví dụ về các giá trị enum
     default: 'pending'
   },
   totalAmount: { type: Number, default: null },

@@ -3,9 +3,31 @@ import { NextFunction, Request, Response } from 'express'
 import databaseService from '../services/database.services'
 import OrderModel from '../models/Order.model'
 import CartModel from '../models/Cart.model'
+import mongoose from 'mongoose'
 
 async function placeOrder(userId: string, items: any[]) {
   await CartModel.findOneAndDelete({ userId })
+}
+export async function getOne(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params
+  try {
+    // Kiểm tra xem ID có phải là một ObjectId hợp lệ của MongoDB không
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid order ID.' })
+    }
+
+    // Tìm đơn hàng theo ID và populate thông tin liên quan nếu cần
+    const order = await databaseService.orders.findById(id).populate('userId', 'name email -_id') // Ví dụ: populate thông tin user với chỉ name và email, loại bỏ _id
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found.' })
+    }
+
+    res.json(order)
+  } catch (error: any) {
+    console.error(error)
+    res.status(500).json({ message: 'Server error occurred.' })
+  }
 }
 
 export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
