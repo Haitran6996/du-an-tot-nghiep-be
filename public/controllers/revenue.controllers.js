@@ -61,7 +61,8 @@ const getRevenue = async (req, res, next) => {
             {
                 $group: {
                     _id: null,
-                    totalIncome: { $sum: '$totalAmount' }
+                    totalIncome: { $sum: '$totalAmount' },
+                    totalCount: { $sum: 1 } // Đếm số lượng đơn hàng
                 }
             }
         ]);
@@ -93,7 +94,8 @@ const getRevenueYear = async (req, res, next) => {
             {
                 $group: {
                     _id: { $month: '$createdAt' }, // Nhóm theo tháng của createdAt
-                    totalIncome: { $sum: '$totalAmount' } // Tính tổng totalAmount cho mỗi nhóm
+                    totalIncome: { $sum: '$totalAmount' }, // Tính tổng totalAmount cho mỗi nhóm
+                    totalCount: { $sum: 1 }
                 }
             },
             {
@@ -103,7 +105,8 @@ const getRevenueYear = async (req, res, next) => {
                 $project: {
                     _id: 0,
                     month: '$_id',
-                    totalIncome: 1
+                    totalIncome: 1,
+                    totalCount: 1
                 }
             }
         ]);
