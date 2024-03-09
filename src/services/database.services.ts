@@ -10,6 +10,8 @@ import OrderSchema, { IOrder } from '../models/Order.model'
 import GiftSchema, { IGift } from '../models/gift.model'
 import CategorySchema, { ICategory } from '../models/Category.model'
 import SliderSchema, { ISlider } from '../models/Slider.model'
+import ReplySchema, {IReply} from 'src/models/CmtReply.models'
+import CommentReplySchema, { ICmtReply } from 'src/models/commentR.models' 
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 
 class DatabaseService {
@@ -64,6 +66,12 @@ class DatabaseService {
   }
   get slider(): mongoose.Model<ISlider> {
     return SliderSchema
+  }
+  get commentR():mongoose.Model<ICmtReply>{
+    return CommentReplySchema
+  }
+  get reply():mongoose.Model<IReply>{
+    return ReplySchema
   }
 }
 const databaseService = new DatabaseService()

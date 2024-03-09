@@ -16,6 +16,7 @@ import categoryRoutes from './routes/category.routes'
 import revenueRouters from './routes/revenue.routes'
 import giftRoutes from './routes/gift.routes'
 import sliderRoutes from './routes/slider.routes'
+import CommentReplyRoutes from './routes/commentR.routes'
 
 process.env.TZ = 'Asia/Ho_Chi_Minh'
 app.use(express.json())
@@ -44,6 +45,7 @@ app.use('/comment', CommentRoutes)
 app.use('/category', categoryRoutes)
 app.use('/gift', giftRoutes)
 app.use('/slider', sliderRoutes)
+app.use('/cmt-reply', CommentReplyRoutes)
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
