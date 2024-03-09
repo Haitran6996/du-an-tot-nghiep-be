@@ -15,6 +15,8 @@ const Order_model_1 = __importDefault(require("../models/Order.model"));
 const gift_model_1 = __importDefault(require("../models/gift.model"));
 const Category_model_1 = __importDefault(require("../models/Category.model"));
 const Slider_model_1 = __importDefault(require("../models/Slider.model"));
+const CmtReply_models_1 = __importDefault(require("src/models/CmtReply.models"));
+const commentR_models_1 = __importDefault(require("src/models/commentR.models"));
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority';
 class DatabaseService {
     constructor() {
@@ -65,6 +67,12 @@ class DatabaseService {
     }
     get slider() {
         return Slider_model_1.default;
+    }
+    get commentR() {
+        return commentR_models_1.default;
+    }
+    get reply() {
+        return CmtReply_models_1.default;
     }
 }
 const databaseService = new DatabaseService();
