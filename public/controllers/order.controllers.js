@@ -3,13 +3,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAll = exports.getById = exports.updateOrder = exports.addOrder = void 0;
+exports.getAll = exports.getById = exports.updateOrder = exports.addOrder = exports.getOne = void 0;
 const database_services_1 = __importDefault(require("../services/database.services"));
 const Order_model_1 = __importDefault(require("../models/Order.model"));
 const Cart_model_1 = __importDefault(require("../models/Cart.model"));
+const mongoose_1 = __importDefault(require("mongoose"));
 async function placeOrder(userId, items) {
     await Cart_model_1.default.findOneAndDelete({ userId });
 }
+async function getOne(req, res, next) {
+    const { id } = req.params;
+    try {
+        // Kiểm tra xem ID có phải là một ObjectId hợp lệ của MongoDB không
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid order ID.' });
+        }
+        // Tìm đơn hàng theo ID và populate thông tin liên quan nếu cần
+        const order = await database_services_1.default.orders.findById(id).populate('userId', 'name email -_id'); // Ví dụ: populate thông tin user với chỉ name và email, loại bỏ _id
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found.' });
+        }
+        res.json(order);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error occurred.' });
+    }
+}
+exports.getOne = getOne;
 const addOrder = async (req, res, next) => {
     try {
         // Giả sử req.body.userId là ID của người dùng đang đặt hàng
