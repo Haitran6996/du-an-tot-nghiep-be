@@ -10,8 +10,8 @@ import OrderSchema, { IOrder } from '../models/Order.model'
 import GiftSchema, { IGift } from '../models/gift.model'
 import CategorySchema, { ICategory } from '../models/Category.model'
 import SliderSchema, { ISlider } from '../models/Slider.model'
-import ReplySchema, {IReply} from 'src/models/CmtReply.models'
-import CommentReplySchema, { ICmtReply } from 'src/models/commentR.models' 
+import ReplySchema, {IReply} from '../models/CmtReply.models'
+import CommentReplySchema, { ICmtReply } from '../models/commentR.models' 
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 
 class DatabaseService {
