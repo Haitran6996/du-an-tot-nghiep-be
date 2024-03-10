@@ -23,6 +23,7 @@ productsRoutes.get('/:productId', getProductById)
 productsRoutes.patch('/:productId', updateProduct)
 productsRoutes.post('/', addProducts)
 productsRoutes.get('/sosanh/:id1/:id2', soSanh)
+productsRoutes.get('/sosanh/:id1/:id2/:id3', soSanh)
 productsRoutes.get('/addview/:productId', addViewProductById)
 productsRoutes.post('/filter/category', filterWithCategory) //body truyền lên categoryId, sort
 productsRoutes.post('/filter', filterPriceNoneCategory) //body truyền lên start, end ,sort
