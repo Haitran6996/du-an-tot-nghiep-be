@@ -268,7 +268,27 @@ const soSanh = async (req, res) => {
     try {
         const data = [];
         for (let index = 0; index < array.length; index++) {
-            const product = await database_services_1.default.products.findById(array[index]);
+            const pipeline = [
+                { $match: { _id: new mongodb_1.ObjectId(array[index]) } },
+                {
+                    $lookup: {
+                        from: 'options',
+                        localField: 'options',
+                        foreignField: '_id',
+                        as: 'optionsDetails'
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        thumbnail: 1,
+                        rating: 1,
+                        date: 1,
+                        optionsDetails: 1,
+                    }
+                }
+            ];
+            const product = await database_services_1.default.products.aggregate(pipeline);
             data.push(product);
         }
         res.status(200).json(data);
