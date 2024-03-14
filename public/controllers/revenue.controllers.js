@@ -10,13 +10,11 @@ const getRevenue = async (req, res, next) => {
     try {
         let start, end;
         if (startDate && endDate) {
-            // Nếu startDate và endDate được cung cấp, sử dụng chúng để xác định khoảng thời gian
             start = new Date(startDate);
             end = new Date(endDate);
             end.setHours(23, 59, 59, 999); // Đảm bảo kết thúc vào cuối ngày của endDate
         }
         else {
-            // Nếu không, xử lý dựa trên period
             year = parseInt(year, 10);
             month = parseInt(month, 10);
             switch (period) {
@@ -32,22 +30,21 @@ const getRevenue = async (req, res, next) => {
                     if (!year || !month || isNaN(year) || isNaN(month)) {
                         return res.status(400).json({ message: 'Year and month must be valid numbers' });
                     }
-                    start = new Date(year, month - 1, 1); // Tháng trong JS đếm từ 0
-                    end = new Date(year, month, 0); // Lấy ngày cuối cùng của tháng
-                    end.setDate(end.getDate() + 1); // Đảm bảo endDate nằm ngoài khoảng thời gian
+                    start = new Date(year, month - 1, 1);
+                    end = new Date(year, month, 0);
+                    end.setDate(end.getDate() + 1);
                     break;
                 case 'year':
                     if (!year || isNaN(year)) {
                         return res.status(400).json({ message: 'Year must be a valid number' });
                     }
                     start = new Date(year, 0, 1);
-                    end = new Date(year + 1, 0, 1); // Đảm bảo endDate nằm ngoài khoảng thời gian
+                    end = new Date(year + 1, 0, 1);
                     break;
                 default:
                     return res.status(400).json({ message: 'Invalid period specified or missing startDate/endDate' });
             }
         }
-        // Kiểm tra startDate và endDate có hợp lệ không
         if (start && end && (isNaN(start.getTime()) || isNaN(end.getTime()))) {
             return res.status(400).json({ message: 'Invalid start date or end date' });
         }
@@ -55,14 +52,46 @@ const getRevenue = async (req, res, next) => {
             {
                 $match: {
                     createdAt: { $gte: start, $lt: end },
-                    status: 'completed'
+                    status: { $in: ['completed', 'pending', 'check', 'paid', 'shipped', 'cancelled'] }
                 }
             },
             {
                 $group: {
                     _id: null,
                     totalIncome: { $sum: '$totalAmount' },
-                    totalCount: { $sum: 1 } // Đếm số lượng đơn hàng
+                    totalCount: { $sum: 1 },
+                    // Thêm đếm tổng số hóa đơn theo từng trạng thái
+                    pendingCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] }
+                    },
+                    checkCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'check'] }, 1, 0] }
+                    },
+                    paidCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'paid'] }, 1, 0] }
+                    },
+                    completedCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] }
+                    },
+                    shippedCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'shipped'] }, 1, 0] }
+                    },
+                    cancelledCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    totalIncome: 1,
+                    totalCount: 1,
+                    pendingCount: 1,
+                    checkCount: 1,
+                    paidCount: 1,
+                    completedCount: 1,
+                    shippedCount: 1,
+                    cancelledCount: 1
                 }
             }
         ]);
@@ -88,25 +117,50 @@ const getRevenueYear = async (req, res, next) => {
             {
                 $match: {
                     createdAt: { $gte: start, $lt: end },
-                    status: 'completed' // Chỉ tính những đơn hàng đã hoàn thành
+                    status: { $in: ['completed', 'pending', 'check', 'paid', 'shipped', 'cancelled'] }
                 }
             },
             {
                 $group: {
-                    _id: { $month: '$createdAt' }, // Nhóm theo tháng của createdAt
-                    totalIncome: { $sum: '$totalAmount' }, // Tính tổng totalAmount cho mỗi nhóm
-                    totalCount: { $sum: 1 }
+                    _id: { $month: '$createdAt' },
+                    totalIncome: { $sum: '$totalAmount' },
+                    totalCount: { $sum: 1 },
+                    // Thêm đếm tổng số hóa đơn theo từng trạng thái
+                    pendingCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] }
+                    },
+                    checkCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'check'] }, 1, 0] }
+                    },
+                    paidCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'paid'] }, 1, 0] }
+                    },
+                    completedCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] }
+                    },
+                    shippedCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'shipped'] }, 1, 0] }
+                    },
+                    cancelledCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] }
+                    }
                 }
             },
             {
-                $sort: { _id: 1 } // Sắp xếp kết quả theo tháng, từ tháng 1 đến tháng 12
+                $sort: { _id: 1 }
             },
             {
                 $project: {
                     _id: 0,
                     month: '$_id',
                     totalIncome: 1,
-                    totalCount: 1
+                    totalCount: 1,
+                    pendingCount: 1,
+                    checkCount: 1,
+                    paidCount: 1,
+                    completedCount: 1,
+                    shippedCount: 1,
+                    cancelledCount: 1
                 }
             }
         ]);
