@@ -15,7 +15,7 @@ export const updateRating = async (req: Request, res: Response, next: NextFuncti
         { $group: { _id: productId, avgRate: { $avg: '$rating' } } }])
       const rate = Number(avg[0].avgRate)
       await databaseService.products.findByIdAndUpdate(productId, { rating: rate })
-      res.status(201).json({rate})
+      res.status(201).json({ rate })
     }
   } catch (error: any) {
     console.error('Error get data:', error)
@@ -270,7 +270,29 @@ export const soSanh = async (req: Request, res: Response) => {
   try {
     const data: any = []
     for (let index = 0; index < array.length; index++) {
-      const product: any = await databaseService.products.findById(array[index])
+
+      const pipeline = [
+        { $match: { _id: new ObjectId(array[index]) } },
+        {
+          $lookup: {
+            from: 'options',
+            localField: 'options',
+            foreignField: '_id',
+            as: 'optionsDetails'
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            thumbnail:1,
+            rating:1,
+            date:1,
+            optionsDetails:1,
+          }
+        }
+      ]
+
+      const product = await databaseService.products.aggregate(pipeline)
       data.push(product)
     }
     res.status(200).json(data)
