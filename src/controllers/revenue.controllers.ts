@@ -97,7 +97,13 @@ export const getRevenue = async (req: Request, res: Response, next: NextFunction
       }
     ])
 
-    res.json(stats)
+    const topProducts = await databaseService.products.aggregate([
+      { $sort: { purchases: -1 } },
+      { $limit: 10 },
+      { $project: { description: 0 } }
+    ])
+
+    res.json({ stats, topProducts })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -170,7 +176,13 @@ export const getRevenueYear = async (req: Request, res: Response, next: NextFunc
       }
     ])
 
-    res.json(stats)
+    const topProducts = await databaseService.products.aggregate([
+      { $sort: { purchases: -1 } },
+      { $limit: 10 },
+      { $project: { description: 0 } }
+    ])
+
+    res.json({ stats, topProducts })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
