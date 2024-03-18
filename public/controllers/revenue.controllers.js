@@ -95,7 +95,12 @@ const getRevenue = async (req, res, next) => {
                 }
             }
         ]);
-        res.json(stats);
+        const topProducts = await database_services_1.default.products.aggregate([
+            { $sort: { purchases: -1 } },
+            { $limit: 10 },
+            { $project: { description: 0 } }
+        ]);
+        res.json({ stats, topProducts });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -164,7 +169,12 @@ const getRevenueYear = async (req, res, next) => {
                 }
             }
         ]);
-        res.json(stats);
+        const topProducts = await database_services_1.default.products.aggregate([
+            { $sort: { purchases: -1 } },
+            { $limit: 10 },
+            { $project: { description: 0 } }
+        ]);
+        res.json({ stats, topProducts });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
