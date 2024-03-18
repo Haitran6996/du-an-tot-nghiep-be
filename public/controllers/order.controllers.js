@@ -19,7 +19,17 @@ async function getOne(req, res, next) {
             return res.status(400).json({ message: 'Invalid order ID.' });
         }
         // Tìm đơn hàng theo ID và populate thông tin liên quan nếu cần
-        const order = await database_services_1.default.orders.findById(id).populate('userId', 'name email -_id'); // Ví dụ: populate thông tin user với chỉ name và email, loại bỏ _id
+        const order = await database_services_1.default.orders
+            .findById(id)
+            .populate('userId', 'name email -_id')
+            .sort({ createdAt: -1 })
+            .populate({
+            path: 'items.product',
+            populate: {
+                path: 'options', // Populate nested options của product
+                model: 'options' // Đảm bảo tên mô hình là đúng
+            }
+        }); // Sắp xếp từ mới nhất đến cũ nhất
         if (!order) {
             return res.status(404).json({ message: 'Order not found.' });
         }
