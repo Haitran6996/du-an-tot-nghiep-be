@@ -285,6 +285,7 @@ export const soSanh = async (req: Request, res: Response) => {
           $project: {
             _id: 1,
             thumbnail:1,
+            name:1,
             rating:1,
             date:1,
             optionsDetails:1,
