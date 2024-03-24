@@ -91,7 +91,7 @@ export const deleteGift = async (req: Request, res: Response, next: NextFunction
 
     try {
 
-        await databaseService.comments.deleteOne({ _id: new ObjectId(giftId) })
+        await databaseService.gifts.deleteOne({ _id: new ObjectId(giftId) })
 
         res.status(200).json({
             message: 'Giftcode deleted successfully'
