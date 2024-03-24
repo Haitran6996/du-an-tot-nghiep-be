@@ -76,7 +76,7 @@ const addOrder = async (req, res, next) => {
                 },
                 quantity: item?.quantity
             })),
-            status: 'pending',
+            status: req.body.status,
             totalAmount: totalAmount,
             name: req.body.name,
             phone: req.body.phone,

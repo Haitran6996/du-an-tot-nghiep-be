@@ -79,7 +79,7 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
         },
         quantity: item?.quantity
       })),
-      status: 'pending',
+      status: req.body.status,
       totalAmount: totalAmount,
       name: req.body.name,
       phone: req.body.phone,
