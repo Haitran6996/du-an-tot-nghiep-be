@@ -115,7 +115,7 @@ export async function getCartServices(req: Request, res: Response) {
 
     // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
     cart.items.forEach((item: any) => {
-      const productPrice = item?.product?.price // Giá của sản phẩm
+      const productPrice = item?.product?.optiions[0].price // Giá của sản phẩm
       const quantity = item?.quantity // Số lượng sản phẩm
       totalAmount += productPrice * quantity // Tính tổng tiền cho sản phẩm này
     })
