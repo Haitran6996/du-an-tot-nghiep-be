@@ -88,7 +88,7 @@ exports.updateGift = updateGift;
 const deleteGift = async (req, res, next) => {
     const { giftId } = req.params;
     try {
-        await database_services_1.default.comments.deleteOne({ _id: new mongodb_1.ObjectId(giftId) });
+        await database_services_1.default.gifts.deleteOne({ _id: new mongodb_1.ObjectId(giftId) });
         res.status(200).json({
             message: 'Giftcode deleted successfully'
         });
