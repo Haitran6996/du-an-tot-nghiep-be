@@ -282,7 +282,7 @@ const soSanh = async (req, res) => {
                     $project: {
                         _id: 1,
                         thumbnail: 1,
-                        name:1,
+                        name: 1,
                         rating: 1,
                         date: 1,
                         optionsDetails: 1,

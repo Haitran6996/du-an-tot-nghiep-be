@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getAllUsers = exports.deleteUsers = exports.signUp = exports.getUsernameById = exports.paginationUsers = void 0;
+exports.getUserById = exports.updatePass = exports.updateAvatar = exports.getAllUsers = exports.deleteUsers = exports.signUp = exports.getUsernameById = exports.paginationUsers = void 0;
+const md5_1 = __importDefault(require("md5"));
 const mongodb_1 = require("mongodb");
 const database_services_1 = __importDefault(require("../services/database.services"));
 const paginationUsers = async (req, res, next) => {
@@ -95,6 +96,58 @@ const getAllUsers = async (req, res) => {
     }
 };
 exports.getAllUsers = getAllUsers;
+const updateAvatar = async (req, res, next) => {
+    const { userId, role, avatar, Token } = req.body;
+    try {
+        const checkExist = await database_services_1.default.users.find({ _id: userId, role: role, refreshToken: Token }).select('+username -password -role -image -status -mail');
+        // Tạo tài khoản mới
+        if (checkExist == null) {
+            res.status(500).json({
+                message: 'Không tìm thấy user'
+            });
+        }
+        {
+            await database_services_1.default.users.findByIdAndUpdate({ _id: userId }, {
+                image: avatar
+            });
+            res.status(200).json({
+                message: 'Cập nhật ảnh đại diện thành công'
+            });
+        }
+    }
+    catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Failed to delete user', error: error.message });
+    }
+};
+exports.updateAvatar = updateAvatar;
+const updatePass = async (req, res, next) => {
+    const { userId, role, Token } = req.body;
+    const passOld = (0, md5_1.default)(req.body.passwordOld);
+    const passNew = (0, md5_1.default)(req.body.passwordNew);
+    try {
+        const checkExist = await database_services_1.default.users.find({ _id: userId, role: role, refreshToken: Token, password: passOld }).select('+username -password -role -image -status -mail -refreshToken');
+        // Tạo tài khoản mới
+        if (checkExist == null) {
+            res.status(500).json({
+                message: 'Không tìm thấy user'
+            });
+        }
+        {
+            await database_services_1.default.users.findByIdAndUpdate({ _id: userId }, {
+                password: passNew
+            });
+            res.status(200).json({
+                message: 'Cập nhật mật khẩu thành công'
+            });
+        }
+    }
+    catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Failed:', error: error.message });
+    }
+};
+exports.updatePass = updatePass;
 const getUserById = async (req, res) => {
     const { _id } = req.params;
     try {
