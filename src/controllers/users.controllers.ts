@@ -91,10 +91,10 @@ export const getAllUsers = async (req: Request, res: Response) => {
 }
 
 export const updateAvatar = async (req: Request, res: Response, next: NextFunction) => {
-  const { userId, role, avatar } = req.body
+  const { userId, role, avatar, Token } = req.body
 
   try {
-    const checkExist = await databaseService.users.find({ _id: userId, role: role }).select('+username -password -role -image -status -mail')
+    const checkExist = await databaseService.users.find({ _id: userId, role: role, refreshToken: Token }).select('+username -password -role -image -status -mail')
     // Tạo tài khoản mới
     if (checkExist == null) {
       res.status(500).json({
