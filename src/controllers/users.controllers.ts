@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, Router } from 'express'
-
+import md5 from 'md5'
 import { ObjectId } from 'mongodb'
 import databaseService from '../services/database.services'
 
@@ -31,8 +31,8 @@ export const paginationUsers = async (req: Request, res: Response, next: NextFun
 export const getUsernameById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Kết nối tới database nếu cần
-    const {userId } = req.params
-    const data = await databaseService.users.findById({_id:userId}).select('-__v -_id -password -role -image -status -mail -refreshToken')
+    const { userId } = req.params
+    const data = await databaseService.users.findById({ _id: userId }).select('-__v -_id -password -role -image -status -mail -refreshToken')
     res.status(201).json(data?.username)
   } catch (error: any) {
     console.error('Error get data:', error)
@@ -90,6 +90,61 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 }
 
+export const updateAvatar = async (req: Request, res: Response, next: NextFunction) => {
+  const { userId, role, avatar } = req.body
+
+  try {
+    const checkExist = await databaseService.users.find({ _id: userId, role: role }).select('+username -password -role -image -status -mail')
+    // Tạo tài khoản mới
+    if (checkExist == null) {
+      res.status(500).json({
+        message: 'Không tìm thấy user'
+      })
+    } {
+      await databaseService.users.findByIdAndUpdate(
+        { _id: userId },
+        {
+          image: avatar
+        }
+      )
+      res.status(200).json({
+        message: 'Cập nhật ảnh đại diện thành công'
+      })
+    }
+
+  } catch (error: any) {
+    console.error('Error deleting user:', error)
+    res.status(500).json({ message: 'Failed to delete user', error: error.message })
+  }
+}
+export const updatePass = async (req: Request, res: Response, next: NextFunction) => {
+  const { userId, role, Token } = req.body
+  const passOld = md5(req.body.passwordOld)
+  const passNew = md5(req.body.passwordNew)
+  try {
+    const checkExist = await databaseService.users.find({ _id: userId, role: role, refreshToken: Token, password: passOld }).select('+username -password -role -image -status -mail -refreshToken')
+    // Tạo tài khoản mới
+    if (checkExist == null) {
+      res.status(500).json({
+        message: 'Không tìm thấy user'
+      })
+    } {
+      await databaseService.users.findByIdAndUpdate(
+        { _id: userId },
+        {
+          password: passNew
+        }
+      )
+      res.status(200).json({
+        message: 'Cập nhật mật khẩu thành công'
+      })
+    }
+
+  } catch (error: any) {
+    console.error('Error:', error)
+    res.status(500).json({ message: 'Failed:', error: error.message })
+  }
+}
 export const getUserById = async (req: Request, res: Response) => {
   const { _id } = req.params
   try {
@@ -99,3 +154,4 @@ export const getUserById = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Failed to get data Users', error: error.message })
   }
 }
+
