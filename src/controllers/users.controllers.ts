@@ -126,9 +126,9 @@ export const updatePass = async (req: Request, res: Response, next: NextFunction
     // Tạo tài khoản mới
     if (checkExist[0]==null) {
       res.status(500).json({
-        message: 'Không tìm thấy user'
+        message: 'Mật khẩu cũ sai'
       })
-    } {
+    } else {
       await databaseService.users.findByIdAndUpdate(
         { _id: userId },
         {

@@ -130,10 +130,10 @@ const updatePass = async (req, res, next) => {
         // Tạo tài khoản mới
         if (checkExist[0] == null) {
             res.status(500).json({
-                message: 'Không tìm thấy user'
+                message: 'Mật khẩu cũ sai'
             });
         }
-        {
+        else {
             await database_services_1.default.users.findByIdAndUpdate({ _id: userId }, {
                 password: passNew
             });
