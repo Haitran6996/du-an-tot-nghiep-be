@@ -128,7 +128,7 @@ const updatePass = async (req, res, next) => {
     try {
         const checkExist = await database_services_1.default.users.find({ _id: userId, role: role, password: passOld, refreshToken: Token }).select(' -role -image -status -mail -refreshToken');
         // Tạo tài khoản mới
-        if (checkExist == null) {
+        if (checkExist[0] == null) {
             res.status(500).json({
                 message: 'Không tìm thấy user'
             });
