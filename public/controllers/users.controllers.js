@@ -126,7 +126,7 @@ const updatePass = async (req, res, next) => {
     const passOld = (0, md5_1.default)(req.body.passwordOld);
     const passNew = (0, md5_1.default)(req.body.passwordNew);
     try {
-        const checkExist = await database_services_1.default.users.find({ _id: userId, role: role, refreshToken: Token, password: passOld }).select('+username -password -role -image -status -mail -refreshToken');
+        const checkExist = await database_services_1.default.users.find({ _id: userId, role: role, password: passOld, refreshToken: Token }).select(' -role -image -status -mail -refreshToken');
         // Tạo tài khoản mới
         if (checkExist == null) {
             res.status(500).json({

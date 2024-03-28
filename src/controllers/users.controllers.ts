@@ -122,7 +122,7 @@ export const updatePass = async (req: Request, res: Response, next: NextFunction
   const passOld = md5(req.body.passwordOld)
   const passNew = md5(req.body.passwordNew)
   try {
-    const checkExist = await databaseService.users.find({ _id: userId, role: role, refreshToken: Token, password: passOld }).select('+username -password -role -image -status -mail -refreshToken')
+    const checkExist = await databaseService.users.find({ _id: userId, role: role, password: passOld, refreshToken: Token }).select(' -role -image -status -mail -refreshToken')
     // Tạo tài khoản mới
     if (checkExist == null) {
       res.status(500).json({
