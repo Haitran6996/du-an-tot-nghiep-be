@@ -56,7 +56,7 @@ async function updateCartServices(req, res) {
             // Cập nhật số lượng sản phẩm
             cart.items[itemIndex].quantity = quantity;
             await cart.save();
-            return cart; // Sử dụng return ở đây
+            return res.json(cart); // Sử dụng return ở đây
         }
         else {
             return res.status(404).send('Item not found in cart');
@@ -76,7 +76,7 @@ async function deleteItemCartServices(req, res) {
             return res.status(404).send('Cart not found');
         }
         // Kiểm tra sản phẩm có trong giỏ hàng không
-        const itemIndex = cart.items.findIndex((item) => item?.product?._id.toString() === productId);
+        const itemIndex = cart.items.findIndex((item) => item?._id.toString() === productId);
         if (itemIndex > -1) {
             // Xóa sản phẩm khỏi giỏ hàng
             cart.items.splice(itemIndex, 1);
@@ -108,7 +108,8 @@ async function getCartServices(req, res) {
         let totalAmount = 0;
         // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
         cart.items.forEach((item) => {
-            const productPrice = item?.product?.options[0]?.price; // Giá của sản phẩm
+            const findOptionDetail = item?.product?.options?.find((it) => it._id?.toString() == item.options[0]?.toString());
+            const productPrice = findOptionDetail?.price; // Giá của sản phẩm
             const quantity = item?.quantity; // Số lượng sản phẩm
             totalAmount += productPrice * quantity; // Tính tổng tiền cho sản phẩm này
         });
