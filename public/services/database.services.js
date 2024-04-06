@@ -17,6 +17,7 @@ const Category_model_1 = __importDefault(require("../models/Category.model"));
 const Slider_model_1 = __importDefault(require("../models/Slider.model"));
 const CmtReply_models_1 = __importDefault(require("../models/CmtReply.models"));
 const commentR_models_1 = __importDefault(require("../models/commentR.models"));
+const logOrder_model_1 = __importDefault(require("../models/logOrder.model "));
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority';
 class DatabaseService {
     constructor() {
@@ -73,6 +74,9 @@ class DatabaseService {
     }
     get reply() {
         return CmtReply_models_1.default;
+    }
+    get log() {
+        return logOrder_model_1.default;
     }
 }
 const databaseService = new DatabaseService();

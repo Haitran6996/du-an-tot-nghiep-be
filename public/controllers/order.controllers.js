@@ -8,6 +8,7 @@ const database_services_1 = __importDefault(require("../services/database.servic
 const Order_model_1 = __importDefault(require("../models/Order.model"));
 const Cart_model_1 = __importDefault(require("../models/Cart.model"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const log_controllers_1 = require("./log.controllers");
 async function placeOrder(userId, items) {
     await Cart_model_1.default.findOneAndDelete({ userId });
 }
@@ -42,6 +43,8 @@ async function getOne(req, res, next) {
 }
 exports.getOne = getOne;
 const addOrder = async (req, res, next) => {
+    const { userId, role, orderId } = req.body;
+    const newStatus = req.body.status;
     try {
         // Giả sử req.body.userId là ID của người dùng đang đặt hàng
         const cart = await database_services_1.default.carts.findOne({ userId: req.body.userId }).populate({
@@ -84,9 +87,11 @@ const addOrder = async (req, res, next) => {
         };
         const newOrder = new Order_model_1.default(orderData);
         const savedOrder = await newOrder.save();
-        if (savedOrder)
+        if (savedOrder) {
             await placeOrder(req.body.userId, cart.items);
-        res.status(201).json(savedOrder);
+            res.status(201).json(savedOrder);
+            (0, log_controllers_1.addLog)(userId, role, orderId, 'none', newStatus, totalAmount);
+        }
     }
     catch (err) {
         console.log(err, 'errr');
@@ -97,10 +102,13 @@ exports.addOrder = addOrder;
 const updateOrder = async (req, res, next) => {
     try {
         const { orderId } = req.params;
-        const { status } = req.body;
+        const { status, userId, role, oldStatus } = req.body;
+        const newStatus = req.body.status;
         if (!['pending', 'paid', 'completed', 'shipped', 'cancelled'].includes(status)) {
             return res.status(400).send({ message: 'Invalid status value' });
         }
+        const getOd = await database_services_1.default.orders.findById(orderId);
+        const totalAmount = getOd?.totalAmount;
         const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status }, { new: true });
         if (!order) {
             return res.status(404).send({ message: 'Order not found' });
@@ -113,6 +121,7 @@ const updateOrder = async (req, res, next) => {
                 await database_services_1.default.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } });
             }));
         }
+        (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount);
         res.send(order);
     }
     catch (error) {

@@ -12,6 +12,7 @@ import CategorySchema, { ICategory } from '../models/Category.model'
 import SliderSchema, { ISlider } from '../models/Slider.model'
 import ReplySchema, {IReply} from '../models/CmtReply.models'
 import CommentReplySchema, { ICmtReply } from '../models/commentR.models' 
+import logOrderSchema, {ILogOder} from '../models/logOrder.model '
 const uri = 'mongodb+srv://datn:UDISDKLPOS@cluster0.ncfvzoh.mongodb.net/?retryWrites=true&w=majority'
 
 class DatabaseService {
@@ -72,6 +73,9 @@ class DatabaseService {
   }
   get reply():mongoose.Model<IReply>{
     return ReplySchema
+  }
+  get log():mongoose.Model<ILogOder>{
+    return logOrderSchema
   }
 }
 const databaseService = new DatabaseService()

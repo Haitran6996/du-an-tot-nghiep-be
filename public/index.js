@@ -22,6 +22,7 @@ const revenue_routes_1 = __importDefault(require("./routes/revenue.routes"));
 const gift_routes_1 = __importDefault(require("./routes/gift.routes"));
 const slider_routes_1 = __importDefault(require("./routes/slider.routes"));
 const commentR_routes_1 = __importDefault(require("./routes/commentR.routes"));
+const log_routes_1 = __importDefault(require("./routes/log.routes"));
 process.env.TZ = 'Asia/Ho_Chi_Minh';
 app.use(express_1.default.json());
 database_services_1.default.connect();
@@ -45,6 +46,7 @@ app.use('/comment', comment_routes_1.default);
 app.use('/category', category_routes_1.default);
 app.use('/gift', gift_routes_1.default);
 app.use('/slider', slider_routes_1.default);
+app.use('/log', log_routes_1.default);
 app.use('/cmt-reply', commentR_routes_1.default);
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

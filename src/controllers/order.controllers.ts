@@ -4,6 +4,8 @@ import databaseService from '../services/database.services'
 import OrderModel from '../models/Order.model'
 import CartModel from '../models/Cart.model'
 import mongoose from 'mongoose'
+import { addLog } from './log.controllers'
+import { get } from 'http'
 
 async function placeOrder(userId: string, items: any[]) {
   await CartModel.findOneAndDelete({ userId })
@@ -41,6 +43,8 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 }
 
 export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const { userId, role, orderId } = req.body
+  const newStatus = req.body.status
   try {
     // Giả sử req.body.userId là ID của người dùng đang đặt hàng
     const cart = await databaseService.carts.findOne({ userId: req.body.userId }).populate({
@@ -88,8 +92,11 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
 
     const newOrder = new OrderModel(orderData)
     const savedOrder = await newOrder.save()
-    if (savedOrder) await placeOrder(req.body.userId, cart.items)
-    res.status(201).json(savedOrder)
+    if (savedOrder) {
+      await placeOrder(req.body.userId, cart.items)
+      res.status(201).json(savedOrder)
+      addLog(userId, role, orderId, 'none', newStatus, totalAmount)
+    }
   } catch (err) {
     console.log(err, 'errr')
     res.status(500).json(err)
@@ -98,12 +105,14 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
-    const { status } = req.body
+    const { status, userId, role, oldStatus } = req.body
+    const newStatus = req.body.status
 
     if (!['pending', 'paid', 'completed', 'shipped', 'cancelled'].includes(status)) {
       return res.status(400).send({ message: 'Invalid status value' })
     }
-
+    const getOd = await databaseService.orders.findById(orderId)
+    const totalAmount = getOd?.totalAmount
     const order = await databaseService.orders.findByIdAndUpdate(orderId, { status }, { new: true })
 
     if (!order) {
@@ -120,6 +129,7 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
         })
       )
     }
+    addLog(userId, role, orderId, oldStatus, newStatus, totalAmount)
 
     res.send(order)
   } catch (error: any) {
