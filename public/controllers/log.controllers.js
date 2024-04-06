@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLogWithOrder = exports.addLog = exports.paginationComment = void 0;
+exports.getLogWithOrder = exports.getAllLog = exports.addLog = exports.paginationComment = void 0;
 const database_services_1 = __importDefault(require("../services/database.services"));
 const paginationComment = async (req, res, next) => {
     try {
@@ -54,6 +54,16 @@ const addLog = async (userId, role, orderId, oldStatus, newStatus, priceOrder) =
     }
 };
 exports.addLog = addLog;
+const getAllLog = async (req, res) => {
+    try {
+        const news = await database_services_1.default.log.find({});
+        res.status(200).json(news);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Failed to get log', error: error.message });
+    }
+};
+exports.getAllLog = getAllLog;
 const getLogWithOrder = async (req, res) => {
     const { orderId } = req.params;
     try {
