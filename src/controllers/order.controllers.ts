@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import databaseService from '../services/database.services'
 import OrderModel from '../models/Order.model'
 import CartModel from '../models/Cart.model'
+import Option from '../models/Options.model'
 import mongoose from 'mongoose'
 import { addLog } from './log.controllers'
 import { get } from 'http'
@@ -24,7 +25,7 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
       .populate('userId', 'name email -_id')
       .sort({ createdAt: -1 })
       .populate({
-        path: 'items.product',
+        path: 'items._id',
         populate: {
           path: 'options', // Populate nested options của product
           model: 'options' // Đảm bảo tên mô hình là đúng
@@ -148,16 +149,15 @@ export const getById = async (req: Request, res: Response, next: NextFunction) =
   try {
     const { userId } = req.params
 
-    const orders = await databaseService.orders
-      .find({ userId: userId })
-      .sort({ createdAt: -1 })
-      .populate({
-        path: 'items.product',
-        populate: {
-          path: 'options', // Populate nested options của product
-          model: 'options' // Đảm bảo tên mô hình là đúng
-        }
-      }) // Sắp xếp từ mới nhất đến cũ nhất
+    const orders = await databaseService.orders.findOne({ userId: userId }).sort({ createdAt: -1 })
+    // .populate({
+    //   path: 'items._id',
+    //   populate: {
+    //     path: 'options', // Populate nested options của product
+    //     model: 'options'
+    //     // Đảm bảo tên mô hình là đúng
+    //   }
+    // }) // Sắp xếp từ mới nhất đến cũ nhất
 
     res.status(200).json(orders)
   } catch (error: any) {
