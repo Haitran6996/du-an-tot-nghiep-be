@@ -57,10 +57,17 @@ const addOrder = async (req, res, next) => {
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
+        // let totalAmount = 0
+        // // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
+        // cart.items.forEach((item: any) => {
+        //   const productPrice = item?.product?.price // Giá của sản phẩm
+        //   const quantity = item?.quantity // Số lượng sản phẩm
+        //   totalAmount += productPrice * quantity // Tính tổng tiền cho sản phẩm này
+        // })
         let totalAmount = 0;
         // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
         cart.items.forEach((item) => {
-            const productPrice = item?.product?.price; // Giá của sản phẩm
+            const productPrice = item?.product?.options[0]?.price; // Giá của sản phẩm
             const quantity = item?.quantity; // Số lượng sản phẩm
             totalAmount += productPrice * quantity; // Tính tổng tiền cho sản phẩm này
         });

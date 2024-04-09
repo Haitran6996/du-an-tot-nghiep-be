@@ -38,7 +38,7 @@ const addLog = async (userId, role, orderId, oldStatus, newStatus, priceOrder) =
         const checkRoleUser = await database_services_1.default.users.find({ _id: userId, role: role });
         // check product
         const checkExistOrder = await database_services_1.default.orders.find({ _id: orderId });
-        if (checkRoleUser[0]._id == userId && checkRoleUser[0].role == role && checkExistOrder[0] == null) {
+        if (checkRoleUser[0]._id == userId && checkRoleUser[0].role == role && checkExistOrder[0] != null) {
             const commentInsertion = await database_services_1.default.log.create({
                 userId: userId,
                 role: role,
@@ -47,6 +47,7 @@ const addLog = async (userId, role, orderId, oldStatus, newStatus, priceOrder) =
                 newStatus: newStatus,
                 priceOrder: priceOrder,
             });
+            commentInsertion;
         }
     }
     catch (error) {
@@ -55,6 +56,7 @@ const addLog = async (userId, role, orderId, oldStatus, newStatus, priceOrder) =
 };
 exports.addLog = addLog;
 const getAllLog = async (req, res) => {
+    (0, exports.addLog)('65cf631f63b0e946c68e767a', 1, '661556f6bea7a006516266ef', 'none', 'pending', 80999988);
     try {
         const news = await database_services_1.default.log.find({});
         res.status(200).json(news);

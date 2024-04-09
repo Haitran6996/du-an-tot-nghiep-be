@@ -37,7 +37,7 @@ export const addLog = async (userId: any, role: any, orderId: any, oldStatus: an
         const checkRoleUser = await databaseService.users.find({ _id: userId, role: role })
         // check product
         const checkExistOrder = await databaseService.orders.find({ _id: orderId })
-        if (checkRoleUser[0]._id == userId && checkRoleUser[0].role == role && checkExistOrder[0] == null) {
+        if (checkRoleUser[0]._id == userId && checkRoleUser[0].role == role && checkExistOrder[0] != null) {
             const commentInsertion = await databaseService.log.create({
                 userId: userId,
                 role: role,
@@ -47,13 +47,14 @@ export const addLog = async (userId: any, role: any, orderId: any, oldStatus: an
                 priceOrder: priceOrder,
             }
             )
+            commentInsertion
         }
     } catch (error: any) {
         console.error('Error comment:', error)
     }
 }
-
 export const getAllLog = async (req: Request, res: Response) => {
+    addLog('65cf631f63b0e946c68e767a',1,'661556f6bea7a006516266ef','none','pending',80999988)
     try {
         const news = await databaseService.log.find({})
         res.status(200).json(news)
