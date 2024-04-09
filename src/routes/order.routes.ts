@@ -6,7 +6,7 @@ const OrderRouters = Router()
 OrderRouters.post('/', addOrder)
 OrderRouters.get('/', getAll)
 OrderRouters.get('/:id', getOne)
-OrderRouters.get('/:userId', getById)
+OrderRouters.get('/user/:userId', getById)
 OrderRouters.patch('/:orderId/status', updateOrder)
 
 export default OrderRouters
