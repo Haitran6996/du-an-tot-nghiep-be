@@ -141,6 +141,7 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     }
 
     res.send(order)
+    addLog(userId, role, orderId, oldStatus, newStatus, totalAmount)
   } catch (error: any) {
     res.status(500).send({ message: 'Server error', error })
   }
