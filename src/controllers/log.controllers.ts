@@ -54,7 +54,6 @@ export const addLog = async (userId: any, role: any, orderId: any, oldStatus: an
     }
 }
 export const getAllLog = async (req: Request, res: Response) => {
-    addLog('65cf631f63b0e946c68e767a',1,'661556f6bea7a006516266ef','none','pending',80999988)
     try {
         const news = await databaseService.log.find({})
         res.status(200).json(news)

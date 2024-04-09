@@ -56,7 +56,6 @@ const addLog = async (userId, role, orderId, oldStatus, newStatus, priceOrder) =
 };
 exports.addLog = addLog;
 const getAllLog = async (req, res) => {
-    (0, exports.addLog)('65cf631f63b0e946c68e767a', 1, '661556f6bea7a006516266ef', 'none', 'pending', 80999988);
     try {
         const news = await database_services_1.default.log.find({});
         res.status(200).json(news);
