@@ -35,7 +35,9 @@ export async function removeVariantValue(variantId: string, elementId: string) {
     $pull: {
       ram: { id: new ObjectId(elementId) }, // Giả sử bạn đang xóa từ mảng 'ram'
       rom: { id: new ObjectId(elementId) }, // Lặp lại cho mỗi mảng nếu bạn không biết nó thuộc mảng nào
-      color: { id: new ObjectId(elementId) } // Điều này sẽ kiểm tra và xóa elementId từ tất cả mảng
+      color: { id: new ObjectId(elementId) }, // Điều này sẽ kiểm tra và xóa elementId từ tất cả mảng
+      card: { id: new ObjectId(elementId) }, // Điều này sẽ kiểm tra và xóa elementId từ tất cả mảng
+      chip: { id: new ObjectId(elementId) } // Điều này sẽ kiểm tra và xóa elementId từ tất cả mảng
     }
   }
 
