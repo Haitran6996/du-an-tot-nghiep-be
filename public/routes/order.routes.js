@@ -6,6 +6,6 @@ const OrderRouters = (0, express_1.Router)();
 OrderRouters.post('/', order_controllers_1.addOrder);
 OrderRouters.get('/', order_controllers_1.getAll);
 OrderRouters.get('/:id', order_controllers_1.getOne);
-OrderRouters.get('/:userId', order_controllers_1.getById);
+OrderRouters.get('/user/:userId', order_controllers_1.getById);
 OrderRouters.patch('/:orderId/status', order_controllers_1.updateOrder);
 exports.default = OrderRouters;

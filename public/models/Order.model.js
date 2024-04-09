@@ -26,7 +26,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const OrderSchema = new mongoose_1.Schema({
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users', required: true },
-    items: [],
+    items: [
+        {
+            _id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'product', required: true },
+            options: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'options' }],
+            quantity: { type: Number, required: true }
+        }
+    ],
     name: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },

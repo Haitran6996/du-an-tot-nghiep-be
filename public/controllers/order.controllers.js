@@ -25,7 +25,7 @@ async function getOne(req, res, next) {
             .populate('userId', 'name email -_id')
             .sort({ createdAt: -1 })
             .populate({
-            path: 'items.product',
+            path: 'items._id',
             populate: {
                 path: 'options', // Populate nested options của product
                 model: 'options' // Đảm bảo tên mô hình là đúng
@@ -129,6 +129,7 @@ const updateOrder = async (req, res, next) => {
             }));
         }
         res.send(order);
+        (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount);
     }
     catch (error) {
         res.status(500).send({ message: 'Server error', error });
@@ -138,16 +139,15 @@ exports.updateOrder = updateOrder;
 const getById = async (req, res, next) => {
     try {
         const { userId } = req.params;
-        const orders = await database_services_1.default.orders
-            .find({ userId: userId })
-            .sort({ createdAt: -1 })
-            .populate({
-            path: 'items.product',
-            populate: {
-                path: 'options', // Populate nested options của product
-                model: 'options' // Đảm bảo tên mô hình là đúng
-            }
-        }); // Sắp xếp từ mới nhất đến cũ nhất
+        const orders = await database_services_1.default.orders.findOne({ userId: userId }).sort({ createdAt: -1 });
+        // .populate({
+        //   path: 'items._id',
+        //   populate: {
+        //     path: 'options', // Populate nested options của product
+        //     model: 'options'
+        //     // Đảm bảo tên mô hình là đúng
+        //   }
+        // }) // Sắp xếp từ mới nhất đến cũ nhất
         res.status(200).json(orders);
     }
     catch (error) {
