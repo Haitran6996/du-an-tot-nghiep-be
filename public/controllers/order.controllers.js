@@ -128,7 +128,6 @@ const updateOrder = async (req, res, next) => {
                 await database_services_1.default.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } });
             }));
         }
-        (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount);
         res.send(order);
     }
     catch (error) {

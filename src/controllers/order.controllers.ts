@@ -138,7 +138,6 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
         })
       )
     }
-    addLog(userId, role, orderId, oldStatus, newStatus, totalAmount)
 
     res.send(order)
   } catch (error: any) {
