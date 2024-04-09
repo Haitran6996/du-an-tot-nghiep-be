@@ -46,46 +46,43 @@ const addOrder = async (req, res, next) => {
     const { userId, role, orderId } = req.body;
     const newStatus = req.body.status;
     try {
-        // Giả sử req.body.userId là ID của người dùng đang đặt hàng
         const cart = await database_services_1.default.carts.findOne({ userId: req.body.userId }).populate({
             path: 'items.product',
             populate: {
-                path: 'options', // Populate nested options của product
+                path: 'options',
                 model: 'options' // Đảm bảo tên mô hình là đúng
             }
         });
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-        // let totalAmount = 0
-        // // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
-        // cart.items.forEach((item: any) => {
-        //   const productPrice = item?.product?.price // Giá của sản phẩm
-        //   const quantity = item?.quantity // Số lượng sản phẩm
-        //   totalAmount += productPrice * quantity // Tính tổng tiền cho sản phẩm này
-        // })
         let totalAmount = 0;
-        // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
-        cart.items.forEach((item) => {
-            const productPrice = item?.product?.options[0]?.price; // Giá của sản phẩm
-            const quantity = item?.quantity; // Số lượng sản phẩm
-            totalAmount += productPrice * quantity; // Tính tổng tiền cho sản phẩm này
+        const itemsWithUpdatedPrice = cart.items.map((item) => {
+            // Tính giá dựa trên option được chọn
+            let itemTotalPrice = 0;
+            item.product.options.forEach((option) => {
+                if (item.options.includes(option._id.toString())) {
+                    itemTotalPrice = option.price * item.quantity;
+                }
+            });
+            totalAmount += itemTotalPrice; // Cập nhật tổng tiền cho đơn hàng
+            // Trả về item mới với giá đã được cập nhật
+            return {
+                product: {
+                    _id: item.product._id,
+                    name: item.product.name,
+                    description: item.product.description,
+                    date: item.product.date,
+                    thumbnail: item.product.thumbnail,
+                    price: itemTotalPrice, // Cập nhật giá dựa trên option được chọn
+                    options: [...item.options]
+                },
+                quantity: item.quantity
+            };
         });
         const orderData = {
             userId: cart.userId,
-            items: cart.items.map((item) => ({
-                product: {
-                    _id: item?.product?._id,
-                    name: item?.product?.name,
-                    description: item?.product?.description,
-                    date: item?.product?.date,
-                    thumbnail: item?.product?.thumbnail,
-                    price: item?.product?.price,
-                    options: [...item.options]
-                    // This should now be populated with option objects
-                },
-                quantity: item?.quantity
-            })),
+            items: itemsWithUpdatedPrice,
             status: req.body.status,
             totalAmount: totalAmount,
             name: req.body.name,

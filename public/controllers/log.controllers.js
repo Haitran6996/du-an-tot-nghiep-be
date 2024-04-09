@@ -57,7 +57,7 @@ const addLog = async (userId, role, orderId, oldStatus, newStatus, priceOrder) =
 exports.addLog = addLog;
 const getAllLog = async (req, res) => {
     try {
-        const news = await database_services_1.default.log.find({}).populate('userId', 'username');
+        const news = await database_services_1.default.log.find({}).populate('userId', 'username').sort({ createdAt: 'desc' });
         res.status(200).json(news);
     }
     catch (error) {
@@ -68,7 +68,7 @@ exports.getAllLog = getAllLog;
 const getLogWithOrder = async (req, res) => {
     const { orderId } = req.params;
     try {
-        const comments = await database_services_1.default.log.find({ orderId: orderId }).populate('userId', 'username');
+        const comments = await database_services_1.default.log.find({ orderId: orderId }).populate('userId', 'username').sort({ createdAt: 'desc' });
         res.status(200).json(comments);
     }
     catch (error) {
