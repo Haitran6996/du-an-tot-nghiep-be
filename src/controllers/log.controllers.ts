@@ -55,7 +55,7 @@ export const addLog = async (userId: any, role: any, orderId: any, oldStatus: an
 }
 export const getAllLog = async (req: Request, res: Response) => {
     try {
-        const news = await databaseService.log.find({}).populate('userId','username')
+        const news = await databaseService.log.find({}).populate('userId', 'username').sort({createdAt:'desc'})
         res.status(200).json(news)
     } catch (error: any) {
         res.status(500).json({ message: 'Failed to get log', error: error.message })
@@ -64,7 +64,7 @@ export const getAllLog = async (req: Request, res: Response) => {
 export const getLogWithOrder = async (req: Request, res: Response) => {
     const { orderId } = req.params
     try {
-        const comments = await databaseService.log.find({ orderId: orderId }).populate('userId','username')
+        const comments = await databaseService.log.find({ orderId: orderId }).populate('userId', 'username').sort({createdAt:'desc'})
         res.status(200).json(comments)
     } catch (error: any) {
         res.status(500).json({ message: 'Failed to get log', error: error.message })
