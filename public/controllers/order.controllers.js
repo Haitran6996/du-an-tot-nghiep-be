@@ -22,6 +22,7 @@ async function getOne(req, res, next) {
         // Tìm đơn hàng theo ID và populate thông tin liên quan nếu cần
         const order = await database_services_1.default.orders
             .findById(id)
+            .populate('user_cancel_order')
             .populate('userId', 'name email -_id')
             .sort({ createdAt: -1 })
             .populate({
@@ -106,6 +107,9 @@ exports.addOrder = addOrder;
 const updateOrder = async (req, res, next) => {
     try {
         const { orderId } = req.params;
+        if (req.body.status === 'cancelled' && req.body.desc === '' && !req.body.user_cancel_order) {
+            return res.status(404).send({ message: 'truyền thiếu trường!, kiểm tra lại thông tin' });
+        }
         const { status, userId, role, oldStatus } = req.body;
         const newStatus = req.body.status;
         if (!['pending', 'paid', 'completed', 'shipped', 'cancelled'].includes(status)) {
@@ -157,6 +161,7 @@ const getAll = async (req, res, next) => {
         const orders = await database_services_1.default.orders
             .find({})
             .sort({ createdAt: -1 })
+            .populate('user_cancel_order')
             .populate('userId')
             .populate({
             path: 'items.product',

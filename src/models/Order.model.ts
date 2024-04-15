@@ -10,10 +10,13 @@ export interface IOrder extends Document {
   totalAmount: number
   createdAt: Date
   updatedAt: Date
+  desc: string
+  user_cancel_order: mongoose.Types.ObjectId
 }
 
 const OrderSchema: Schema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
+  user_cancel_order: { type: Schema.Types.ObjectId, ref: 'users', default: null },
   items: [],
   name: { type: String, required: true },
   phone: { type: String, required: true },
@@ -24,6 +27,7 @@ const OrderSchema: Schema = new Schema({
     enum: ['pending', 'check', 'paid', 'completed', 'shipped', 'cancelled'], // Ví dụ về các giá trị enum
     default: 'pending'
   },
+  desc: { type: String, default: null },
   totalAmount: { type: Number, default: null },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
