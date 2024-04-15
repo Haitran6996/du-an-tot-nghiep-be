@@ -33,7 +33,9 @@ async function removeVariantValue(variantId, elementId) {
         $pull: {
             ram: { id: new mongodb_1.ObjectId(elementId) }, // Giả sử bạn đang xóa từ mảng 'ram'
             rom: { id: new mongodb_1.ObjectId(elementId) }, // Lặp lại cho mỗi mảng nếu bạn không biết nó thuộc mảng nào
-            color: { id: new mongodb_1.ObjectId(elementId) } // Điều này sẽ kiểm tra và xóa elementId từ tất cả mảng
+            color: { id: new mongodb_1.ObjectId(elementId) }, // Điều này sẽ kiểm tra và xóa elementId từ tất cả mảng
+            card: { id: new mongodb_1.ObjectId(elementId) }, // Điều này sẽ kiểm tra và xóa elementId từ tất cả mảng
+            chip: { id: new mongodb_1.ObjectId(elementId) } // Điều này sẽ kiểm tra và xóa elementId từ tất cả mảng
         }
     };
     const result = await database_services_1.default.variants.updateOne(filter, update);

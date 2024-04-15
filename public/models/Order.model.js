@@ -26,13 +26,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const OrderSchema = new mongoose_1.Schema({
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users', required: true },
-    items: [
-        {
-            _id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'product', required: true },
-            options: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'options' }],
-            quantity: { type: Number, required: true }
-        }
-    ],
+    user_cancel_order: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users', default: null },
+    items: [],
     name: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
@@ -42,6 +37,7 @@ const OrderSchema = new mongoose_1.Schema({
         enum: ['pending', 'check', 'paid', 'completed', 'shipped', 'cancelled'], // Ví dụ về các giá trị enum
         default: 'pending'
     },
+    desc: { type: String, default: null },
     totalAmount: { type: Number, default: null },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

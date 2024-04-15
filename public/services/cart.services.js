@@ -108,10 +108,14 @@ async function getCartServices(req, res) {
         let totalAmount = 0;
         // Lặp qua từng sản phẩm trong giỏ hàng và tính tổng tiền
         cart.items.forEach((item) => {
-            const findOptionDetail = item?.product?.options?.find((it) => it._id?.toString() == item.options[0]?.toString());
-            const productPrice = findOptionDetail?.price; // Giá của sản phẩm
-            const quantity = item?.quantity; // Số lượng sản phẩm
-            totalAmount += productPrice * quantity; // Tính tổng tiền cho sản phẩm này
+            // Chú ý: 'item.product.options' phải được truy cập đúng cách
+            item.product.options.forEach((option) => {
+                // Kiểm tra xem id của option có tồn tại trong mảng options của item không
+                if (item.options.includes(option._id.toString())) {
+                    // Nếu tồn tại, cập nhật tổng tiền
+                    totalAmount += option.price * item.quantity;
+                }
+            });
         });
         return res.json({ cart, totalAmount }); // Trả về giỏ hàng và tổng tiền
     }
