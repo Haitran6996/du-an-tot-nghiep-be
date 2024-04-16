@@ -125,26 +125,33 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     }
     const getOd = await databaseService.orders.findById(orderId)
     const totalAmount = getOd?.totalAmount
-    const order = await databaseService.orders.findByIdAndUpdate(orderId, { status }, { new: true })
-
-    if (!order) {
-      return res.status(404).send({ message: 'Order not found' })
-    }
-
-    // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
-    if (status === 'completed') {
-      await Promise.all(
-        order.items.map(async (item: any) => {
-          const productId = item.product._id
-          // Tăng trường purchases lên 1
-          await databaseService.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } })
-        })
-      )
-    }
-
-    res.send(order)
     if (req.body.status == 'cancelled') {
       note = req.body.desc
+      const { desc, user_cancel_order } = req.body
+      const order = await databaseService.orders.findByIdAndUpdate(orderId, { status, desc, user_cancel_order }, { new: true })
+      if (!order) {
+        return res.status(404).send({ message: 'Order not found' })
+      }
+    } else {
+      const order = await databaseService.orders.findByIdAndUpdate(orderId, { status }, { new: true })
+      if (!order) {
+        return res.status(404).send({ message: 'Order not found' })
+      }
+
+
+
+      // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
+      if (status === 'completed') {
+        await Promise.all(
+          order.items.map(async (item: any) => {
+            const productId = item.product._id
+            // Tăng trường purchases lên 1
+            await databaseService.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } })
+          })
+        )
+      }
+
+      res.send(order)
     }
     addLog(userId, role, orderId, oldStatus, newStatus, totalAmount, note)
   } catch (error: any) {

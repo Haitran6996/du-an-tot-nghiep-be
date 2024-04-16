@@ -118,21 +118,28 @@ const updateOrder = async (req, res, next) => {
         }
         const getOd = await database_services_1.default.orders.findById(orderId);
         const totalAmount = getOd?.totalAmount;
-        const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status }, { new: true });
-        if (!order) {
-            return res.status(404).send({ message: 'Order not found' });
-        }
-        // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
-        if (status === 'completed') {
-            await Promise.all(order.items.map(async (item) => {
-                const productId = item.product._id;
-                // Tăng trường purchases lên 1
-                await database_services_1.default.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } });
-            }));
-        }
-        res.send(order);
         if (req.body.status == 'cancelled') {
             note = req.body.desc;
+            const { desc, user_cancel_order } = req.body;
+            const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status, desc, user_cancel_order }, { new: true });
+            if (!order) {
+                return res.status(404).send({ message: 'Order not found' });
+            }
+        }
+        else {
+            const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status }, { new: true });
+            if (!order) {
+                return res.status(404).send({ message: 'Order not found' });
+            }
+            // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
+            if (status === 'completed') {
+                await Promise.all(order.items.map(async (item) => {
+                    const productId = item.product._id;
+                    // Tăng trường purchases lên 1
+                    await database_services_1.default.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } });
+                }));
+            }
+            res.send(order);
         }
         (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount, note);
     }
