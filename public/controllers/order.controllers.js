@@ -123,26 +123,20 @@ const updateOrder = async (req, res, next) => {
         if (req.body.status === 'cancelled') {
             note = req.body.desc;
             const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status: status, desc: desc, user_cancel_order: user_cancel_order }, { new: true });
-            if (!order) {
-                return res.status(404).send({ message: 'Order not found' });
-            }
-            //Không phải hủy thì chạy
         }
-        else {
-            const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status: status }, { new: true });
-            if (!order) {
-                return res.status(404).send({ message: 'Order not found' });
-            }
-            // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
-            if (status === 'completed') {
-                await Promise.all(order.items.map(async (item) => {
-                    const productId = item.product._id;
-                    // Tăng trường purchases lên 1
-                    await database_services_1.default.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } });
-                }));
-            }
-            res.send(order);
+        const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status: status }, { new: true });
+        if (!order) {
+            return res.status(404).send({ message: 'Order not found' });
         }
+        // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
+        if (status === 'completed') {
+            await Promise.all(order.items.map(async (item) => {
+                const productId = item.product._id;
+                // Tăng trường purchases lên 1
+                await database_services_1.default.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } });
+            }));
+        }
+        res.send(order);
         (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount, note);
     }
     catch (error) {

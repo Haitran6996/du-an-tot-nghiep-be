@@ -129,32 +129,27 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     //Nếu status mới là Hủy
     if (req.body.status === 'cancelled') {
       note = req.body.desc
-      const order = await databaseService.orders.findByIdAndUpdate(orderId, { status:status, desc:desc, user_cancel_order:user_cancel_order }, { new: true })
-      if (!order) {
-        return res.status(404).send({ message: 'Order not found' })
-      }
-      //Không phải hủy thì chạy
-    } else {
-      const order = await databaseService.orders.findByIdAndUpdate(orderId, { status:status }, { new: true })
-      if (!order) {
-        return res.status(404).send({ message: 'Order not found' })
-      }
-
-
-
-      // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
-      if (status === 'completed') {
-        await Promise.all(
-          order.items.map(async (item: any) => {
-            const productId = item.product._id
-            // Tăng trường purchases lên 1
-            await databaseService.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } })
-          })
-        )
-      }
-
-      res.send(order)
+      const order = await databaseService.orders.findByIdAndUpdate(orderId, { status: status, desc: desc, user_cancel_order: user_cancel_order }, { new: true })
     }
+    const order = await databaseService.orders.findByIdAndUpdate(orderId, { status: status }, { new: true })
+    if (!order) {
+      return res.status(404).send({ message: 'Order not found' })
+    }
+
+
+
+    // Nếu đơn hàng được cập nhật thành completed, cập nhật trường purchases cho từng sản phẩm
+    if (status === 'completed') {
+      await Promise.all(
+        order.items.map(async (item: any) => {
+          const productId = item.product._id
+          // Tăng trường purchases lên 1
+          await databaseService.products.findByIdAndUpdate(productId, { $inc: { purchases: 1 } })
+        })
+      )
+    }
+
+    res.send(order)
     addLog(userId, role, orderId, oldStatus, newStatus, totalAmount, note)
   } catch (error: any) {
     res.status(500).send({ message: 'Server error', error })
