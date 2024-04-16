@@ -107,7 +107,7 @@ exports.addOrder = addOrder;
 const updateOrder = async (req, res, next) => {
     try {
         const { orderId } = req.params;
-        if (req.body.status === 'cancelled' && req.body.note === '') {
+        if (req.body.status === 'cancelled' && req.body.desc === '' && !req.body.user_cancel_order) {
             return res.status(404).send({ message: 'truyền thiếu trường!, kiểm tra lại thông tin' });
         }
         const { status, userId, role, oldStatus } = req.body;
@@ -131,7 +131,7 @@ const updateOrder = async (req, res, next) => {
         }
         res.send(order);
         if (req.body.status === 'cancelled') {
-            const note = req.body.note;
+            const note = req.body.desc;
             (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount, note);
         }
         else {
