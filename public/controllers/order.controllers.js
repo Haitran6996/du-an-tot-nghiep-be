@@ -118,13 +118,15 @@ const updateOrder = async (req, res, next) => {
         }
         const getOd = await database_services_1.default.orders.findById(orderId);
         const totalAmount = getOd?.totalAmount;
-        if (req.body.status == 'cancelled') {
+        //Nếu status mới là Hủy
+        if (req.body.status === 'cancelled') {
             note = req.body.desc;
             const { desc, user_cancel_order } = req.body;
             const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status, desc, user_cancel_order }, { new: true });
             if (!order) {
                 return res.status(404).send({ message: 'Order not found' });
             }
+            //Không phải hủy thì chạy
         }
         else {
             const order = await database_services_1.default.orders.findByIdAndUpdate(orderId, { status }, { new: true });

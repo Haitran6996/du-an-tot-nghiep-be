@@ -125,13 +125,15 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     }
     const getOd = await databaseService.orders.findById(orderId)
     const totalAmount = getOd?.totalAmount
-    if (req.body.status == 'cancelled') {
+    //Nếu status mới là Hủy
+    if (req.body.status === 'cancelled') {
       note = req.body.desc
       const { desc, user_cancel_order } = req.body
       const order = await databaseService.orders.findByIdAndUpdate(orderId, { status, desc, user_cancel_order }, { new: true })
       if (!order) {
         return res.status(404).send({ message: 'Order not found' })
       }
+      //Không phải hủy thì chạy
     } else {
       const order = await databaseService.orders.findByIdAndUpdate(orderId, { status }, { new: true })
       if (!order) {
