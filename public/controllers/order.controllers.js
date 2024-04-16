@@ -110,7 +110,7 @@ const updateOrder = async (req, res, next) => {
         if (req.body.status === 'cancelled' && req.body.desc === '' && !req.body.user_cancel_order) {
             return res.status(404).send({ message: 'truyền thiếu trường!, kiểm tra lại thông tin' });
         }
-        const { status, userId, role, oldStatus, note } = req.body;
+        const { status, userId, role, oldStatus } = req.body;
         const newStatus = req.body.status;
         if (!['pending', 'paid', 'completed', 'shipped', 'cancelled'].includes(status)) {
             return res.status(400).send({ message: 'Invalid status value' });
