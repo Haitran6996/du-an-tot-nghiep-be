@@ -107,7 +107,7 @@ exports.addOrder = addOrder;
 const updateOrder = async (req, res, next) => {
     try {
         const { orderId } = req.params;
-        if (req.body.status === 'cancelled' && req.body.desc === '' && !req.body.user_cancel_order) {
+        if (req.body.status === 'cancelled' && req.body.note === '') {
             return res.status(404).send({ message: 'truyền thiếu trường!, kiểm tra lại thông tin' });
         }
         const { status, userId, role, oldStatus } = req.body;
