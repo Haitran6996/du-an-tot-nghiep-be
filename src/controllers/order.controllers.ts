@@ -114,13 +114,12 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
-
+    let note = ''
     if (req.body.status === 'cancelled' && req.body.desc === '' && !req.body.user_cancel_order) {
       return res.status(404).send({ message: 'truyền thiếu trường!, kiểm tra lại thông tin' })
     }
-    const { status, userId, role, oldStatus} = req.body
+    const { status, userId, role, oldStatus } = req.body
     const newStatus = req.body.status
-
     if (!['pending', 'paid', 'completed', 'shipped', 'cancelled'].includes(status)) {
       return res.status(400).send({ message: 'Invalid status value' })
     }
@@ -144,13 +143,10 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     }
 
     res.send(order)
-    if (req.body.status === 'cancelled') {
-      const note = req.body.desc
-      addLog(userId, role, orderId, oldStatus, newStatus, totalAmount, note)
-    } else {
-      addLog(userId, role, orderId, oldStatus, newStatus, totalAmount, '')
+    if (req.body.status == 'cancelled') {
+      note = req.body.desc
     }
-
+    addLog(userId, role, orderId, oldStatus, newStatus, totalAmount, note)
   } catch (error: any) {
     res.status(500).send({ message: 'Server error', error })
   }

@@ -107,6 +107,7 @@ exports.addOrder = addOrder;
 const updateOrder = async (req, res, next) => {
     try {
         const { orderId } = req.params;
+        let note = '';
         if (req.body.status === 'cancelled' && req.body.desc === '' && !req.body.user_cancel_order) {
             return res.status(404).send({ message: 'truyền thiếu trường!, kiểm tra lại thông tin' });
         }
@@ -130,13 +131,10 @@ const updateOrder = async (req, res, next) => {
             }));
         }
         res.send(order);
-        if (req.body.status === 'cancelled') {
-            const note = req.body.desc;
-            (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount, note);
+        if (req.body.status == 'cancelled') {
+            note = req.body.desc;
         }
-        else {
-            (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount, '');
-        }
+        (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount, note);
     }
     catch (error) {
         res.status(500).send({ message: 'Server error', error });
