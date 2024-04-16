@@ -95,7 +95,7 @@ const addOrder = async (req, res, next) => {
         if (savedOrder) {
             await placeOrder(req.body.userId, cart.items);
             res.status(201).json(savedOrder);
-            (0, log_controllers_1.addLog)(userId, role, orderId, 'none', newStatus, totalAmount);
+            (0, log_controllers_1.addLog)(userId, role, orderId, 'none', newStatus, totalAmount, '');
         }
     }
     catch (err) {
@@ -110,7 +110,7 @@ const updateOrder = async (req, res, next) => {
         if (req.body.status === 'cancelled' && req.body.desc === '' && !req.body.user_cancel_order) {
             return res.status(404).send({ message: 'truyền thiếu trường!, kiểm tra lại thông tin' });
         }
-        const { status, userId, role, oldStatus } = req.body;
+        const { status, userId, role, oldStatus, note } = req.body;
         const newStatus = req.body.status;
         if (!['pending', 'paid', 'completed', 'shipped', 'cancelled'].includes(status)) {
             return res.status(400).send({ message: 'Invalid status value' });
@@ -130,7 +130,13 @@ const updateOrder = async (req, res, next) => {
             }));
         }
         res.send(order);
-        (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount);
+        if (req.body.status === 'cancelled') {
+            const note = req.body.note;
+            (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount, note);
+        }
+        else {
+            (0, log_controllers_1.addLog)(userId, role, orderId, oldStatus, newStatus, totalAmount, '');
+        }
     }
     catch (error) {
         res.status(500).send({ message: 'Server error', error });

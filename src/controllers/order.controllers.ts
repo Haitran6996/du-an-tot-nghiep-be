@@ -103,7 +103,7 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
     if (savedOrder) {
       await placeOrder(req.body.userId, cart.items)
       res.status(201).json(savedOrder)
-      addLog(userId, role, orderId, 'none', newStatus, totalAmount)
+      addLog(userId, role, orderId, 'none', newStatus, totalAmount, '')
     }
   } catch (err) {
     console.log(err, 'errr')
@@ -114,10 +114,11 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
+
     if (req.body.status === 'cancelled' && req.body.desc === '' && !req.body.user_cancel_order) {
       return res.status(404).send({ message: 'truyền thiếu trường!, kiểm tra lại thông tin' })
     }
-    const { status, userId, role, oldStatus } = req.body
+    const { status, userId, role, oldStatus, note } = req.body
     const newStatus = req.body.status
 
     if (!['pending', 'paid', 'completed', 'shipped', 'cancelled'].includes(status)) {
@@ -143,7 +144,13 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     }
 
     res.send(order)
-    addLog(userId, role, orderId, oldStatus, newStatus, totalAmount)
+    if (req.body.status === 'cancelled') {
+      const note = req.body.note
+      addLog(userId, role, orderId, oldStatus, newStatus, totalAmount, note)
+    } else {
+      addLog(userId, role, orderId, oldStatus, newStatus, totalAmount, '')
+    }
+
   } catch (error: any) {
     res.status(500).send({ message: 'Server error', error })
   }

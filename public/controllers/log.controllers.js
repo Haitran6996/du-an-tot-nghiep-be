@@ -31,7 +31,7 @@ const paginationComment = async (req, res, next) => {
     }
 };
 exports.paginationComment = paginationComment;
-const addLog = async (userId, role, orderId, oldStatus, newStatus, priceOrder) => {
+const addLog = async (userId, role, orderId, oldStatus, newStatus, priceOrder, note) => {
     try {
         // Kết nối tới database nếu cần
         // check user
@@ -46,6 +46,7 @@ const addLog = async (userId, role, orderId, oldStatus, newStatus, priceOrder) =
                 oldStatus: oldStatus,
                 newStatus: newStatus,
                 priceOrder: priceOrder,
+                note: note
             });
             commentInsertion;
         }

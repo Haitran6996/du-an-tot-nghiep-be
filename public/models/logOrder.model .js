@@ -40,7 +40,8 @@ const logOrderSchema = new mongoose_1.Schema({
             values: ['pending', 'check', 'paid', 'completed', 'shipped', 'cancelled'],
             message: '{VALUE} không được phép'
         }
-    }
+    },
+    note: { type: String }
 }, {
     timestamps: true,
 });

@@ -7,6 +7,7 @@ export interface ILogOder extends Document {
   newStatus: string
   oldStatus: string
   priceOrder: number
+  note: string
 }
 
 const logOrderSchema: Schema = new Schema({
@@ -25,7 +26,8 @@ const logOrderSchema: Schema = new Schema({
       values: ['pending', 'check', 'paid', 'completed', 'shipped', 'cancelled'],
       message: '{VALUE} không được phép'
     }
-  }
+  },
+  note: {type: String}
 },
   {
     timestamps: true,

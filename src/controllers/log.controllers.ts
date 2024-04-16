@@ -29,7 +29,7 @@ export const paginationComment = async (req: Request, res: Response, next: NextF
     }
 }
 
-export const addLog = async (userId: any, role: any, orderId: any, oldStatus: any, newStatus: any, priceOrder: any) => {
+export const addLog = async (userId: any, role: any, orderId: any, oldStatus: any, newStatus: any, priceOrder: any, note:any) => {
     try {
         // Kết nối tới database nếu cần
 
@@ -45,6 +45,7 @@ export const addLog = async (userId: any, role: any, orderId: any, oldStatus: an
                 oldStatus: oldStatus,
                 newStatus: newStatus,
                 priceOrder: priceOrder,
+                note: note
             }
             )
             commentInsertion
