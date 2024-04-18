@@ -45,7 +45,7 @@ export async function getOne(req: Request, res: Response, next: NextFunction) {
 }
 
 export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
-  const { userId, role, orderId } = req.body
+  const { userId, role, orderId, discountId } = req.body
   const newStatus = req.body.status
   try {
     const cart = await databaseService.carts.findOne({ userId: req.body.userId }).populate({
@@ -58,6 +58,19 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
 
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' })
+    }
+    //Trừ limit code
+    let discount = null
+    if (discountId) {
+      discount = await databaseService.gifts.findById(discountId)
+      if (!discount) {
+        return res.status(404).json({
+          message: 'Discount not found'
+        })
+      }
+
+      discount.limit -= 1;
+      await discount.save();
     }
 
     let totalAmount = 0
@@ -95,7 +108,8 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
       totalAmount: totalAmount,
       name: req.body.name,
       phone: req.body.phone,
-      address: req.body.address
+      address: req.body.address,
+      discount
     }
 
     const newOrder = new OrderModel(orderData)

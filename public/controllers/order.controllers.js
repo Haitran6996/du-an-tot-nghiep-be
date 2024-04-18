@@ -44,7 +44,7 @@ async function getOne(req, res, next) {
 }
 exports.getOne = getOne;
 const addOrder = async (req, res, next) => {
-    const { userId, role, orderId } = req.body;
+    const { userId, role, orderId, discountId } = req.body;
     const newStatus = req.body.status;
     try {
         const cart = await database_services_1.default.carts.findOne({ userId: req.body.userId }).populate({
@@ -56,6 +56,18 @@ const addOrder = async (req, res, next) => {
         });
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
+        }
+        //Trừ limit code
+        let discount = null;
+        if (discountId) {
+            discount = await database_services_1.default.gifts.findById(discountId);
+            if (!discount) {
+                return res.status(404).json({
+                    message: 'Discount not found'
+                });
+            }
+            discount.limit -= 1;
+            await discount.save();
         }
         let totalAmount = 0;
         const itemsWithUpdatedPrice = cart.items.map((item) => {
@@ -88,7 +100,8 @@ const addOrder = async (req, res, next) => {
             totalAmount: totalAmount,
             name: req.body.name,
             phone: req.body.phone,
-            address: req.body.address
+            address: req.body.address,
+            discount
         };
         const newOrder = new Order_model_1.default(orderData);
         const savedOrder = await newOrder.save();

@@ -28,6 +28,10 @@ const OrderSchema: Schema = new Schema({
     default: 'pending'
   },
   desc: { type: String, default: null },
+  discount: {
+    type: Object,
+    default: null
+  },
   totalAmount: { type: Number, default: null },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
