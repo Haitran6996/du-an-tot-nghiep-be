@@ -33,7 +33,7 @@ export function createVnpay(req: Request, res: Response, next: NextFunction) {
   let tmnCode = 'HOQKJBWX'
   let secretKey = 'NHRXTIWSWMLMBPARDABQQIQYGIMKKXKL'
   let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
-  let returnUrl = 'https://du-an-tot-nghiep.vercel.app/history/?success=true'
+  let returnUrl = 'http://localhost:3000/history/?success=true'
   let orderId = req.body.orderId
   let amount = req.body.amount
   let bankCode = null
