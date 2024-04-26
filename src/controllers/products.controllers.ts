@@ -204,9 +204,9 @@ export const getAllProducts = async (req: Request, res: Response) => {
     let products
     if (sort === 'purchases') {
       // Sắp xếp theo số lượng mua giảm dần và giới hạn số lượng sản phẩm trả về
-      products = await databaseService.products.find(query).sort({ purchases: -1 }) // Sắp xếp theo số lượng mua giảm dần
+      products = await databaseService.products.find(query).populate('options').sort({ purchases: -1 }) // Sắp xếp theo số lượng mua giảm dần
     } else {
-      products = await databaseService.products.find(query)
+      products = await databaseService.products.find(query).populate('options');
     }
 
     res.status(200).json(products)
