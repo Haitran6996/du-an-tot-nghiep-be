@@ -201,10 +201,10 @@ const getAllProducts = async (req, res) => {
         let products;
         if (sort === 'purchases') {
             // Sắp xếp theo số lượng mua giảm dần và giới hạn số lượng sản phẩm trả về
-            products = await database_services_1.default.products.find(query).sort({ purchases: -1 }); // Sắp xếp theo số lượng mua giảm dần
+            products = await database_services_1.default.products.find(query).populate('options').sort({ purchases: -1 }); // Sắp xếp theo số lượng mua giảm dần
         }
         else {
-            products = await database_services_1.default.products.find(query);
+            products = await database_services_1.default.products.find(query).populate('options');
         }
         res.status(200).json(products);
     }
