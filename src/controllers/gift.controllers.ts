@@ -62,8 +62,6 @@ export const updateGift = async (req: Request, res: Response) => {
     const { giftId } = req.params
     const { code, sale, start, expire, limit } = req.body
     try {
-        const codeExist = await databaseService.gifts.find({ 'code': code })
-        if (codeExist[0] == null) {
             const updateResult = await databaseService.gifts.findByIdAndUpdate(
                 { _id: giftId },
                 {
@@ -75,11 +73,6 @@ export const updateGift = async (req: Request, res: Response) => {
                 }
             )
             res.status(200).json({ message: 'Cập nhật Gift thành công' })
-        }
-        else if (codeExist) {
-            console.error('Error:code đã tồn tại')
-            res.status(500).json({ message: 'Error:code đã tồn tại' })
-        }
     } catch (error) {
         console.error('Lỗi khi cập nhật Giftcode:', error)
         res.status(500).json({ message: 'Đã xảy ra lỗi khi cập nhật Giftcode' })

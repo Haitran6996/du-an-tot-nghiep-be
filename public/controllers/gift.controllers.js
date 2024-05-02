@@ -63,21 +63,14 @@ const updateGift = async (req, res) => {
     const { giftId } = req.params;
     const { code, sale, start, expire, limit } = req.body;
     try {
-        const codeExist = await database_services_1.default.gifts.find({ 'code': code });
-        if (codeExist[0] == null) {
-            const updateResult = await database_services_1.default.gifts.findByIdAndUpdate({ _id: giftId }, {
-                code: code,
-                sale: sale,
-                start: start,
-                expire: expire,
-                limit: limit
-            });
-            res.status(200).json({ message: 'Cập nhật Gift thành công' });
-        }
-        else if (codeExist) {
-            console.error('Error:code đã tồn tại');
-            res.status(500).json({ message: 'Error:code đã tồn tại' });
-        }
+        const updateResult = await database_services_1.default.gifts.findByIdAndUpdate({ _id: giftId }, {
+            code: code,
+            sale: sale,
+            start: start,
+            expire: expire,
+            limit: limit
+        });
+        res.status(200).json({ message: 'Cập nhật Gift thành công' });
     }
     catch (error) {
         console.error('Lỗi khi cập nhật Giftcode:', error);
